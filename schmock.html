@@ -48,19 +48,30 @@
       flex-direction: column;
     }
     .link-button {
-      display: inline-block;
-      background-color: rgba(0, 0, 0, 0);
-      color: #fff;
-      text-decoration: none;
-      padding: 10px 20px;
-      margin: 10px auto;
-      border-radius: 5px;
-      width: 200px;
-      outline: 2px solid black;
-      border-color: #888;
-      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
-      font-weight: bold;
+  display: inline-block;
+  background-color: rgba(0, 0, 0, 0);
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 20px;
+  margin: 10px auto;
+  border-radius: 5px;
+  outline: 2px solid black;
+  border-color: #888;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
+  display: flex; /* Use flexbox for layout */
+  align-items: center; /* Center align items vertically */
 }
+
+.button-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 10px;
+}
+
+.button-text {
+  flex: 1; /* Expand to fill remaining space */
+}
+
     .custom-shape-divider-top-1685212814 {
       position: absolute;
       top: 0;
@@ -134,7 +145,11 @@
     </div>
   </div>
   <div id="links">
-    <a class="link-button" href="https://open.spotify.com/artist/00UL27CiQhemd3BmIK8cDE">SPOTIFY</a><br>
+    <a class="link-button" href="https://allfacebook.de/social-skills/verwendung-instagram-logo-warenzeichen">
+  <img src="https://allfacebook.de/wp-content/uploads/2020/08/glyph-logo_May2016-300x300.png" alt="Icon" class="button-icon">
+  <span class="button-text">Button Text</span>
+</a>
+
     <a class="link-button" href="https://www.instagram.com/schmendrickkk/">INSTAGRAM</a><br>
     <a class="link-button" href="https://www.youtube.com/@schmock3183">YOUTUBE</a><br>
   </div>
