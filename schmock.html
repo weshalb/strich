@@ -46,18 +46,19 @@
       flex-direction: column;
     }
     .link-button {
-      display: inline-block;
-      background-color: #bbb;
-      color: #fff;
-      text-decoration: none;
-      padding: 10px 20px;
-      margin: 10px auto;
-      border-radius: 5px;
-      width: 200px;
-      outline: 2px solid black;
-      border-color: #888;
-      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5); /* Add the box-shadow property */
-    }
+  display: inline-block;
+  background-color: rgba(0, 0, 0, 0); /* Transparent background */
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 20px;
+  margin: 10px auto;
+  border-radius: 5px;
+  width: 200px;
+  outline: 2px solid black;
+  border-color: #888;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5); /* Add the box-shadow property */
+}
+
     
     .custom-shape-divider-top-1685212814 {
       position: absolute;
@@ -100,63 +101,7 @@
       fill: #222222;
     }
     
-    $speed: 0.5s;
-
-.btn-flip{
-  opacity: 1;
-  outline: 0;
-  color: #fff;
-  line-height: 40px;
-  position: relative;
-  text-align: center;
-  letter-spacing: 1px;
-  display: inline-block;
-  text-decoration: none;
-  font-family: 'Open Sans';
-  text-transform: uppercase;
-  
-  &:hover{
-    
-    &:after{
-      opacity: 1;
-      transform: translateY(0) rotateX(0);
-    }
-    
-    &:before{
-      opacity: 0;
-      transform: translateY(50%) rotateX(90deg);
-    }
-  }
-  
-  &:after{
-    top: 0;
-    left: 0;
-    opacity: 0;
-    width: 100%;
-    color: #323237;
-    display: block;
-    transition: $speed;
-    position: absolute;
-    background: #adadaf;
-    content: attr(data-back);
-    transform: translateY(-50%) rotateX(90deg);
-  }
-  
-  &:before{
-    top: 0;
-    left: 0;
-    opacity: 1;
-    color: #adadaf;
-    display: block;
-    padding: 0 30px;
-    line-height: 40px;
-    transition: $speed;
-    position: relative;
-    background: #323237;
-    content: attr(data-front);
-    transform: translateY(0) rotateX(0);
-  }
-}
+   
     
     /* Media query for screens smaller than 600px */
     @media (max-width: 600px) {
@@ -203,7 +148,7 @@
   
   <div id="links">
   
-    <a href="#" class="btn-flip" data-back="Back" data-front="Front"></a>
+    <a class="link-button" href="https://open.spotify.com/artist/00UL27CiQhemd3BmIK8cDE">Spotify</a><br>
     <a class="link-button" href="https://www.instagram.com/schmendrickkk/">Instagram</a><br>
     <a class="link-button" href="https://www.youtube.com/@schmock3183">YouTube</a><br>
     <!-- Add more link buttons here -->
