@@ -27,36 +27,7 @@
             overflow: hidden;
             position: relative;
         }
-
-        .cube-inner {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            transform-style: preserve-3d;
-            transform: rotateX(0deg) rotateY(0deg);
-            transition: transform 0.5s;
-        }
-
-        .cube-inner:hover {
-            transform: rotateX(20deg) rotateY(20deg);
-        }
-
-        .cube-front,
-        .cube-back {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            background-color: transparent;
-        }
-
-        .cube-front {
-            transform: translateZ(100px);
-        }
-
-        .cube-back {
-            transform: rotateY(180deg) translateZ(100px);
-        }
-
+        
         .cube-content {
             display: flex;
             flex-direction: column;
@@ -79,21 +50,11 @@
 <body>
     <div class="cube-container">
         <div class="cube">
-            <div class="cube-inner">
-                <div class="cube-front">
                     <div class="cube-content">
                         <img src="https://freepngimg.com/thumb/tshirt/36634-6-blank-white-t-shirt-template-thumb.png" alt="Product 1">
                         <h3>Product 1</h3>
                     </div>
-                </div>
-                <div class="cube-back"></div>
-            </div>
         </div>
-        
-        
-        
-        <!-- Repeat the above cube code for more products -->
-        
     </div>
 </body>
 </html>
