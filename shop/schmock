@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .cube-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .cube {
+            width: 200px;
+            height: 200px;
+            margin: 10px;
+            perspective: 800px;
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .cube-inner {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            transform-style: preserve-3d;
+            transform: rotateX(0deg) rotateY(0deg);
+            transition: transform 0.5s;
+        }
+
+        .cube-inner:hover {
+            transform: rotateX(20deg) rotateY(20deg);
+        }
+
+        .cube-front,
+        .cube-back {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background-color: transparent;
+        }
+
+        .cube-front {
+            transform: translateZ(100px);
+        }
+
+        .cube-back {
+            transform: rotateY(180deg) translateZ(100px);
+        }
+
+        .cube-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+
+        .cube-content img {
+            max-width: 80%;
+            max-height: 80%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <div class="cube-container">
+        <div class="cube">
+            <div class="cube-inner">
+                <div class="cube-front">
+                    <div class="cube-content">
+                        <img src="product1.jpg" alt="Product 1">
+                        <h3>Product 1</h3>
+                    </div>
+                </div>
+                <div class="cube-back"></div>
+            </div>
+        </div>
+        
+        <div class="cube">
+            <div class="cube-inner">
+                <div class="cube-front">
+                    <div class="cube-content">
+                        <img src="product2.jpg" alt="Product 2">
+                        <h3>Product 2</h3>
+                    </div>
+                </div>
+                <div class="cube-back"></div>
+            </div>
+        </div>
+        
+        <div class="cube">
+            <div class="cube-inner">
+                <div class="cube-front">
+                    <div class="cube-content">
+                        <img src="product3.jpg" alt="Product 3">
+                        <h3>Product 3</h3>
+                    </div>
+                </div>
+                <div class="cube-back"></div>
+            </div>
+        </div>
+        
+        <!-- Repeat the above cube code for more products -->
+        
+    </div>
+</body>
+</html>
