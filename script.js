@@ -24,5 +24,5 @@ async function getLatestSong(artistId) {
 // Call the function with the artist ID when the page loads
 window.addEventListener('load', function() {
   // Replace 'ARTIST_ID' with the actual ID of the desired Spotify artist
-  getLatestSong('ARTIST_ID');
+  getLatestSong('00UL27CiQhemd3BmIK8cDE');
 });
