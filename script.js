@@ -11,7 +11,7 @@ function updateSongContainer(song) {
 
 // Function to fetch the latest song of a Spotify artist
 async function getLatestSong(artistId) {
-  const response = await fetch(`/latest-song?artistId=${artistId}`);
+  const response = await fetch(`/latest-song?artistId=00UL27CiQhemd3BmIK8cDE`);
   const song = await response.json();
 
   if (song) {
