@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MP3 Player</title>
+</head>
+<body>
+  <h1>MP3 Files</h1>
+  <ul id="mp3List">
+    <!-- The list of MP3 files will be dynamically generated here -->
+  </ul>
+
+  <script>
+    // Fetch the list of MP3 files from the server
+    fetch('get_mp3_files.php')
+      .then(response => response.json())
+      .then(data => {
+        const mp3List = document.getElementById('mp3List');
+        data.forEach(file => {
+          // Create a list item for each MP3 file
+          const listItem = document.createElement('li');
+          const audio = document.createElement('audio');
+          audio.controls = true;
+          const source = document.createElement('source');
+          source.src = file.url;
+          source.type = 'audio/mpeg';
+          audio.appendChild(source);
+          listItem.appendChild(audio);
+          mp3List.appendChild(listItem);
+        });
+      })
+      .catch(error => {
+        console.log('Error:', error);
+      });
+  </script>
+</body>
+</html>
