@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MIDI File Generator</title>
+</head>
+<body>
+  <h1>MIDI File Generator</h1>
+
+  <div>
+    <label for="note">Note:</label>
+    <select id="note">
+      <option value="C4">C</option>
+      <option value="D4">D</option>
+      <option value="E4">E</option>
+      <option value="F4">F</option>
+      <option value="G4">G</option>
+      <option value="A4">A</option>
+      <option value="B4">B</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="duration">Duration (seconds):</label>
+    <input type="number" id="duration" step="0.1" min="0" value="1">
+  </div>
+
+  <div>
+    <button onclick="generateMIDI()">Generate MIDI</button>
+  </div>
+
+  <script>
+    function generateMIDI() {
+      const note = document.getElementById('note').value;
+      const duration = parseFloat(document.getElementById('duration').value);
+
+      const noteOn = [0x90, noteToMIDI(note), 0x7f];
+      const noteOff = [0x80, noteToMIDI(note), 0x00];
+
+      const track = [
+        // Note On event
+        new Uint8Array(noteOn),
+
+        // Delay for the specified duration
+        new Uint8Array([0xff, 0x51, 0x03, 0x07, 0xa1, 0x20]),
+
+        // Note Off event
+        new Uint8Array(noteOff)
+      ];
+
+      const headerChunk = new Uint8Array([0x4d, 0x54, 0x68, 0x64, 0x00, 0x00, 0x00, 0x06, 0x00, 0x01, 0x00, 0x01, 0x00, 0x80]);
+      const trackChunk = new Uint8Array(track.flat());
+      const footerChunk = new Uint8Array([0x01, 0xff, 0x2f, 0x00]);
+
+      const data = new Uint8Array([...headerChunk, ...trackChunk, ...footerChunk]);
+      const blob = new Blob([data], { type: 'audio/midi' });
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'output.mid';
+      link.click();
+    }
+
+    function noteToMIDI(note) {
+      const noteMap = {
+        'C0': 0x00, 'C#0': 0x01, 'Db0': 0x01, 'D0': 0x02, 'D#0': 0x03, 'Eb0': 0x03,
+        'E0': 0x04, 'F0': 0x05, 'F#0': 0x06, 'Gb0': 0x06, 'G0': 0x07, 'G#0': 0x08,
+        'Ab0': 0x08, 'A0': 0x09, 'A#0': 0x0A, 'Bb0': 0x0A, 'B0': 0x0B, 'C1': 0x0C,
+        'C#1': 0x0D, 'Db1': 0x0D, 'D1': 0x0E, 'D#1': 0x0F, 'Eb1': 0x0F, 'E1': 0x10,
+        'F1': 0x11, 'F#1': 0x12, 'Gb1': 0x12, 'G1': 0x13, 'G#1': 0x14, 'Ab1': 0x14,
+        'A1': 0x15, 'A#1': 0x16, 'Bb1': 0x16, 'B1': 0x17, 'C2': 0x18, 'C#2': 0x19,
+        'Db2': 0x19, 'D2': 0x1A, 'D#2': 0x1B, 'Eb2': 0x1B, 'E2': 0x1C, 'F2': 0x1D,
+        'F#2': 0x1E, 'Gb2': 0x1E, 'G2': 0x1F, 'G#2': 0x20, 'Ab2': 0x20, 'A2': 0x21,
+        'A#2': 0x22, 'Bb2': 0x22, 'B2': 0x23, 'C3': 0x24, 'C#3': 0x25, 'Db3': 0x25,
+        'D3': 0x26, 'D#3': 0x27, 'Eb3': 0x27, 'E3': 0x28, 'F3': 0x29, 'F#3': 0x2A,
+        'Gb3': 0x2A, 'G3': 0x2B, 'G#3': 0x2C, 'Ab3': 0x2C, 'A3': 0x2D, 'A#3': 0x2E,
+        'Bb3': 0x2E, 'B3': 0x2F, 'C4': 0x30, 'C#4': 0x31, 'Db4': 0x31, 'D4': 0x32,
+        'D#4': 0x33, 'Eb4': 0x33, 'E4': 0x34, 'F4': 0x35, 'F#4': 0x36, 'Gb4': 0x36,
+        'G4': 0x37, 'G#4': 0x38, 'Ab4': 0x38, 'A4': 0x39, 'A#4': 0x3A, 'Bb4': 0x3A,
+        'B4': 0x3B, 'C5': 0x3C, 'C#5': 0x3D, 'Db5': 0x3D, 'D5': 0x3E, 'D#5': 0x3F,
+        'Eb5': 0x3F, 'E5': 0x40, 'F5': 0x41, 'F#5': 0x42, 'Gb5': 0x42, 'G5': 0x43,
+        'G#5': 0x44, 'Ab5': 0x44, 'A5': 0x45, 'A#5': 0x46, 'Bb5': 0x46, 'B5': 0x47,
+        'C6': 0x48, 'C#6': 0x49, 'Db6': 0x49, 'D6': 0x4A, 'D#6': 0x4B, 'Eb6': 0x4B,
+        'E6': 0x4C, 'F6': 0x4D, 'F#6': 0x4E, 'Gb6': 0x4E, 'G6': 0x4F, 'G#6': 0x50,
+        'Ab6': 0x50, 'A6': 0x51, 'A#6': 0x52, 'Bb6': 0x52, 'B6': 0x53, 'C7': 0x54,
+        'C#7': 0x55, 'Db7': 0x55, 'D7': 0x56, 'D#7': 0x57, 'Eb7': 0x57, 'E7': 0x58,
+        'F7': 0x59, 'F#7': 0x5A, 'Gb7': 0x5A, 'G7': 0x5B, 'G#7': 0x5C, 'Ab7': 0x5C,
+        'A7': 0x5D, 'A#7': 0x5E, 'Bb7': 0x5E, 'B7': 0x5F, 'C8': 0x60, 'C#8': 0x61,
+        'Db8': 0x61, 'D8': 0x62, 'D#8': 0x63, 'Eb8': 0x63, 'E8': 0x64, 'F8': 0x65,
+        'F#8': 0x66, 'Gb8': 0x66, 'G8': 0x67, 'G#8': 0x68, 'Ab8': 0x68, 'A8': 0x69,
+        'A#8': 0x6A, 'Bb8': 0x6A, 'B8': 0x6B, 'C9': 0x6C, 'C#9': 0x6D, 'Db9': 0x6D,
+        'D9': 0x6E, 'D#9': 0x6F, 'Eb9': 0x6F, 'E9': 0x70, 'F9': 0x71, 'F#9': 0x72,
+        'Gb9': 0x72, 'G9': 0x73, 'G#9': 0x74, 'Ab9': 0x74, 'A9': 0x75, 'A#9': 0x76,
+        'Bb9': 0x76, 'B9': 0x77, 'C10': 0x78, 'C#10': 0x79, 'Db10': 0x79, 'D10': 0x7A,
+        'D#10': 0x7B, 'Eb10': 0x7B, 'E10': 0x7C, 'F10': 0x7D, 'F#10': 0x7E, 'Gb10': 0x7E,
+        'G10': 0x7F
+      };
+
+      return noteMap[note];
+    }
+  </script>
+</body>
+</html>
