@@ -36,6 +36,13 @@ body, html {height: 100%}
     <hr class="w3-border-grey" style="margin:auto;width:40%">
   </div>
 </div>
-
+<button onclick="playAudio()">Play MP3</button>
+  
+  <script>
+    function playAudio() {
+      var audio = new Audio('audio/egyptian-trap.mp3');
+      audio.play();
+    }
+  </script>
 </body>
 </html>
