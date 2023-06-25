@@ -18,6 +18,7 @@ body, html {height: 100%}
   min-height: 100%;
   background-position: center;
   background-size: cover;
+  position: relative;
 }
   body {
   background: rgb(0,0,0);
@@ -44,16 +45,18 @@ body, html {height: 100%}
 <body>
 
 <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
-  <div class="w3-display-topleft w3-padding-large w3-xlarge">
-    Lykia
-  </div>
-  <div class="w3-display-middle">
-    <h1 class="w3-jumbo w3-animate-top">COMING SOON</h1>
-    <div class="container">
-    <img id="trackImage" src="https://media.discordapp.net/attachments/916425334021296139/1122651308495749241/Picsart_23-06-23_01-58-52-336.jpg?width=498&height=498" alt="Track Image Placeholder">
-    <br><br>
-    <button onclick="playAudio()">Play</button>
-    <button onclick="pauseAudio()">Pause</button>
+    <div class="w3-display-topleft w3-padding-large w3-xlarge">
+      Lykia
+    </div>
+    <div class="w3-display-middle">
+      <h1 class="w3-jumbo w3-animate-top">COMING SOON</h1>
+      <div class="container">
+        <img id="trackImage" src="https://media.discordapp.net/attachments/916425334021296139/1122651308495749241/Picsart_23-06-23_01-58-52-336.jpg?width=498&height=498" alt="Track Image Placeholder">
+        <br><br>
+        <button onclick="playAudio()">Play</button>
+        <button onclick="pauseAudio()">Pause</button>
+      </div>
+    </div>
   </div>
   
   <script>
@@ -67,9 +70,5 @@ body, html {height: 100%}
       audio.pause();
     }
   </script>
-  </div>
-  
-</div>
-
 </body>
 </html>
