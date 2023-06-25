@@ -1,36 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta<!DOCTYPE html>
-<html>
-<head>
-<title>Lykia</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-<style>
-body,h1 {font-family: "Raleway", sans-serif}
-body, html {height: 100%}
-.bgimg {
-  background: rgb(0,0,0);
-  background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(46,46,46,1) 100%, rgba(74,74,74,1) 100%);
-  min-height: 100%;
-  background-position: center;
-  background-size: cover;
-}
-  body {
-  background: rgb(0,0,0);
-  background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(46,46,46,1) 100%, rgba(74,74,74,1) 100%);
-  }
-
-  .container {
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+  <style>
+    body,h1 {
+      font-family: "Raleway", sans-serif;
+      margin: 0;
+    }
+    
+    body, html {
+      height: 100%;
+    }
+    
+    .bgimg {
+      background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(46,46,46,1) 100%, rgba(74,74,74,1) 100%);
+      min-height: 100%;
+      background-position: center;
+      background-size: cover;
+      position: relative;
+    }
+    
+    .container {
       width: 300px;
       padding: 20px;
       border-radius: 10px;
       border: 2px solid #808080;
       background-color: transparent;
       text-align: center;
+      margin: 0 auto;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
     
     #trackImage {
@@ -39,11 +43,10 @@ body, html {height: 100%}
       object-fit: cover;
       border-radius: 10px;
     }
-</style>
+  </style>
 </head>
 <body>
-
-<div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
+  <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
     <div class="w3-display-topleft w3-padding-large w3-xlarge">
       Lykia
     </div>
@@ -90,3 +93,4 @@ body, html {height: 100%}
   </script>
 </body>
 </html>
+
