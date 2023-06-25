@@ -50,10 +50,16 @@ body, html {height: 100%}
     <div class="w3-display-middle">
       <h1 class="w3-jumbo w3-animate-top">LATEST</h1>
       <div class="container">
-        <img id="trackImage" src="https://media.discordapp.net/attachments/916425334021296139/1122651308495749241/Picsart_23-06-23_01-58-52-336.jpg?width=498&height=498" alt="Track Image Placeholder">
+        <img id="trackImage" src="https://media.discordapp.net/attachments/916425334021296139/1122651308495749241/Picsart_23-06-23_01-58-52-336.jpg?width=498&height=498" alt="qantir">
         <br><br>
         <button onclick="playAudio()">Play</button>
         <button onclick="pauseAudio()">Pause</button>
+      </div>
+      <div class="container">
+        <img id="trackImage" src="https://media.discordapp.net/attachments/916425334021296139/1122653661563207772/Picsart_23-06-10_16-53-51-711.jpg?width=498&height=498" alt="divino">
+        <br><br>
+        <button onclick="playAudio2()">Play</button>
+        <button onclick="pauseAudio2()">Pause</button>
       </div>
     </div>
   </div>
@@ -67,6 +73,16 @@ body, html {height: 100%}
     
     function pauseAudio() {
       audio.pause();
+    }
+
+    var audio2 = new Audio('audio/brazil-funk-3.mp3');
+    
+    function playAudio2() {
+      audio2.play();
+    }
+    
+    function pauseAudio2() {
+      audio2.pause();
     }
   </script>
 </body>
