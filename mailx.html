@@ -38,6 +38,17 @@
             overflow-y: auto;
         }
 
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .mail-list::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .mail-list {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        
         .mail-item {
             background: rgba(255,255,255,0.1);
             border-radius: 15px;
