@@ -13,14 +13,10 @@
             background: linear-gradient(45deg, #2d2d2d, #1c1c1c);
             color: #FFF;
             font-family: Arial, sans-serif;
-            min-height: 100vh;
-        }
-
-        .main {
+            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
         }
 
         .mail-container {
@@ -29,7 +25,6 @@
             box-shadow: 0 0 15px rgba(0,0,0,0.3);
             width: 80%;
             max-width: 1000px;
-            margin: auto;
         }
 
         header {
@@ -39,6 +34,8 @@
 
         .mail-list {
             padding: 20px;
+            max-height: 60vh;
+            overflow-y: auto;
         }
 
         .mail-item {
@@ -75,15 +72,6 @@
                 <h3>Email Subject 2</h3>
                 <p>Email preview...</p>
             </div>
-            <div class="mail-item">
-                <h3>Email Subject 2</h3>
-                <p>Email preview...</p>
-            </div>
-            <div class="mail-item">
-                <h3>Email Subject 2</h3>
-                <p>Email preview...</p>
-            </div>
-            
             <!-- Add more mail items as needed -->
         </div>
     </div>
