@@ -85,7 +85,39 @@
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); /* A subtle shadow for depth */
     overflow-x: auto; /* Allows for horizontal scrolling if the content is too wide */
 }
-``
+        .code-container {
+    display: flex;
+    background-color: black;
+    border-radius: 10px;
+    padding: 1vw;
+    overflow-x: auto;
+}
+
+.line-numbers {
+    color: #5c6370; /* Grayish tone for line numbers */
+    padding-right: 2vw;
+    border-right: 1px solid #666;
+    margin-right: 2vw;
+    font-family: 'Courier New', Courier, monospace;
+    line-height: 2.2;
+}
+
+.code-content p {
+    font-size: 1.2vw;
+    color: #50fa7b; /* Generic green tone for code */
+    margin: 0;
+    font-family: 'Courier New', Courier, monospace;
+    line-height: 2.2;
+}
+
+.keyword {
+    color: #569cd6; /* Blue tone for keywords */
+}
+
+.string {
+    color: #ce9178; /* Orangish tone for strings */
+}
+
 
     </style>
 </head>
@@ -95,7 +127,20 @@
         <h1>Lobe</h1>
         <div class="img-placeholder"></div>
         <button class="signup-btn">Sign Up For Beta</button>
-        <p>Cool looking explanation text goes here. Discover more about Lobe and its awesome features.</p>
+        <div class="code-container">
+    <div class="line-numbers">
+        <p>1</p>
+        <p>2</p>
+        <p>3</p>
+        <!-- Continue for as many lines as you have -->
+    </div>
+    <div class="code-content">
+        <p><span class="keyword">function</span> <span class="string">"helloWorld()"</span> {</p>
+        <p>    <span class="keyword">return</span> <span class="string">"Hello, world!"</span>;</p>
+        <p>}</p>
+    </div>
+</div>
+
     </div>
 </body>
 </html>
