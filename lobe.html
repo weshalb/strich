@@ -95,7 +95,8 @@
     content: attr(data-text);
     top: 0; right: 0; bottom: 0; left: 0;
     z-index: 9999;
-    transform: translate(-50%, -50%);
+            font-size: 0.8em;  /* adjust this value to change the size */
+    transform: translate(-50%, -100%);
 }
 
 .glitch::before, .glitch::after {
@@ -118,56 +119,41 @@
 }
 
 @keyframes glitch-animation-1 {
-    0% { 
-        transform: translate(0px, 0px); 
-        clip: rect(33px, 450px, 44px, 0); 
-    }
+  
     20% { 
-        transform: translate(-5px, 3px); 
+        transform: translate(-2px, 2px); 
         clip: rect(33px, 450px, 44px, 0); 
     }
     40% { 
-        transform: translate(5px, -3px); 
+        transform: translate(2px, -2px); 
         clip: rect(55px, 450px, 56px, 0); 
     }
     60% { 
-        transform: translate(-5px, 5px); 
+        transform: translate(-2px, 2px); 
         clip: rect(33px, 450px, 44px, 0); 
     }
     80% { 
-        transform: translate(5px, -5px); 
+        transform: translate(2px, -2px); 
         clip: rect(55px, 450px, 56px, 0); 
-    }
-    100% { 
-        transform: translate(0px, 0px); 
-        clip: rect(22px, 450px, 33px, 0); 
     }
 }
 
 @keyframes glitch-animation-2 {
-    0% { 
-        transform: translate(0px, 0px); 
-        clip: rect(22px, 450px, 33px, 0); 
-    }
-    20% { 
-        transform: translate(5px, -3px); 
+   20% { 
+        transform: translate(2px, -1px); 
         clip: rect(55px, 450px, 56px, 0); 
     }
     40% { 
-        transform: translate(-5px, 3px); 
+        transform: translate(-2px, 1px); 
         clip: rect(44px, 450px, 55px, 0); 
     }
     60% { 
-        transform: translate(5px, -5px); 
+        transform: translate(2px, -2px); 
         clip: rect(77px, 450px, 88px, 0); 
     }
     80% { 
-        transform: translate(-5px, 5px); 
+        transform: translate(-2px, 2px); 
         clip: rect(55px, 450px, 56px, 0); 
-    }
-    100% { 
-        transform: translate(0px, 0px); 
-        clip: rect(22px, 450px, 33px, 0); 
     }
 }
 
