@@ -86,27 +86,38 @@
     overflow-x: auto;
     border-radius: 10px; /* Rounded corners */
 }
-
-   .glitch {
+.glitch {
     position: fixed;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    width: 100px;
-    height: 100px;
+    width: 50px;
+    height: 50px;
     background: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 5px rgba(255, 255, 255, 0.8);
-    animation: glitch-effect 0.2s infinite;
-    opacity: 0;
-    transition: opacity 0.2s;
+    box-shadow: 1px 0 rgba(255, 0, 0, 0.8), -1px 0 rgba(0, 255, 255, 0.8);
+    pointer-events: none;
+    animation: glitch-animation 1s infinite alternate-reverse;
+    transform: translate(-50%, -50%); /* Center the element to the click position */
 }
-@keyframes glitch-effect {
-    0% { clip-path: inset(10% 0% 90% 0%); }
-    20% { clip-path: inset(44% 0% 56% 0%); }
-    40% { clip-path: inset(64% 0% 36% 0%); }
-    60% { clip-path: inset(10% 0% 90% 0%); }
-    80% { clip-path: inset(77% 0% 23% 0%); }
-    100% { clip-path: inset(33% 0% 67% 0%); }
+@keyframes glitch-animation {
+    0%, 100% {
+        clip-path: polygon(0 0, 100% 0, 100% 55%, 0 55%);
+    }
+    15% {
+        clip-path: polygon(0 5%, 100% 5%, 100% 60%, 0 60%);
+    }
+    30% {
+        clip-path: polygon(0 20%, 100% 20%, 100% 75%, 0 75%);
+    }
+    45% {
+        clip-path: polygon(0 30%, 100% 30%, 100% 80%, 0 80%);
+    }
+    60% {
+        clip-path: polygon(0 40%, 100% 40%, 100% 85%, 0 85%);
+    }
+    75% {
+        clip-path: polygon(0 50%, 100% 50%, 100% 90%, 0 90%);
+    }
+    90% {
+        clip-path: polygon(0 70%, 100% 70%, 100% 100%, 0 100%);
+    }
 }
 
 
@@ -126,23 +137,17 @@
 </html>
 
 <script>
-    document.addEventListener("click", function(event){
+   document.addEventListener("click", function(event) {
     let glitch = document.createElement("div");
     glitch.classList.add("glitch");
-    glitch.style.left = (event.pageX - 50) + "px";  // Minus half the width to center it
-    glitch.style.top = (event.pageY - 50) + "px";   // Minus half the height to center it
+    glitch.style.left = event.pageX + "px";
+    glitch.style.top = event.pageY + "px";
     document.body.appendChild(glitch);
 
-    // Fade in the glitch and then remove it after animation
-    setTimeout(function(){
-        glitch.style.opacity = 1;
-        setTimeout(function(){
-            glitch.style.opacity = 0;
-            setTimeout(function(){
-                glitch.remove();
-            }, 200);  // matches the transition duration
-        }, 200);  // matches the animation duration
-    }, 50); // slight delay to ensure glitch is added to DOM first
+    setTimeout(() => {
+        glitch.remove();
+    }, 1000); // remove after 1 second (duration of the glitch-animation)
 });
+
 
 </script>
