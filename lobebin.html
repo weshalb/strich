@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Add this in the head section of your HTML -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css" rel="stylesheet" />
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Data Viewer</title>
+    <style>
+        body {
+            background-color: black;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background-color: darkgray;
+            border-radius: 25px;
+            margin: 5% auto;
+            padding: 20px;
+            width: 80%;
+            height: 80%;
+            overflow-y: auto;
+        }
+        .entry {
+            background-color: gray;
+            border-radius: 15px;
+            margin: 10px;
+            padding: 10px;
+        }
+        .entry:hover {
+            cursor: pointer;
+        }
+        .code {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="dataContainer"></div>
+
+    <!-- At the end of your body tag, before the closing tag -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-javascript.min.js"></script>
+
+<script>
+    const container = document.getElementById('dataContainer');
+
+    // Fetch from GitHub's API
+    async function fetchData() {
+        try {
+            const response = await fetch('https://api.github.com/repos/weshalb/strich/git/trees/main?recursive=1');
+            const data = await response.json();
+            
+            // Filter the data to only include items in the "lobe" folder
+            const lobeFiles = data.tree.filter(item => item.path.startsWith('lobe/') && item.path.endsWith('.json')).slice(0, 10);
+            
+            for (let file of lobeFiles) {
+                const fileResponse = await fetch(file.url);
+                const fileData = await fileResponse.json();
+                const decodedContent = atob(fileData.content);
+                const jsonData = JSON.parse(decodedContent);
+                
+                const entryDiv = document.createElement('div');
+                entryDiv.classList.add('entry');
+                entryDiv.innerHTML = `
+                    <strong>${jsonData.title}</strong> by ${file.path.split('/')[1]}<br>
+                    ${jsonData.description}
+                    <pre class="code"><code class="language-javascript">${jsonData.code}</code></pre>
+                `;
+
+                entryDiv.addEventListener('click', () => {
+                    const codeElement = entryDiv.querySelector('.code');
+                    if (codeElement.style.display === 'none') {
+                        codeElement.style.display = 'block';
+                    } else {
+                        codeElement.style.display = 'none';
+                    }
+                });
+
+                container.appendChild(entryDiv);
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+    fetchData();
+</script>
+
+
+</body>
+</html>
