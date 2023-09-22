@@ -59,10 +59,28 @@
             padding: 10px;
             display: block;
         }
+
+        .gradient-background {
+  background: linear-gradient(300deg,deepskyblue,#000000,#0095c6);
+  background-size: 180% 180%;
+  animation: gradient-animation 18s ease infinite;
+}
+
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
     </style>
 </head>
 
-<body>
+<body class="gradient-background">
 
     <div class="container" id="dataContainer"></div>
 
