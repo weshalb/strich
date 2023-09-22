@@ -6,29 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LobeBin GitHub Data Viewer</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.css" rel="stylesheet" />
+
     <style>
-
         html, body {
-    height: 100%;
-    overflow: hidden;
-}
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-        
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f0f0f0;
+            overflow: hidden;
             color: #333;
-            min-height: 100vh;
-    margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-    overflow-y: auto;
         }
 
         .container {
@@ -38,7 +29,22 @@
             background-color: #2D3748; /* Dark Background */
             border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            overflow-y: auto;
+        }
+
+        .search-container {
+            max-width: 800px;
+            margin: 2% auto;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        #searchBar {
+            padding: 10px;
+            width: 80%;
+            border-radius: 15px;
+            border: 1px solid #718096;
+            outline: none;
         }
 
         .entry {
@@ -77,157 +83,95 @@
         }
 
         .gradient-background {
-  background: linear-gradient(300deg,deepskyblue,#000000,#0095c6);
-  background-size: 180% 180%;
-  animation: gradient-animation 18s ease infinite;
-}
+            background: linear-gradient(300deg, deepskyblue, #000000, #0095c6);
+            background-size: 180% 180%;
+            animation: gradient-animation 18s ease infinite;
+        }
 
-@keyframes gradient-animation {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
+        @keyframes gradient-animation {
+            0% {
+                background-position: 0% 50%;
+            }
 
-        .search-container {
-    max-width: 800px;
-    margin: 2% auto;
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-}
+            50% {
+                background-position: 100% 50%;
+            }
 
-#searchBar {
-    padding: 10px;
-    width: 80%;
-    border-radius: 15px;
-    border: 1px solid #718096;
-    outline: none;
-}
-
+            100% {
+                background-position: 0% 50%;
+            }
+        }
     </style>
 </head>
 
 <body class="gradient-background">
-<div class="search-container">
-    <input type="text" id="searchBar" placeholder="Search by title...">
-</div>
-<div class="container" id="dataContainer"></div>
-
+    <div class="search-container">
+        <input type="text" id="searchBar" placeholder="Search by title...">
+    </div>
     <div class="container" id="dataContainer"></div>
-
-    <!-- At the end of your body tag, before the closing tag -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-javascript.min.js"></script>
 
     <script>
         const container = document.getElementById('dataContainer');
+        const searchBar = document.getElementById('searchBar');
+        let allData = [];
 
-        // Fetch from GitHub's API
         async function fetchData() {
             try {
                 const response = await fetch('https://api.github.com/repos/weshalb/strich/git/trees/main?recursive=1');
                 const data = await response.json();
 
-                // Filter the data to only include items in the "lobe" folder
-                const lobeFiles = data.tree.filter(item => item.path.startsWith('lobe/') && item.path.endsWith('.json')).slice(0, 10);
+                const lobeFiles = data.tree.filter(item => item.path.startsWith('lobe/') && item.path.endsWith('.json'));
 
                 for (let file of lobeFiles) {
                     const fileResponse = await fetch(file.url);
                     const fileData = await fileResponse.json();
                     const decodedContent = atob(fileData.content);
-                    const jsonData = JSON.parse(decodedContent);
-
-                    const entryDiv = document.createElement('div');
-                    entryDiv.classList.add('entry');
-                    entryDiv.innerHTML = `
-                        <div class="entry-title">${jsonData.title} by ${file.path.split('/')[1]}</div>
-                        <div class="entry-description">${jsonData.description}</div>
-                        <pre class="code language-javascript"><code>${jsonData.code}</code></pre>
-                    `;
-
-                    entryDiv.addEventListener('click', () => {
-                        const codeElement = entryDiv.querySelector('.code');
-                        if (codeElement.style.display === 'none') {
-                            codeElement.style.display = 'block';
-                        } else {
-                            codeElement.style.display = 'none';
-                        }
-                    });
-
-                    container.appendChild(entryDiv);
+                    allData.push(JSON.parse(decodedContent));
                 }
+                displayData(allData);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         }
 
-        fetchData();
-    </script>
-    <script>
+        function displayData(data) {
+            container.innerHTML = '';
 
-    const container = document.getElementById('dataContainer');
-const searchBar = document.getElementById('searchBar');
-let allData = [];
+            data.forEach(jsonData => {
+                const entryDiv = document.createElement('div');
+                entryDiv.classList.add('entry');
+                entryDiv.innerHTML = `
+                    <div class="entry-title">${jsonData.title} by ${jsonData.user}</div>
+                    <div class="entry-description">${jsonData.description}</div>
+                    <pre class="code language-javascript"><code>${jsonData.code}</code></pre>
+                `;
 
-async function fetchData() {
-    try {
-        const response = await fetch('https://api.github.com/repos/weshalb/strich/git/trees/main?recursive=1');
-        const data = await response.json();
+                entryDiv.addEventListener('click', () => {
+                    const codeElement = entryDiv.querySelector('.code');
+                    if (codeElement.style.display === 'none') {
+                        codeElement.style.display = 'block';
+                    } else {
+                        codeElement.style.display = 'none';
+                    }
+                });
 
-        const lobeFiles = data.tree.filter(item => item.path.startsWith('lobe/') && item.path.endsWith('.json'));
-
-        for (let file of lobeFiles) {
-            const fileResponse = await fetch(file.url);
-            const fileData = await fileResponse.json();
-            const decodedContent = atob(fileData.content);
-            allData.push(JSON.parse(decodedContent));
+                container.appendChild(entryDiv);
+            });
         }
-        displayData(allData);
-    } catch (error) {
-        console.error('Error fetching data:', error);
-    }
-}
 
-function displayData(data) {
-    container.innerHTML = ''; // Clear the container
-
-    data.forEach(jsonData => {
-        const entryDiv = document.createElement('div');
-        entryDiv.classList.add('entry');
-        entryDiv.innerHTML = `
-            <div class="entry-title">${jsonData.title}</div>
-            <div class="entry-description">${jsonData.description}</div>
-            <pre class="code language-javascript"><code>${jsonData.code}</code></pre>
-        `;
-
-        entryDiv.addEventListener('click', () => {
-            const codeElement = entryDiv.querySelector('.code');
-            if (codeElement.style.display === 'none') {
-                codeElement.style.display = 'block';
-            } else {
-                codeElement.style.display = 'none';
-            }
+        searchBar.addEventListener('input', (e) => {
+            const searchValue = e.target.value.toLowerCase();
+            const filteredData = allData.filter(item => item.title.toLowerCase().includes(searchValue));
+            displayData(filteredData);
         });
 
-        container.appendChild(entryDiv);
-    });
-}
+        fetchData();
+    </script>
 
-searchBar.addEventListener('input', (e) => {
-    const searchValue = e.target.value.toLowerCase();
-    const filteredData = allData.filter(item => item.title.toLowerCase().includes(searchValue));
-    displayData(filteredData);
-});
-
-fetchData();
-</script>
 </body>
 
 </html>
+
