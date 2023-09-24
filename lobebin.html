@@ -275,9 +275,13 @@ function displayData(data) {
 
 searchBar.addEventListener('input', (e) => {
     const searchValue = e.target.value.toLowerCase();
-    const filteredData = allData.filter(item => item.title.toLowerCase().includes(searchValue));
+    const filteredData = allData.filter(item => 
+        item.title.toLowerCase().includes(searchValue) || 
+        item.user.toLowerCase().includes(searchValue)  // This line checks the author's name
+    );
     displayData(filteredData);
 });
+
 
 fetchData();
 
