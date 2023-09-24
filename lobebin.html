@@ -30,15 +30,8 @@
             background-color: #2D3748; /* Dark Background */
             border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    max-height: 80vh;
-    overflow-y: auto;
-            box-sizing: border-box;
         }
 
-        .scrollable {
-    overflow-y: auto;
-    max-height: 90vh;
-}
 
         .search-container {
             max-width: 800px;
@@ -298,18 +291,7 @@ fetchData();
         }
     }
 
-        function checkOverflow() {
-    const container = document.getElementById('dataContainer');
-    
-    if (container.scrollHeight > container.clientHeight) {
-        container.classList.add('scrollable');
-    } else {
-        container.classList.remove('scrollable');
-    }
-}
-
-// ... After you toggle the display of a code block or make any other changes...
-checkOverflow();
+        
     </script>
 
 </body>
