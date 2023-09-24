@@ -192,123 +192,164 @@ body::-ms-scrollbar {
     width: 0;  /* for Internet Explorer and Edge */
 }
 
+   .section {
+            margin-bottom: 40px;
+        }
+
+        .subsection {
+            margin-top: 20px;
+        }
+
+        .example {
+            background-color: #4A5568;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .example-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 
 <body class="gradient-background">
 
-    <!-- Navbar -->
     <div class="navbar">
-        <div class="nav-logo">lobe</div>
-        <div class="nav-items">
-            <div class="nav-item" onclick="window.location.href='https://strich.org'">Home</div>
-            <div class="nav-item" onclick="window.location.href='https://discord.gg/HWKpn8NT4R'">Discord</div>
-            <div class="nav-item" onclick="">Status</div>
+        <div class="nav-logo">Ultimate Web Development Guide</div>
+    </div>
+
+    <div class="container">
+
+        <!-- HTML Section -->
+        <div class="section">
+            <h1>HTML: HyperText Markup Language</h1>
+            <p>
+                HTML (HyperText Markup Language) is the backbone of web content. It describes the structure of a web page.
+            </p>
+
+            <!-- Basic HTML Structure -->
+            <div class="subsection">
+                <h2>Basic HTML Structure</h2>
+                <div class="example">
+                    <div class="example-title">Standard HTML Page Structure</div>
+                    <pre><code class="language-html">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Title of the document&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    The content of the document...
+&lt;/body&gt;
+&lt;/html&gt;
+                    </code></pre>
+                </div>
+            </div>
+
+            <!-- HTML Elements -->
+            <div class="subsection">
+                <h2>HTML Elements</h2>
+                <div class="example">
+                    <div class="example-title">Heading</div>
+                    <pre><code class="language-html">&lt;h1&gt;This is a heading&lt;/h1&gt;</code></pre>
+                </div>
+                <div class="example">
+                    <div class="example-title">Paragraph</div>
+                    <pre><code class="language-html">&lt;p&gt;This is a paragraph.&lt;/p&gt;</code></pre>
+                </div>
+                <!-- More HTML elements can continue here... -->
+            </div>
+
+            <!-- HTML Attributes -->
+            <div class="subsection">
+                <h2>HTML Attributes</h2>
+                <p>
+                    Attributes provide additional information about elements and are always specified in the start tag.
+                </p>
+                <div class="example">
+                    <div class="example-title">Anchor Element with href Attribute</div>
+                    <pre><code class="language-html">&lt;a href="https://www.example.com"&gt;This is a link&lt;/a&gt;</code></pre>
+                </div>
+                <!-- More on HTML attributes can continue here... -->
+            </div>
         </div>
-        <div class="menu-icon" onclick="toggleMenu()">☰</div>
-    </div>
 
-    <!-- Popup Menu -->
-    <div class="popup-menu">
-        <div href="https://strich.org" class="popup-item">Home</div>
-        <div href="https://discord.gg/HWKpn8NT4R" class="popup-item">Discord</div>
-        <div class="popup-item disabled">Status</div>
-    </div>
+        <!-- CSS Section -->
+        <div class="section">
+            <h1>CSS: Cascading Style Sheets</h1>
+            <p>
+                CSS describes how elements should be rendered on screen, on paper, in speech, or on other media.
+            </p>
 
-    <div class="search-container">
-        <input class="searchBar" type="text" id="searchBar" placeholder="Search by title...">
-    </div>
-    <div class="container" id="dataContainer"></div>
+            <!-- CSS Selectors -->
+            <div class="subsection">
+                <h2>CSS Selectors</h2>
+                <div class="example">
+                    <div class="example-title">Styling a Paragraph Element</div>
+                    <pre><code class="language-css">p {
+    color: red;
+}</code></pre>
+                </div>
+                <!-- More on CSS selectors can continue here... -->
+            </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-javascript.min.js"></script>
+            <!-- CSS Properties -->
+            <div class="subsection">
+                <h2>CSS Properties</h2>
+                <div class="example">
+                    <div class="example-title">Setting Background and Font Size</div>
+                    <pre><code class="language-css">body {
+    background-color: #f0f0f0;
+    font-size: 16px;
+}</code></pre>
+                </div>
+                <!-- More on CSS properties can continue here... -->
+            </div>
+        </div>
+
+        <!-- JavaScript Section -->
+        <div class="section">
+            <h1>JavaScript</h1>
+            <p>
+                JavaScript is the scripting language used to create and control dynamic website content.
+            </p>
+
+            <!-- JavaScript Variables -->
+            <div class="subsection">
+                <h2>Variables</h2>
+                <div class="example">
+                    <div class="example-title">Declaring and Initializing a Variable</div>
+                    <pre><code class="language-javascript">let x = 5;</code></pre>
+                </div>
+                <!-- More on JavaScript variables can continue here... -->
+            </div>
+
+            <!-- JavaScript Functions -->
+            <div class="subsection">
+                <h2>Functions</h2>
+                <div class="example">
+                    <div class="example-title">A Simple Function to Add Two Numbers</div>
+                    <pre><code class="language-javascript">function add(a, b) {
+    return a + b;
+}</code></pre>
+                </div>
+                <!-- More on JavaScript functions can continue here... -->
+            </div>
+        </div>
+
+        <!-- More sections can continue here... -->
+
+    </div>
 
     <script>
-        const container = document.getElementById('dataContainer');
-const searchBar = document.getElementById('searchBar');
-let allData = [];
-
-async function fetchData() {
-    try {
-        const response = await fetch('https://api.github.com/repos/weshalb/strich/git/trees/main?recursive=1');
-        const data = await response.json();
-
-        const lobeFiles = data.tree.filter(item => item.path.startsWith('lobe/') && item.path.endsWith('.json'));
-
-        for (let file of lobeFiles) {
-            const fileResponse = await fetch(file.url);
-            const fileData = await fileResponse.json();
-            const decodedContent = atob(fileData.content);
-            const jsonData = JSON.parse(decodedContent);
-            jsonData.user = file.path.split('/')[1];  // Extracting the user (author) from the file path
-jsonData.filePath = file.path;  // Storing the complete file path
-            allData.push(jsonData);
-        }
-        displayData(allData);
-    } catch (error) {
-        console.error('Error fetching data:', error);
-    }
-}
-
-function displayData(data) {
-    container.innerHTML = '';
-
-    data.forEach(jsonData => {
-        const entryDiv = document.createElement('div');
-        entryDiv.classList.add('entry');
-        entryDiv.innerHTML = `
-            <div class="entry-title">${jsonData.title} by ${jsonData.user}</div>
-            <div class="entry-description">${jsonData.description}</div>
-            <pre class="code language-javascript"><code>${jsonData.code}</code></pre>
-        `;
-
-        entryDiv.addEventListener('click', () => {
-            const codeElement = entryDiv.querySelector('.code');
-            if (codeElement.style.display === 'none') {
-                codeElement.style.display = 'block';
-            } else {
-                codeElement.style.display = 'none';
-            }
-        });
-
-        entryDiv.querySelector('.code').addEventListener('click', (e) => {
-    e.stopPropagation();  // Prevents the event from being detected by the parent element
-    const htmlFilePath = jsonData.filePath.replace('.json', '.html');  // Convert .json extension to .html
-    window.location.href = `https://strich.org/${htmlFilePath}`;
-});
-
-
-        container.appendChild(entryDiv);
-    });
-}
-
-
-searchBar.addEventListener('input', (e) => {
-    const searchValue = e.target.value.toLowerCase();
-    const filteredData = allData.filter(item => 
-        item.title.toLowerCase().includes(searchValue) || 
-        item.user.toLowerCase().includes(searchValue)  // This line checks the author's name
-    );
-    displayData(filteredData);
-});
-
-
-fetchData();
-
-
-        function toggleMenu() {
-        const menu = document.querySelector('.popup-menu');
-        if (menu.style.display === 'block') {
-            menu.style.display = 'none';
-        } else {
-            menu.style.display = 'block';
-        }
-    }
-
-        
+        // For any JavaScript interactivity, it goes here.
     </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-javascript.min.js"></script>
 
 </body>
 
 </html>
-
