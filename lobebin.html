@@ -108,10 +108,101 @@
     background-position: 0% 50%;
   }
 }
+    
+
+        .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2D3748; /* Dark Background */
+    padding: 10px 5%;
+    border-bottom: 1px solid #718096;
+}
+
+.nav-logo {
+    color: #E2E8F0;
+    font-size: 1.5rem;
+}
+
+.nav-items {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-item {
+    color: #A0AEC0;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.nav-item:hover {
+    color: #E2E8F0;
+}
+
+.menu-icon {
+    cursor: pointer;
+    font-size: 1.5rem;
+    display: none; /* Will display in mobile sizes */
+}
+
+.popup-menu {
+    display: none;
+    position: absolute;
+    top: 60px;
+    right: 5%;
+    background-color: #4A5568;
+    border-radius: 10px;
+    padding: 10px;
+    gap: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.popup-item {
+    color: #A0AEC0;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: color 0.3s;
+    display: block;
+}
+
+.popup-item:hover {
+    color: #E2E8F0;
+}
+
+/* Responsive Menu Icon */
+@media (max-width: 768px) {
+    .nav-items {
+        display: none;
+    }
+    
+    .menu-icon {
+        display: block;
+    }
+}
+        
     </style>
 </head>
 
 <body class="gradient-background">
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="nav-logo">Lobe</div>
+        <div class="nav-items">
+            <div class="nav-item" onclick="window.location.href='https://strich.org'">Home</div>
+            <div class="nav-item" onclick="window.location.href='https://strich.org/status'">Status</div>
+            <div class="nav-item" onclick="window.location.href='https://strich.org/lobebin'">LobeBin</div>
+        </div>
+        <div class="menu-icon" onclick="toggleMenu()">☰</div>
+    </div>
+
+    <!-- Popup Menu -->
+    <div class="popup-menu">
+        <a href="https://strich.org/discord" class="popup-item">Discord</a>
+        <div class="popup-item disabled">Snippets</div>
+        <div class="popup-item disabled">Apps</div>
+    </div>
+
     <div class="search-container">
         <input class="searchBar" type="text" id="searchBar" placeholder="Search by title...">
     </div>
@@ -189,6 +280,14 @@ searchBar.addEventListener('input', (e) => {
 fetchData();
 
 
+        function toggleMenu() {
+        const menu = document.querySelector('.popup-menu');
+        if (menu.style.display === 'block') {
+            menu.style.display = 'none';
+        } else {
+            menu.style.display = 'block';
+        }
+    }
     </script>
 
 </body>
