@@ -27,9 +27,18 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
 
+        h1 {
+            background-color: #4A5568;
+            border-radius: 15px;
+            padding: 10px;
+        }
+
         .status {
             font-size: 2em;
             margin-top: 20px;
+            background-color: #4A5568;
+            padding: 15px;
+            border-radius: 15px;
         }
 
         .online {
@@ -67,28 +76,10 @@
         .nav-item:hover {
             color: #E2E8F0;
         }
-
-             .gradient-background {
-  background: linear-gradient(300deg,#4a5568,#000000,#2c3e50,#000000);
-  background-size: 240% 240%;
-  animation: gradient-animation 24s ease infinite;
-}
-
-@keyframes gradient-animation {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
     </style>
 </head>
 
-<body class="gradient-background">
+<body>
 
     <!-- Navbar -->
     <div class="navbar">
@@ -109,9 +100,9 @@
         // Sample function to check if Lobe is online or offline
         // Replace this function with your actual checking mechanism
         function checkLobeStatus() {
-            // Here, for demonstration, I'm simulating that Lobe is always online.
+            // Here, for demonstration, I'm simulating that Lobe is online 50% of the time.
             // In reality, you'd need to check the actual status from an API or server.
-            return true; // true = online, false = offline
+            return Math.random() > 0.5;
         }
 
         function displayStatus() {
