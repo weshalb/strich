@@ -9,83 +9,125 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 
     <style>
-    html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f0f0f0;
-    overflow: auto;
-    color: #333;
-}
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            overflow: auto;
+            color: #333;
+        }
 
-.container {
-    max-width: 800px;
-    margin: 5% auto;
-    padding: 20px;
-    background-color: #2D3748;
-    border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-}
+        .container {
+            max-width: 800px;
+            margin: 5% auto;
+            padding: 20px;
+            background-color: #2D3748; /* Dark Background */
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
 
-.entry {
-    background-color: #4A5568;
-    margin: 20px 0;
-    padding: 20px;
-    border-radius: 15px;
-    border: 1px solid #718096;
-    transition: background-color 0.3s;
-}
 
-.entry:hover {
-    cursor: pointer;
-    background-color: #2C3E50;
-}
+        .search-container {
+            max-width: 800px;
+            margin: 2% auto;
+            padding: 20px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            background-color: #2D3748;
+            transition: background-color 0.3s;
+        }
 
-h1 {
-    font-size: 1.2rem;
-    color: #E2E8F0;
-    margin-bottom: 10px;
-}
+        .searchBar {
+            padding: 10px;
+            width: 80%;
+            border-radius: 15px;
+            transition: background-color 0.3s;
+            border: 1px solid #718096;
+            outline: none;
+            color: #E2E8F0;
+            background-color: #4A5568;
+        }
+.searchBar:hover {
+            cursor: pointer;
+            background-color: #2C3E50; /* On hover, darken a bit */
+        }
+        .entry {
+            background-color: #4A5568; /* Slightly lighter than the container for contrast */
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #718096;
+            transition: background-color 0.3s;
+        }
 
-h2 {
-    font-size: 0.8rem;
-    color: #E2E8F0;
-    margin-bottom: 10px;
-}
+        .entry:hover {
+            cursor: pointer;
+            background-color: #2C3E50; /* On hover, darken a bit */
+        }
 
-p, div {
-    color: #A0AEC0;
-    margin-bottom: 20px;
-}
+        h1 {
+            font-size: 1.2rem;
+            color: #E2E8F0;
+            margin-bottom: 10px;
+        }
 
-.gradient-background {
-    background: linear-gradient(300deg,#4a5568,#000000,#2c3e50,#000000);
-    background-size: 240% 240%;
-    animation: gradient-animation 24s ease infinite;
+        h2 {
+            font-size: 0.8rem;
+            color: #E2E8F0;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #A0AEC0;
+            margin-bottom: 20px;
+        }
+
+        div {
+            color: #A0AEC0;
+            margin-bottom: 20px;
+        }
+
+        .code {
+            display: none;
+        }
+
+        .code code {
+            border-radius: 10px;
+            padding: 10px;
+            display: block;
+        }
+
+        .gradient-background {
+  background: linear-gradient(300deg,#4a5568,#000000,#2c3e50,#000000);
+  background-size: 240% 240%;
+  animation: gradient-animation 24s ease infinite;
 }
 
 @keyframes gradient-animation {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
+    
 
-.navbar {
+        .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #00000000;
+    background-color: #00000000; /* Dark Background */
     padding: 10px 5%;
 }
 
@@ -109,48 +151,93 @@ p, div {
     color: #E2E8F0;
 }
 
+.menu-icon {
+    cursor: pointer;
+    font-size: 1.5rem;
+    display: none; /* Will display in mobile sizes */
+}
+
+.popup-menu {
+    display: none;
+    position: absolute;
+    top: 60px;
+    right: 5%;
+    background-color: #4A5568;
+    border-radius: 10px;
+    padding: 10px;
+    gap: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.popup-item {
+    color: #A0AEC0;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: color 0.3s;
+    display: block;
+}
+
+.popup-item:hover {
+    color: #E2E8F0;
+}
+
+/* Responsive Menu Icon */
 @media (max-width: 768px) {
     .nav-items {
         display: none;
     }
+    
+    .menu-icon {
+        display: block;
+    }
+}
+        body::-webkit-scrollbar {
+    width: 0;  /* for Chrome, Safari, and Opera */
 }
 
-pre.code {
-    padding: 15px;
-    background-color: #2D3748;
-    border-radius: 10px;
-    overflow-x: auto;
-    margin-top: 20px;
+body::-moz-scrollbar {
+    width: 0;  /* for Firefox */
 }
 
-pre.code code {
-    color: #E2E8F0;
+body::-ms-scrollbar {
+    width: 0;  /* for Internet Explorer and Edge */
 }
 
-.entry-content {
-    margin-bottom: 25px;
-}
+    pre.code {
+            padding: 15px;
+            background-color: #2D3748;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin-top: 20px;
+        }
 
-.section {
-    margin-bottom: 40px;
-}
+        pre.code code {
+            color: #E2E8F0;
+        }
 
-.subsection {
-    margin-top: 20px;
-}
+        .entry-content {
+            margin-bottom: 25px;
+        }
+    .section {
+            margin-bottom: 40px;
+        }
 
-.example {
-    background-color: #4A5568;
-    padding: 20px;
-    border-radius: 10px;
-    margin-top: 20px;
-}
+        .subsection {
+            margin-top: 20px;
+        }
 
-.example-title {
-    font-weight: bold;
-    margin-bottom: 10px;
-}
+        .example {
+            background-color: #4A5568;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
 
+        .example-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 
 <body class="gradient-background">
