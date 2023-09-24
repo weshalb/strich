@@ -207,173 +207,164 @@ body::-ms-scrollbar {
         .entry-content {
             margin-bottom: 25px;
         }
+    .section {
+            margin-bottom: 40px;
+        }
+
+        .subsection {
+            margin-top: 20px;
+        }
+
+        .example {
+            background-color: #4A5568;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .example-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 
 <body class="gradient-background">
-    <!-- Navbar -->
+
     <div class="navbar">
-        <div class="nav-logo">LobeBin Ultimate Guide</div>
+        <div class="nav-logo">Ultimate Web Development Guide</div>
     </div>
 
     <div class="container">
+
         <!-- HTML Section -->
-        <div class="entry">
-            <div class="entry-title">HTML: The Structure of the Web</div>
-            <div class="entry-content">
-                HTML stands for HyperText Markup Language. It gives structure to the content on the web.
-                
-                <!-- Basic Structure -->
+        <div class="section">
+            <h1>HTML: HyperText Markup Language</h1>
+            <p>
+                HTML (HyperText Markup Language) is the backbone of web content. It describes the structure of a web page.
+            </p>
+
+            <!-- Basic HTML Structure -->
+            <div class="subsection">
                 <h2>Basic HTML Structure</h2>
-                <pre class="code"><code class="language-html">
+                <div class="example">
+                    <div class="example-title">Standard HTML Page Structure</div>
+                    <pre><code class="language-html">
 &lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
     &lt;title&gt;Title of the document&lt;/title&gt;
 &lt;/head&gt;
 &lt;body&gt;
-    The content of the document......
+    The content of the document...
 &lt;/body&gt;
 &lt;/html&gt;
-                </code></pre>
+                    </code></pre>
+                </div>
+            </div>
 
-                <!-- Core Elements -->
-                <h2>Core HTML Elements</h2>
-                <p>
-                HTML documents are formed using elements. Elements are denoted by tags. For instance:
-                </p>
-                <ul>
-                    <li>&lt;h1&gt; to &lt;h6&gt;: These tags render headings, with &lt;h1&gt; being the highest level and &lt;h6&gt; the lowest.</li>
-                    <li>&lt;p&gt;: Represents a paragraph.</li>
-                    <li>&lt;a href="url"&gt;Link Text&lt;/a&gt;: Creates a hyperlink to other web pages or resources. The "href" attribute holds the link's destination address.</li>
-                    <li>&lt;img src="image_path.jpg" alt="Description"&gt;: Displays an image. The "src" attribute holds the image path. The "alt" attribute provides a text description of the image, which improves accessibility.</li>
-                    <li>List Elements: &lt;ul&gt; (unordered/bullet list), &lt;ol&gt; (ordered/numbered list), and &lt;li&gt; (list item).</li>
-                    <li>&lt;div&gt;: A container that groups other elements together. It's a block-level element.</li>
-                    <li>&lt;span&gt;: Used to group inline-elements or single characters to apply CSS or JavaScript to them.</li>
-                </ul>
+            <!-- HTML Elements -->
+            <div class="subsection">
+                <h2>HTML Elements</h2>
+                <div class="example">
+                    <div class="example-title">Heading</div>
+                    <pre><code class="language-html">&lt;h1&gt;This is a heading&lt;/h1&gt;</code></pre>
+                </div>
+                <div class="example">
+                    <div class="example-title">Paragraph</div>
+                    <pre><code class="language-html">&lt;p&gt;This is a paragraph.&lt;/p&gt;</code></pre>
+                </div>
+                <!-- More HTML elements can continue here... -->
+            </div>
 
-                <!-- Forms and Input -->
-                <h2>Forms & Input</h2>
+            <!-- HTML Attributes -->
+            <div class="subsection">
+                <h2>HTML Attributes</h2>
                 <p>
-                Forms collect user input. The &lt;form&gt; element wraps input elements like &lt;input&gt;, &lt;textarea&gt;, &lt;select&gt;, etc.
+                    Attributes provide additional information about elements and are always specified in the start tag.
                 </p>
-                <pre class="code"><code class="language-html">
-&lt;form action="/submit_form" method="post"&gt;
-    &lt;input type="text" name="name" placeholder="Enter your name"&gt;
-    &lt;input type="submit" value="Submit"&gt;
-&lt;/form&gt;
-                </code></pre>
+                <div class="example">
+                    <div class="example-title">Anchor Element with href Attribute</div>
+                    <pre><code class="language-html">&lt;a href="https://www.example.com"&gt;This is a link&lt;/a&gt;</code></pre>
+                </div>
+                <!-- More on HTML attributes can continue here... -->
             </div>
         </div>
 
         <!-- CSS Section -->
-        <div class="entry">
-            <div class="entry-title">CSS: Styling the Web</div>
-            <div class="entry-content">
-                CSS stands for Cascading Style Sheets. It provides the look and feel of the web pages.
-                
-                <!-- Basic Styling -->
-                <h2>Basic CSS Styling</h2>
-                <pre class="code"><code class="language-css">
-body {
-    font-family: Arial, sans-serif;
-    background-color: #e0e0e0;
-}
-h1 {
-    color: #333;
-}
-                </code></pre>
+        <div class="section">
+            <h1>CSS: Cascading Style Sheets</h1>
+            <p>
+                CSS describes how elements should be rendered on screen, on paper, in speech, or on other media.
+            </p>
 
-                <!-- Box Model -->
-                <h2>The CSS Box Model</h2>
-                <p>
-                Every element in CSS is treated as a rectangular box, consisting of padding, border, margin, and the actual content.
-                </p>
-                <pre class="code"><code class="language-css">
-div {
-    width: 300px;
-    padding: 10px;
-    border: 5px solid black;
-    margin: 20px;
-}
-                </code></pre>
+            <!-- CSS Selectors -->
+            <div class="subsection">
+                <h2>CSS Selectors</h2>
+                <div class="example">
+                    <div class="example-title">Styling a Paragraph Element</div>
+                    <pre><code class="language-css">p {
+    color: red;
+}</code></pre>
+                </div>
+                <!-- More on CSS selectors can continue here... -->
+            </div>
 
-                <!-- CSS Flexbox -->
-                <h2>CSS Flexbox</h2>
-                <p>Flexbox is a CSS layout model that allows items in a container to be dynamically arranged based on certain properties.</p>
-                <pre class="code"><code class="language-css">
-.flex-container {
-    display: flex;
-    justify-content: space-between;
-}
-                </code></pre>
-
-                <!-- CSS Grid -->
-                <h2>CSS Grid</h2>
-                <p>Grid is a 2D layout system, allowing you to build complex web design layouts with ease.</p>
-                <pre class="code"><code class="language-css">
-.grid-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-}
-                </code></pre>
+            <!-- CSS Properties -->
+            <div class="subsection">
+                <h2>CSS Properties</h2>
+                <div class="example">
+                    <div class="example-title">Setting Background and Font Size</div>
+                    <pre><code class="language-css">body {
+    background-color: #f0f0f0;
+    font-size: 16px;
+}</code></pre>
+                </div>
+                <!-- More on CSS properties can continue here... -->
             </div>
         </div>
 
         <!-- JavaScript Section -->
-        <div class="entry">
-            <div class="entry-title">JavaScript: Making the Web Interactive</div>
-            <div class="entry-content">
-                JavaScript enables interactivity and dynamic content on the web.
-                
-                <!-- Basic JavaScript -->
-                <h2>Basic JavaScript</h2>
-                <pre class="code"><code class="language-javascript">
-let greeting = "Hello, Web!";
-alert(greeting);
-                </code></pre>
-                <!-- More JavaScript Concepts -->
-                <h2>Variables, Functions, and Loops</h2>
-                <p>
-                JavaScript has several core concepts including variables (store data), functions (perform actions), and loops (repeat actions).
-                </p>
-                <pre class="code"><code class="language-javascript">
-let age = 25;
-function greet(name) {
-    return "Hello, " + name + "!";
-}
-for (let i = 0; i < 5; i++) {
-    console.log(i);
-}
-                </code></pre>
-                <!-- Advanced JavaScript -->
-                <h2>Advanced JavaScript</h2>
-                <p>
-                As you dive deeper, concepts like promises, async/await, arrow functions, and more become vital.
-                </p>
-                <pre class="code"><code class="language-javascript">
-const fetchData = async () => {
-    let response = await fetch('https://api.example.com/data');
-    let data = await response.json();
-    return data;
-}
-fetchData().then(data => console.log(data));
-                </code></pre>
+        <div class="section">
+            <h1>JavaScript</h1>
+            <p>
+                JavaScript is the scripting language used to create and control dynamic website content.
+            </p>
+
+            <!-- JavaScript Variables -->
+            <div class="subsection">
+                <h2>Variables</h2>
+                <div class="example">
+                    <div class="example-title">Declaring and Initializing a Variable</div>
+                    <pre><code class="language-javascript">let x = 5;</code></pre>
+                </div>
+                <!-- More on JavaScript variables can continue here... -->
+            </div>
+
+            <!-- JavaScript Functions -->
+            <div class="subsection">
+                <h2>Functions</h2>
+                <div class="example">
+                    <div class="example-title">A Simple Function to Add Two Numbers</div>
+                    <pre><code class="language-javascript">function add(a, b) {
+    return a + b;
+}</code></pre>
+                </div>
+                <!-- More on JavaScript functions can continue here... -->
             </div>
         </div>
 
         <!-- More sections can continue here... -->
 
     </div>
+
     <script>
-        function toggleMenu() {
-            const menu = document.querySelector('.popup-menu');
-            if (menu.style.display === 'block') {
-                menu.style.display = 'none';
-            } else {
-                menu.style.display = 'block';
-            }
-        }
+        // For any JavaScript interactivity, it goes here.
     </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-javascript.min.js"></script>
+
 </body>
+
 </html>
