@@ -192,91 +192,89 @@ body::-ms-scrollbar {
     width: 0;  /* for Internet Explorer and Edge */
 }
 
+    pre.code {
+            padding: 15px;
+            background-color: #2D3748;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        pre.code code {
+            color: #E2E8F0;
+        }
+
+        .entry-content {
+            margin-bottom: 25px;
+        }
     </style>
 </head>
 
 <body class="gradient-background">
-
     <!-- Navbar -->
     <div class="navbar">
         <div class="nav-logo">LobeBin Ultimate Guide</div>
-        <div class="nav-items">
-            <div class="nav-item" onclick="window.location.href='https://strich.org'">Home</div>
-            <div class="nav-item" onclick="window.location.href='https://discord.gg/HWKpn8NT4R'">Discord</div>
-            <div class="nav-item" onclick="">Status</div>
-        </div>
-        <div class="menu-icon" onclick="toggleMenu()">☰</div>
     </div>
 
-    <!-- Popup Menu -->
-    <div class="popup-menu">
-        <div href="https://strich.org" class="popup-item">Home</div>
-        <div href="https://discord.gg/HWKpn8NT4R" class="popup-item">Discord</div>
-        <div class="popup-item disabled">Status</div>
-    </div>
-
-    <!-- Main Guide Container -->
-    <div class="container" id="dataContainer">
-        <!-- HTML Basics -->
+    <div class="container">
+        <!-- HTML Section -->
         <div class="entry">
-            <div class="entry-title">HTML Basics</div>
-            <div class="entry-description">
-                HTML is the foundational structure of the web. It defines content structure with elements represented by tags.
-            </div>
-            <pre class="code language-html"><code>
+            <div class="entry-title">HTML: The Structure of the Web</div>
+            <div class="entry-content">
+                HTML stands for HyperText Markup Language. It gives structure to the content on the web.
+                
+                <!-- Basic Structure -->
+                <h2>Basic HTML Structure</h2>
+                <pre class="code"><code class="language-html">
 &lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
-    &lt;title&gt;Page Title&lt;/title&gt;
+    &lt;title&gt;Title of the document&lt;/title&gt;
 &lt;/head&gt;
 &lt;body&gt;
-    &lt;h1&gt;My First Heading&lt;/h1&gt;
-    &lt;p&gt;My first paragraph.&lt;/p&gt;
+    The content of the document......
 &lt;/body&gt;
 &lt;/html&gt;
-            </code></pre>
-        </div>
-        <!-- HTML Core Elements -->
-        <div class="entry">
-            <div class="entry-title">HTML Core Elements</div>
-            <div class="entry-description">
-                Core HTML tags include elements for headings, paragraphs, links, and images.
-            </div>
-            <pre class="code language-html"><code>
-&lt;h1&gt;Main Title&lt;/h1&gt;
-&lt;p&gt;A sample paragraph.&lt;/p&gt;
-&lt;a href="https://example.com"&gt;A link&lt;/a&gt;
-&lt;img src="sample.jpg" alt="Sample"&gt;
-            </code></pre>
-        </div>
-        <!-- Advanced HTML -->
-        <div class="entry">
-            <div class="entry-title">Advanced HTML</div>
-            <div class="entry-description">
-                Advanced elements cater to various content types: lists, media, forms, and tables.
-            </div>
-            <pre class="code language-html"><code>
-&lt;ul&gt;
-    &lt;li&gt;Bullet Point&lt;/li&gt;
-&lt;/ul&gt;
+                </code></pre>
 
-&lt;audio controls&gt;
-    &lt;source src="sound.ogg" type="audio/ogg"&gt;
-&lt;/audio&gt;
+                <!-- Core Elements -->
+                <h2>Core HTML Elements</h2>
+                <p>
+                HTML documents are formed using elements. Elements are denoted by tags. For instance:
+                </p>
+                <ul>
+                    <li>&lt;h1&gt; to &lt;h6&gt;: These tags render headings, with &lt;h1&gt; being the highest level and &lt;h6&gt; the lowest.</li>
+                    <li>&lt;p&gt;: Represents a paragraph.</li>
+                    <li>&lt;a href="url"&gt;Link Text&lt;/a&gt;: Creates a hyperlink to other web pages or resources. The "href" attribute holds the link's destination address.</li>
+                    <li>&lt;img src="image_path.jpg" alt="Description"&gt;: Displays an image. The "src" attribute holds the image path. The "alt" attribute provides a text description of the image, which improves accessibility.</li>
+                    <li>List Elements: &lt;ul&gt; (unordered/bullet list), &lt;ol&gt; (ordered/numbered list), and &lt;li&gt; (list item).</li>
+                    <li>&lt;div&gt;: A container that groups other elements together. It's a block-level element.</li>
+                    <li>&lt;span&gt;: Used to group inline-elements or single characters to apply CSS or JavaScript to them.</li>
+                </ul>
 
-&lt;form action="/path" method="post"&gt;
-    &lt;input type="text" name="field"&gt;
-    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+                <!-- Forms and Input -->
+                <h2>Forms & Input</h2>
+                <p>
+                Forms collect user input. The &lt;form&gt; element wraps input elements like &lt;input&gt;, &lt;textarea&gt;, &lt;select&gt;, etc.
+                </p>
+                <pre class="code"><code class="language-html">
+&lt;form action="/submit_form" method="post"&gt;
+    &lt;input type="text" name="name" placeholder="Enter your name"&gt;
+    &lt;input type="submit" value="Submit"&gt;
 &lt;/form&gt;
-            </code></pre>
-        </div>
-        <!-- CSS Basics -->
-        <div class="entry">
-            <div class="entry-title">CSS Basics</div>
-            <div class="entry-description">
-                CSS styles and lays out web content. It defines the visual appearance of HTML elements.
+                </code></pre>
             </div>
-            <pre class="code language-css"><code>
+        </div>
+
+        <!-- CSS Section -->
+        <div class="entry">
+            <div class="entry-title">CSS: Styling the Web</div>
+            <div class="entry-content">
+                CSS stands for Cascading Style Sheets. It provides the look and feel of the web pages.
+                
+                <!-- Basic Styling -->
+                <h2>Basic CSS Styling</h2>
+                <pre class="code"><code class="language-css">
 body {
     font-family: Arial, sans-serif;
     background-color: #e0e0e0;
@@ -284,96 +282,89 @@ body {
 h1 {
     color: #333;
 }
-            </code></pre>
-        </div>
-        <!-- Advanced CSS -->
-        <div class="entry">
-            <div class="entry-title">Advanced CSS</div>
-            <div class="entry-description">
-                Dive into animations, flexbox, grid, and other advanced CSS techniques.
-            </div>
-            <pre class="code language-css"><code>
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
+                </code></pre>
 
+                <!-- Box Model -->
+                <h2>The CSS Box Model</h2>
+                <p>
+                Every element in CSS is treated as a rectangular box, consisting of padding, border, margin, and the actual content.
+                </p>
+                <pre class="code"><code class="language-css">
+div {
+    width: 300px;
+    padding: 10px;
+    border: 5px solid black;
+    margin: 20px;
+}
+                </code></pre>
+
+                <!-- CSS Flexbox -->
+                <h2>CSS Flexbox</h2>
+                <p>Flexbox is a CSS layout model that allows items in a container to be dynamically arranged based on certain properties.</p>
+                <pre class="code"><code class="language-css">
 .flex-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: space-between;
 }
+                </code></pre>
 
-.grid-layout {
+                <!-- CSS Grid -->
+                <h2>CSS Grid</h2>
+                <p>Grid is a 2D layout system, allowing you to build complex web design layouts with ease.</p>
+                <pre class="code"><code class="language-css">
+.grid-container {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
 }
-            </code></pre>
-        </div>
-        <!-- JavaScript Basics -->
-        <div class="entry">
-            <div class="entry-title">JavaScript Basics</div>
-            <div class="entry-description">
-                JavaScript is essential for web interactivity. It allows dynamic content updates and user interactions.
+                </code></pre>
             </div>
-            <pre class="code language-javascript"><code>
+        </div>
+
+        <!-- JavaScript Section -->
+        <div class="entry">
+            <div class="entry-title">JavaScript: Making the Web Interactive</div>
+            <div class="entry-content">
+                JavaScript enables interactivity and dynamic content on the web.
+                
+                <!-- Basic JavaScript -->
+                <h2>Basic JavaScript</h2>
+                <pre class="code"><code class="language-javascript">
 let greeting = "Hello, Web!";
 alert(greeting);
-            </code></pre>
-        </div>
-        <!-- Advanced JavaScript -->
-        <div class="entry">
-            <div class="entry-title">Advanced JavaScript</div>
-            <div class="entry-description">
-                Delve deeper with asynchronous operations, DOM manipulation, event listeners, and more.
+                </code></pre>
+                <!-- More JavaScript Concepts -->
+                <h2>Variables, Functions, and Loops</h2>
+                <p>
+                JavaScript has several core concepts including variables (store data), functions (perform actions), and loops (repeat actions).
+                </p>
+                <pre class="code"><code class="language-javascript">
+let age = 25;
+function greet(name) {
+    return "Hello, " + name + "!";
+}
+for (let i = 0; i < 5; i++) {
+    console.log(i);
+}
+                </code></pre>
+                <!-- Advanced JavaScript -->
+                <h2>Advanced JavaScript</h2>
+                <p>
+                As you dive deeper, concepts like promises, async/await, arrow functions, and more become vital.
+                </p>
+                <pre class="code"><code class="language-javascript">
+const fetchData = async () => {
+    let response = await fetch('https://api.example.com/data');
+    let data = await response.json();
+    return data;
+}
+fetchData().then(data => console.log(data));
+                </code></pre>
             </div>
-            <pre class="code language-javascript"><code>
-document.querySelector(".btn").addEventListener("click", function() {
-    alert("Button clicked!");
-});
+        </div>
 
-fetch('https://api.example.com')
-    .then(response => response.json())
-    .then(data => console.log(data))
-    .catch(error => console.log("Error:", error));
-            </code></pre>
-        </div>
-        <!-- Web Best Practices -->
-        <div class="entry">
-            <div class="entry-title">Best Practices</div>
-            <div class="entry-description">
-                Proper coding practices ensure performance, security, and maintainability.
-            </div>
-            <p>
-                Best practices:
-                <ul>
-                    <li>Write semantic HTML.</li>
-                    <li>Modularize CSS; consider using SASS.</li>
-                    <li>Comment and document JavaScript.</li>
-                    <li>Optimize assets like images.</li>
-                    <li>Ensure cross-browser compatibility.</li>
-                </ul>
-            </p>
-        </div>
-        <!-- Web Development Tools & Frameworks -->
-        <div class="entry">
-            <div class="entry-title">Tools and Frameworks</div>
-            <div class="entry-description">
-                Modern frameworks and libraries enhance and speed up the development process.
-            </div>
-            <p>
-                Key tools and frameworks:
-                <ul>
-                    <li>React: UI component library.</li>
-                    <li>Vue.js: Progressive JavaScript framework.</li>
-                    <li>Angular: Mobile and desktop web application platform.</li>
-                    <li>Bootstrap: CSS framework for responsive designs.</li>
-                </ul>
-            </p>
-        </div>
+        <!-- More sections can continue here... -->
+
     </div>
-
-    <!-- JavaScript for the interactive elements -->
     <script>
         function toggleMenu() {
             const menu = document.querySelector('.popup-menu');
