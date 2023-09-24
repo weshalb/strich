@@ -137,8 +137,8 @@ async function fetchData() {
             const fileData = await fileResponse.json();
             const decodedContent = atob(fileData.content);
             const jsonData = JSON.parse(decodedContent);
-            jsonData.user = file.path.split('/')[1];
-            jsonData.filePath = file.path.replace('.json', '.html');
+            jsonData.user = file.path.split('/')[1];  // Extracting the user (author) from the file path
+jsonData.filePath = file.path;  // Storing the complete file path
             allData.push(jsonData);
         }
         displayData(allData);
@@ -169,9 +169,11 @@ function displayData(data) {
         });
 
         entryDiv.querySelector('.code').addEventListener('click', (e) => {
-            e.stopPropagation();  // Prevents the event from being detected by the parent element
-            window.location.href = `https://github.com/weshalb/strich/blob/main/${jsonData.filePath}`;
-        });
+    e.stopPropagation();  // Prevents the event from being detected by the parent element
+    const htmlFilePath = jsonData.filePath.replace('.json', '.html');  // Convert .json extension to .html
+    window.location.href = `https://strich.org/${htmlFilePath}`;
+});
+
 
         container.appendChild(entryDiv);
     });
