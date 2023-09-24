@@ -137,7 +137,8 @@ async function fetchData() {
             const fileData = await fileResponse.json();
             const decodedContent = atob(fileData.content);
             const jsonData = JSON.parse(decodedContent);
-            jsonData.user = file.path.split('/')[1];  // Extracting the user (author) from the file path
+            jsonData.user = file.path.split('/')[1];
+            jsonData.filePath = file.path.replace('.json', '.html');
             allData.push(jsonData);
         }
         displayData(allData);
@@ -158,13 +159,8 @@ function displayData(data) {
             <pre class="code language-javascript"><code>${jsonData.code}</code></pre>
         `;
 
-        entryDiv.addEventListener('click', () => {
-            const codeElement = entryDiv.querySelector('.code');
-            if (codeElement.style.display === 'none') {
-                codeElement.style.display = 'block';
-            } else {
-                codeElement.style.display = 'none';
-            }
+        entryDiv.querySelector('.code').addEventListener('click', () => {
+            window.location.href = `https://github.com/weshalb/strich/blob/main/${jsonData.filePath}`;
         });
 
         container.appendChild(entryDiv);
@@ -178,6 +174,7 @@ searchBar.addEventListener('input', (e) => {
 });
 
 fetchData();
+
 
     </script>
 
