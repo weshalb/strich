@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lobe Status Checker</title>
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            text-align: center;
+        }
+
+        .status-container {
+            max-width: 800px;
+            margin: 10% auto;
+            padding: 20px;
+            background-color: #2D3748;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .status {
+            font-size: 2em;
+            margin-top: 20px;
+        }
+
+        .online {
+            color: #4CAF50; /* Green color */
+        }
+
+        .offline {
+            color: #F44336; /* Red color */
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #2D3748; /* Dark Background */
+            padding: 10px 5%;
+        }
+
+        .nav-logo {
+            color: #E2E8F0;
+            font-size: 1.5rem;
+        }
+
+        .nav-items {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-item {
+            color: #A0AEC0;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .nav-item:hover {
+            color: #E2E8F0;
+        }
+
+             .gradient-background {
+  background: linear-gradient(300deg,#4a5568,#000000,#2c3e50,#000000);
+  background-size: 240% 240%;
+  animation: gradient-animation 24s ease infinite;
+}
+
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+    </style>
+</head>
+
+<body class="gradient-background">
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="nav-logo">Lobe</div>
+        <div class="nav-items">
+            <div class="nav-item" onclick="window.location.href='https://strich.org'">Home</div>
+            <div class="nav-item" onclick="window.location.href='https://discord.gg/HWKpn8NT4R'">Discord</div>
+            <div class="nav-item" onclick="">Status</div>
+        </div>
+    </div>
+
+    <div class="status-container">
+        <h1>Lobe Status</h1>
+        <div class="status" id="status">CHECKING...</div>
+    </div>
+
+    <script>
+        // Sample function to check if Lobe is online or offline
+        // Replace this function with your actual checking mechanism
+        function checkLobeStatus() {
+            // Here, for demonstration, I'm simulating that Lobe is always online.
+            // In reality, you'd need to check the actual status from an API or server.
+            return true; // true = online, false = offline
+        }
+
+        function displayStatus() {
+            const statusElement = document.getElementById('status');
+            if (checkLobeStatus()) {
+                statusElement.textContent = "ONLINE";
+                statusElement.classList.add('online');
+            } else {
+                statusElement.textContent = "OFFLINE";
+                statusElement.classList.add('offline');
+            }
+        }
+
+        displayStatus();
+    </script>
+
+</body>
+
+</html>
