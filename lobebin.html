@@ -181,7 +181,18 @@
         display: block;
     }
 }
-        
+        body::-webkit-scrollbar {
+    width: 0;  /* for Chrome, Safari, and Opera */
+}
+
+body::-moz-scrollbar {
+    width: 0;  /* for Firefox */
+}
+
+body::-ms-scrollbar {
+    width: 0;  /* for Internet Explorer and Edge */
+}
+
     </style>
 </head>
 
