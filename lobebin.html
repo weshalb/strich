@@ -159,13 +159,24 @@ function displayData(data) {
             <pre class="code language-javascript"><code>${jsonData.code}</code></pre>
         `;
 
-        entryDiv.querySelector('.code').addEventListener('click', () => {
+        entryDiv.addEventListener('click', () => {
+            const codeElement = entryDiv.querySelector('.code');
+            if (codeElement.style.display === 'none') {
+                codeElement.style.display = 'block';
+            } else {
+                codeElement.style.display = 'none';
+            }
+        });
+
+        entryDiv.querySelector('.code').addEventListener('click', (e) => {
+            e.stopPropagation();  // Prevents the event from being detected by the parent element
             window.location.href = `https://github.com/weshalb/strich/blob/main/${jsonData.filePath}`;
         });
 
         container.appendChild(entryDiv);
     });
 }
+
 
 searchBar.addEventListener('input', (e) => {
     const searchValue = e.target.value.toLowerCase();
