@@ -197,6 +197,48 @@ pre.code code {
                     <div class="example-title">Paragraph</div>
                     <pre><code class="language-html">&lt;p&gt;This is a paragraph.&lt;/p&gt;</code></pre>
                 </div>
+
+                <!-- Lists in HTML -->
+<div class="subsection">
+    <h2>HTML Lists</h2>
+    <p>There are two main types of lists in HTML: unordered and ordered.</p>
+    <div class="example">
+        <div class="example-title">Unordered List</div>
+        <pre><code class="language-html">
+&lt;ul&gt;
+    &lt;li&gt;Item 1&lt;/li&gt;
+    &lt;li&gt;Item 2&lt;/li&gt;
+    &lt;li&gt;Item 3&lt;/li&gt;
+&lt;/ul&gt;
+        </code></pre>
+    </div>
+    <div class="example">
+        <div class="example-title">Ordered List</div>
+        <pre><code class="language-html">
+&lt;ol&gt;
+    &lt;li&gt;First Item&lt;/li&gt;
+    &lt;li&gt;Second Item&lt;/li&gt;
+    &lt;li&gt;Third Item&lt;/li&gt;
+&lt;/ol&gt;
+        </code></pre>
+    </div>
+</div>
+
+<!-- Forms in HTML -->
+<div class="subsection">
+    <h2>HTML Forms</h2>
+    <p>Forms are essential for gathering data from users.</p>
+    <div class="example">
+        <div class="example-title">Basic Form</div>
+        <pre><code class="language-html">
+&lt;form action="/submit"&gt;
+    &lt;label for="name"&gt;Name:&lt;/label&gt;
+    &lt;input type="text" id="name" name="name"&gt;
+    &lt;input type="submit" value="Submit"&gt;
+&lt;/form&gt;
+        </code></pre>
+    </div>
+</div>
                 <!-- More HTML elements can continue here... -->
             </div>
 
@@ -230,6 +272,40 @@ pre.code code {
     color: red;
 }</code></pre>
                 </div>
+
+                <!-- CSS Box Model -->
+<div class="subsection">
+    <h2>CSS Box Model</h2>
+    <p>Each element in CSS is viewed as a rectangular box with properties like padding, margin, border, and content.</p>
+    <div class="example">
+        <div class="example-title">Box Model Properties</div>
+        <pre><code class="language-css">
+.box {
+    content: 'content';
+    padding: 10px;
+    border: 5px solid black;
+    margin: 20px;
+}
+        </code></pre>
+    </div>
+</div>
+
+<!-- Responsive Design -->
+<div class="subsection">
+    <h2>Responsive Design</h2>
+    <p>With CSS, you can make your website look good on all devices (desktops, tablets, and phones).</p>
+    <div class="example">
+        <div class="example-title">Media Query for Mobile Devices</div>
+        <pre><code class="language-css">
+@media only screen and (max-width: 600px) {
+    body {
+        background-color: lightblue;
+    }
+}
+        </code></pre>
+    </div>
+</div>
+
                 <!-- More on CSS selectors can continue here... -->
             </div>
 
@@ -275,6 +351,52 @@ pre.code code {
                 </div>
                 <!-- More on JavaScript functions can continue here... -->
             </div>
+
+            <!-- JavaScript Basics -->
+<div class="subsection">
+    <h2>Variables & Data Types</h2>
+    <div class="example">
+        <div class="example-title">Variable Declaration</div>
+        <pre><code class="language-javascript">
+let name = "John";
+const PI = 3.14;
+var age = 30;
+        </code></pre>
+    </div>
+    <div class="example">
+        <div class="example-title">Data Types</div>
+        <pre><code class="language-javascript">
+let stringType = "Hello World";   // String
+let numberType = 100;             // Number
+let booleanType = true;           // Boolean
+let nullType = null;              // Null
+let undefinedType;                // Undefined
+let objectType = {firstName: "John", lastName: "Doe"}; // Object
+        </code></pre>
+    </div>
+</div>
+
+<div class="subsection">
+    <h2>Functions & Control Structures</h2>
+    <div class="example">
+        <div class="example-title">Function Declaration</div>
+        <pre><code class="language-javascript">
+function greet(name) {
+    return "Hello, " + name;
+}
+        </code></pre>
+    </div>
+    <div class="example">
+        <div class="example-title">If-Else Statement</div>
+        <pre><code class="language-javascript">
+if (age &gt; 18) {
+    console.log("You are an adult.");
+} else {
+    console.log("You are a minor.");
+}
+        </code></pre>
+    </div>
+</div>
         </div>
 
         <!-- More sections can continue here... -->
