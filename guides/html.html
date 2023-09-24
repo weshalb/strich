@@ -436,6 +436,36 @@ body::-ms-scrollbar {
     </div>
 </div>
 
+                <div class="subsection">
+    <h2>CSS Flexbox</h2>
+    <p>Flexbox is a layout module in CSS that allows items to align and distribute space within a container.</p>
+    <div class="example">
+        <div class="example-title">Using Flexbox</div>
+        <pre><code class="language-css">
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+        </code></pre>
+    </div>
+</div>
+
+<!-- CSS Grid -->
+<div class="subsection">
+    <h2>CSS Grid</h2>
+    <p>CSS Grid Layout is a 2D grid-based layout system that allows for complex layouts.</p>
+    <div class="example">
+        <div class="example-title">Using Grid</div>
+        <pre><code class="language-css">
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    gap: 20px;
+}
+        </code></pre>
+    </div>
+</div>
                 <!-- More on CSS selectors can continue here... -->
             </div>
 
@@ -479,6 +509,62 @@ body::-ms-scrollbar {
     return a + b;
 }</code></pre>
                 </div>
+
+                <div class="subsection">
+    <h2>Events</h2>
+    <p>JavaScript can be executed when an event occurs, like when a user clicks on an HTML element.</p>
+    <div class="example">
+        <div class="example-title">Event Listener</div>
+        <pre><code class="language-javascript">
+document.getElementById("myBtn").addEventListener("click", function(){
+    alert("Button was clicked!");
+});
+        </code></pre>
+    </div>
+</div>
+
+<!-- JavaScript Object Oriented Programming -->
+<div class="subsection">
+    <h2>Object Oriented Programming</h2>
+    <p>JavaScript supports the concept of Object-Oriented Programming (OOP), allowing for more structured and modular code.</p>
+    <div class="example">
+        <div class="example-title">Classes and Objects</div>
+        <pre><code class="language-javascript">
+class Car {
+    constructor(brand) {
+        this.brand = brand;
+    }
+    getBrand() {
+        return this.brand;
+    }
+}
+
+const myCar = new Car("Toyota");
+console.log(myCar.getBrand());
+        </code></pre>
+    </div>
+</div>
+
+<!-- Asynchronous JavaScript -->
+<div class="subsection">
+    <h2>Asynchronous JavaScript</h2>
+    <p>JavaScript allows for asynchronous operations using callbacks, promises, and async/await.</p>
+    <div class="example">
+        <div class="example-title">Using Promises</div>
+        <pre><code class="language-javascript">
+let myPromise = new Promise(function(resolve, reject) {
+    setTimeout(function() {
+        resolve("Promise resolved!");
+    }, 1000);
+});
+
+myPromise.then(function(value) {
+    console.log(value);
+});
+        </code></pre>
+    </div>
+</div>
+
                 <!-- More on JavaScript functions can continue here... -->
             </div>
 
