@@ -1,0 +1,1 @@
+{"title":"Try and Catch","description":"Basic try and catch example.","code":"try { //code } catch (e) { console.log(e); };","user":"wovor"}
