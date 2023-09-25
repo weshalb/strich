@@ -1,0 +1,73 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.css" rel="stylesheet" />
+    <style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+        body {
+            background-color: #2D3748;
+            font-family: Arial, sans-serif;
+            color: #E2E8F0;
+            padding: 20px;
+            overflow: auto;
+        }
+        h1 {
+            font-size: 2em;
+        }
+        .author {
+            color: #BFC7D5;
+        }
+        hr {
+            border: none;
+            height: 1px;
+            background: #4A5568;
+            margin: 20px 0;
+        }
+        .code {
+            position: relative;
+            border-radius: 10px;
+        }
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #4A5568;
+            color: #E2E8F0;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Collapsable</h1>
+    <div class="author">By: wovor</div>
+    <hr>
+    <p>Simple collapsable.</p>
+    <hr>
+    <div class="code">
+        <button class="copy-button" onclick="copyCode()">Copy</button>
+        <pre><code class="language-javascript">function toggleContent() {     const contentElement = document.getElementById('content');      if (contentElement.style.display === 'none' || !contentElement.style.display) {         contentElement.style.display = 'block';     } else {         contentElement.style.display = 'none';     } }</code></pre>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-javascript.min.js"></script>
+    <script>
+        function copyCode() {
+            const el = document.createElement('textarea');
+            el.value = `function toggleContent() {     const contentElement = document.getElementById('content');      if (contentElement.style.display === 'none' || !contentElement.style.display) {         contentElement.style.display = 'block';     } else {         contentElement.style.display = 'none';     } }`;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            alert("Code copied to clipboard!");
+        }
+    </script>
+</body>
+</html>
