@@ -192,13 +192,15 @@ body::-ms-scrollbar {
     width: 0;  /* for Internet Explorer and Edge */
 }
 
-        .pagination {
+/* Pagination Container */
+.pagination {
     display: flex;
     justify-content: space-between;
     margin: 20px 0;
 }
 
-.prevButton {
+/* Common styles for both buttons */
+.pagination-btn {
     padding: 10px 20px;
     background-color: #4A5568; /* Default button color */
     color: #E2E8F0;
@@ -206,22 +208,15 @@ body::-ms-scrollbar {
     border-radius: 15px;
     transition: background-color 0.3s;
     cursor: pointer;
+    text-align: center; /* Centers the text on the button */
+    flex: 1; /* Makes buttons equal width */
+    margin: 0 5px; /* Spacing between buttons */
 }
-.nextButton {
-    padding: 10px 20px;
-    background-color: #4A5568; /* Default button color */
-    color: #E2E8F0;
-    border: none;
-    border-radius: 15px;
-    transition: background-color 0.3s;
-    cursor: pointer;
-}
-.prevButton:hover {
+
+.pagination-btn:hover {
     background-color: #2C3E50; /* On hover, darken a bit */
 }
-.nextButton:hover {
-    background-color: #2C3E50; /* On hover, darken a bit */
-}
+
 .pagination-btn:disabled {
     cursor: not-allowed;
     opacity: 0.5;
