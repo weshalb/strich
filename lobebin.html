@@ -323,6 +323,9 @@ function displayData(data, page) {
     // Add pagination if there's more data to show
     if (data.length > entriesPerPage) {
         let prevButton = document.createElement('button');
+prevButton.innerText = "Previous";
+prevButton.className = "pagination-btn";  // Ensure the class is assigned here
+
         prevButton.innerText = "Previous";
         prevButton.onclick = function() {
             if (currentPage > 1) {
@@ -332,6 +335,8 @@ function displayData(data, page) {
         };
 
         let nextButton = document.createElement('button');
+nextButton.innerText = "Next";
+nextButton.className = "pagination-btn";  // Ensure the class is assigned here
         nextButton.innerText = "Next";
         nextButton.onclick = function() {
             if (currentPage * entriesPerPage < data.length) {
