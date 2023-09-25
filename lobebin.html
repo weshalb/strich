@@ -219,6 +219,10 @@ body::-ms-scrollbar {
         <input class="searchBar" type="text" id="searchBar" placeholder="Search by title...">
     </div>
     <div class="container" id="dataContainer"></div>
+<div class="pagination">
+    <button id="prevBtn">Previous</button>
+    <button id="nextBtn">Next</button>
+</div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-javascript.min.js"></script>
@@ -227,6 +231,8 @@ body::-ms-scrollbar {
         const container = document.getElementById('dataContainer');
 const searchBar = document.getElementById('searchBar');
 let allData = [];
+let currentPage = 1;
+const entriesPerPage = 5;
 
 async function fetchData() {
     try {
@@ -241,19 +247,27 @@ async function fetchData() {
             const decodedContent = atob(fileData.content);
             const jsonData = JSON.parse(decodedContent);
             jsonData.user = file.path.split('/')[1];  // Extracting the user (author) from the file path
-jsonData.filePath = file.path;  // Storing the complete file path
+            jsonData.filePath = file.path;  // Storing the complete file path
             allData.push(jsonData);
         }
-        displayData(allData);
+
+        const publicData = allData.filter(item => item.status !== "private");
+        displayData(publicData, currentPage);
+
     } catch (error) {
         console.error('Error fetching data:', error);
     }
 }
 
-function displayData(data) {
+function displayData(data, page) {
     container.innerHTML = '';
+    
+    let start = (page - 1) * entriesPerPage;
+    let end = start + entriesPerPage;
 
-    data.forEach(jsonData => {
+    const paginatedData = data.slice(start, end);
+
+    paginatedData.forEach(jsonData => {
         const entryDiv = document.createElement('div');
         entryDiv.classList.add('entry');
         entryDiv.innerHTML = `
@@ -272,40 +286,60 @@ function displayData(data) {
         });
 
         entryDiv.querySelector('.code').addEventListener('click', (e) => {
-    e.stopPropagation();  // Prevents the event from being detected by the parent element
-    const htmlFilePath = jsonData.filePath.replace('.json', '.html');  // Convert .json extension to .html
-    window.location.href = `https://strich.org/${htmlFilePath}`;
-});
-
+            e.stopPropagation();
+            const htmlFilePath = jsonData.filePath.replace('.json', '.html');
+            window.location.href = `https://strich.org/${htmlFilePath}`;
+        });
 
         container.appendChild(entryDiv);
     });
-}
 
+    // Add pagination if there's more data to show
+    if (data.length > entriesPerPage) {
+        let prevButton = document.createElement('button');
+        prevButton.innerText = "Previous";
+        prevButton.onclick = function() {
+            if (currentPage > 1) {
+                currentPage--;
+                displayData(data, currentPage);
+            }
+        };
+
+        let nextButton = document.createElement('button');
+        nextButton.innerText = "Next";
+        nextButton.onclick = function() {
+            if (currentPage * entriesPerPage < data.length) {
+                currentPage++;
+                displayData(data, currentPage);
+            }
+        };
+
+        container.appendChild(prevButton);
+        container.appendChild(nextButton);
+    }
+}
 
 searchBar.addEventListener('input', (e) => {
     const searchValue = e.target.value.toLowerCase();
     const filteredData = allData.filter(item => 
         item.title.toLowerCase().includes(searchValue) || 
-        item.user.toLowerCase().includes(searchValue)  // This line checks the author's name
+        item.user.toLowerCase().includes(searchValue)
     );
-    displayData(filteredData);
+    currentPage = 1;  // Resetting the page when a new search is made
+    displayData(filteredData, currentPage);
 });
-
 
 fetchData();
 
-
-        function toggleMenu() {
-        const menu = document.querySelector('.popup-menu');
-        if (menu.style.display === 'block') {
-            menu.style.display = 'none';
-        } else {
-            menu.style.display = 'block';
-        }
+function toggleMenu() {
+    const menu = document.querySelector('.popup-menu');
+    if (menu.style.display === 'block') {
+        menu.style.display = 'none';
+    } else {
+        menu.style.display = 'block';
     }
+}
 
-        
     </script>
 
 </body>
