@@ -18,14 +18,14 @@
 </div>
 
 document.getElementById('loginButton').addEventListener('click', () => {
-    // Redirect user to Discord OAuth2 URL.
-    const clientID = "YOUR_DISCORD_CLIENT_ID"; // Replace with your client ID.
-    const redirectURI = encodeURIComponent("YOUR_REDIRECT_URI"); // This should be the URL where Discord will redirect after authentication.
-    const scope = "identify";
-    const responseType = "code";
-    const authURL = `https://discord.com/api/oauth2/authorize?client_id=${clientID}&redirect_uri=${redirectURI}&response_type=${responseType}&scope=${scope}`;
+   
+  const client_id = "933803271171223552";  // Don't put the secret here!
+  const redirect_uri = encodeURIComponent("https://strich-azure.vercel.app/api/auth");
+  const oauthURL = `https://discord.com/api/oauth2/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=identify%20guilds`;
 
-    window.location.href = authURL;
+  window.location.href = oauthURL;
+
+
 });
 
 
