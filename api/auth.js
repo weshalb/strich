@@ -1,34 +1,62 @@
 const fetch = require('node-fetch');
 
 module.exports = async (req, res) => {
-  const { code } = req.query;
+    try {
+        if (req.method !== 'POST') {
+            throw new Error('Method not allowed');
+        }
 
-  if (!code) {
-    return res.status(400).send({ status: 'ERROR', error: 'No Code Provided' });
-  }
+        const { code } = req.body;
 
-  const params = new URLSearchParams();
-  params.set('client_id', process.env.DISCORD_CLIENT_ID);
-  params.set('client_secret', process.env.DISCORD_CLIENT_SECRET);
-  params.set('grant_type', 'authorization_code');
-  params.set('code', code);
-  params.set('redirect_uri', process.env.DISCORD_REDIRECT_URI);
+        if (!code) {
+            throw new Error('No authorization code provided');
+        }
 
-  const response = await fetch('https://discord.com/api/oauth2/token', {
-    method: 'POST',
-    body: params,
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-  });
+        // Exchange the code for an access token
+        const tokenResponse = await fetch('https://discord.com/api/oauth2/token', {
+            method: 'POST',
+            body: new URLSearchParams({
+                client_id: process.env.DISCORD_CLIENT_ID,
+                client_secret: process.env.DISCORD_CLIENT_SECRET,
+                code,
+                grant_type: 'authorization_code',
+                redirect_uri: process.env.DISCORD_REDIRECT_URI,
+                scope: 'identify'
+            }),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
 
-  const json = await response.json();
+        if (!tokenResponse.ok) {
+            throw new Error('Failed to exchange authorization code for token');
+        }
 
-  if (json.access_token) {
-    // Use this token to fetch user information, guilds, etc.
-    // Here, we are just sending it back for simplification.
-    res.status(200).send({ status: 'SUCCESS', token: json.access_token });
-  } else {
-    res.status(400).send({ status: 'ERROR', error: json.error });
-  }
+        const tokenData = await tokenResponse.json();
+        const accessToken = tokenData.access_token;
+
+        // Fetch user info using the access token
+        const userResponse = await fetch('https://discord.com/api/users/@me', {
+            headers: {
+                authorization: `Bearer ${accessToken}`
+            }
+        });
+
+        if (!userResponse.ok) {
+            throw new Error('Failed to fetch user info');
+        }
+
+        const userData = await userResponse.json();
+
+        res.status(200).json({
+            success: true,
+            data: userData
+        });
+    } catch (error) {
+        console.error("Error in serverless function:", error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
 };
