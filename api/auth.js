@@ -32,7 +32,9 @@ module.exports = async (req, res) => {
             throw new Error('Failed to exchange authorization code for token');
         }
 
-        const tokenData = await tokenResponse.json();
+       const tokenData = await tokenResponse.json();
+console.log("Token data:", tokenData);
+
         const accessToken = tokenData.access_token;
 
         // Fetch user info using the access token
