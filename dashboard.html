@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <!-- CSS links here -->
+</head>
+<body>
+
+<div class="navbar">
+    <div class="nav-logo">Dashboard</div>
+    <button id="loginButton">Login via Discord</button>
+</div>
+
+<div class="container" id="userEntries">
+    <!-- User's GitHub entries will be displayed here -->
+</div>
+
+document.getElementById('loginButton').addEventListener('click', () => {
+    // Redirect user to Discord OAuth2 URL.
+    const clientID = "YOUR_DISCORD_CLIENT_ID"; // Replace with your client ID.
+    const redirectURI = encodeURIComponent("YOUR_REDIRECT_URI"); // This should be the URL where Discord will redirect after authentication.
+    const scope = "identify";
+    const responseType = "code";
+    const authURL = `https://discord.com/api/oauth2/authorize?client_id=${clientID}&redirect_uri=${redirectURI}&response_type=${responseType}&scope=${scope}`;
+
+    window.location.href = authURL;
+});
+
+
+</body>
+</html>
