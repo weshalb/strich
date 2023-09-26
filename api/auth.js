@@ -20,7 +20,7 @@ module.exports = async (req, res) => {
                 client_secret: process.env.DISCORD_CLIENT_SECRET,
                 code,
                 grant_type: 'authorization_code',
-                redirect_uri: process.env.DISCORD_REDIRECT_URI,
+                redirect_uri: process.env.REDIRECT_URI,
                 scope: 'identify'
             }),
             headers: {
