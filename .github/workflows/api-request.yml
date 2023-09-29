@@ -1,0 +1,33 @@
+name: Handle Question
+
+on:
+  repository_dispatch:
+    types: [question_event]
+
+jobs:
+  get_answer:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      
+    - name: Make API request
+      id: api_request
+      run: |
+        QUESTION="${{ github.event.client_payload.question }}"
+        RESPONSE=$(curl -X "GET" "https://google-bard1.p.rapidapi.com/" \
+        -H "text: $QUESTION" \
+        -H "psid: ${{ secrets.PSID }}" \
+        -H "X-RapidAPI-Key: ${{ secrets.RAPIDAPI_KEY }}" \
+        -H "X-RapidAPI-Host: google-bard1.p.rapidapi.com")
+        echo "$RESPONSE" > ./response_data.json
+        echo "RESPONSE_DATA=$RESPONSE" >> $GITHUB_ENV
+      
+    - name: Commit and push answer
+      run: |
+        git config user.name "GitHub Action Bot"
+        git config user.email "actionbot@github.com"
+        git add response_data.json
+        git commit -m "Update API response data"
+        git push
