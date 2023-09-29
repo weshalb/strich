@@ -1,0 +1,47 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frage an Google Bard</title>
+</head>
+<body>
+    <form id="questionForm">
+        <input type="text" id="questionInput" placeholder="Stelle deine Frage hier...">
+        <button type="submit">Absenden</button>
+    </form>
+    <div id="answer"></div>
+
+    <script>
+  // script.js
+document.getElementById('questionForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    let question = document.getElementById('questionInput').value;
+    
+    // Hier sendest du die Frage an deine GitHub Action (z.B. via fetch())
+    fetch('https://api.github.com/repos/DEIN_USERNAME/DEIN_REPO_NAME/dispatches', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/vnd.github.everest-preview+json',
+            Authorization: 'Bearer DEIN_PERSONAL_ACCESS_TOKEN'
+        },
+        body: JSON.stringify({
+            event_type: 'question_event',
+            client_payload: {
+                question: question
+            }
+        })
+    }).then(response => {
+        if(response.ok) {
+            // Eine Meldung oder ein Spinner, um den Nutzer zu informieren
+            document.getElementById('answer').innerText = 'Warte auf Antwort...';
+        } else {
+            document.getElementById('answer').innerText = 'Ein Fehler ist aufgetreten.';
+        }
+    });
+});
+</script>
+</body>
+</html>
