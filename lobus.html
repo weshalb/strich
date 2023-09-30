@@ -118,17 +118,18 @@ document.getElementById('addPage').addEventListener('click', function() {
     const newBlockArea = document.createElement('div');
     newBlockArea.classList.add('block-area', 'hidden');
     blockArea.parentElement.appendChild(newBlockArea);
+});
 
-    document.body.addEventListener('contextmenu', function(event) {
+const blockAreas = document.querySelectorAll('.block-area');
+
+// Hier ist die Ergänzung: Rechtsklick-Löschfunktion für die Blöcke
+document.body.addEventListener('contextmenu', function(event) {
     if (event.target.classList.contains('block') && event.target.parentElement.classList.contains('block-area')) {
         event.preventDefault();
         event.target.remove();
     }
 });
 
-       
-
-const blockAreas = document.querySelectorAll('.block-area');
 
 function switchPage(pageNumber) {
     document.querySelectorAll('.block-area').forEach((area, index) => {
