@@ -127,8 +127,12 @@ document.body.addEventListener('contextmenu', function(event) {
     if (event.target.classList.contains('block') && event.target.parentElement.classList.contains('block-area')) {
         event.preventDefault();
         event.target.remove();
+
+        // Aktualisieren des Code-Anzeigebereichs nach dem Löschen
+        updateCodePane();
     }
 });
+
 
 
 function switchPage(pageNumber) {
