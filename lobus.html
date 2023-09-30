@@ -78,6 +78,33 @@ body {
     display: none;
 }
 
+      /* ... Ihr bisheriger CSS-Code ... */
+
+.if-block {
+    border: none;
+    padding: 0;
+    margin: 0;
+    background: none;
+    position: relative;
+}
+
+.if-top, .if-bottom {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+}
+
+.if-content {
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    padding: 10px;
+    min-height: 50px;
+    background-color: #f8f8f8;  /* Ein leicht grauer Hintergrund, um den Bereich hervorzuheben */
+}
+
   </style>
 </head>
 <body>
@@ -86,6 +113,13 @@ body {
             <!-- Beispiel für Blöcke -->
             <div class="block" draggable="true" data-code="CodeBlock1">Block 1</div>
             <div class="block" draggable="true" data-code="CodeBlock2">Block 2</div>
+            <div class="block if-block" draggable="true" data-code="ifCode">
+    <div class="if-top">If</div>
+    <div class="if-content">
+        <!-- Hier können Blöcke hineingezogen werden -->
+    </div>
+    <div class="if-bottom">End If</div>
+</div>
         </div>
         <div class="workspace">
             <div class="page-controls">
