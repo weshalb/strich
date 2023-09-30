@@ -120,11 +120,7 @@ document.getElementById('addPage').addEventListener('click', function() {
     blockArea.parentElement.appendChild(newBlockArea);
 });
 
-        newBlock.addEventListener('contextmenu', function(event) {
-    event.preventDefault();  // Verhindert das Anzeigen des Standard-Kontextmenüs
-    newBlock.remove();      // Entfernt den Block
-    updateCodePane();       // Aktualisiert den Code-Bereich
-});
+       
 
 const blockAreas = document.querySelectorAll('.block-area');
 
