@@ -102,7 +102,8 @@ body {
         </div>
     </div>
     <script>
-      document.getElementById('addPage').addEventListener('click', function() {
+     
+document.getElementById('addPage').addEventListener('click', function() {
     const pageCount = document.querySelectorAll('.page-command').length + 1;
 
     const newButton = document.createElement('button');
@@ -117,9 +118,40 @@ body {
     const newBlockArea = document.createElement('div');
     newBlockArea.classList.add('block-area', 'hidden');
     blockArea.parentElement.appendChild(newBlockArea);
+
+    // Drag and Drop Ereignisse für den neuen Block-Bereich hinzufügen
+    addDragAndDropEvents(newBlockArea);
 });
 
+function addDragAndDropEvents(area) {
+    area.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+    });
+
+    area.addEventListener('drop', function(e) {
+        e.preventDefault();
+
+        const code = e.dataTransfer.getData('text/plain');
+        const sourceBlock = document.querySelector(`[data-code="${code}"]`);
+        if (sourceBlock.parentElement && sourceBlock.parentElement.classList.contains('block-area')) {
+            return;
+        }
+        
+        const newBlock = sourceBlock.cloneNode(true);
+        newBlock.addEventListener('contextmenu', function(event) {
+            event.preventDefault();
+            newBlock.remove();
+            updateCodePane();
+        });
+        area.appendChild(newBlock);
+        updateCodePane();
+    });
+}
+
 const blockAreas = document.querySelectorAll('.block-area');
+blockAreas.forEach(area => addDragAndDropEvents(area));
+
 
     
 // Drag-Logik
