@@ -212,34 +212,44 @@ blockAreas.forEach(area => {
         // ... Ihr bisheriger JavaScript-Code ...
 
 // Das 'dragover'-Ereignis ermöglicht es uns, ein Element als Drop-Ziel zu definieren
-document.querySelectorAll('.if-content').forEach(ifContent => {
-    ifContent.addEventListener('dragover', function(e) {
+document.querySelectorAll('.if-content').forEach(content => {
+    content.addEventListener('dragover', function(e) {
         e.preventDefault();
         e.dataTransfer.dropEffect = 'move';
     });
 
-    // Wenn ein Block in den '.if-content'-Bereich gezogen wird
-    ifContent.addEventListener('drop', function(e) {
+    content.addEventListener('drop', function(e) {
         e.preventDefault();
 
         const code = e.dataTransfer.getData('text/plain');
         const sourceBlock = document.querySelector(`[data-code="${code}"]`);
 
-        if (sourceBlock.parentElement && sourceBlock.parentElement.classList.contains('block-area')) {
+        // Check, ob der Block bereits in einem `block-area` ist
+        if (sourceBlock.parentElement && sourceBlock.parentElement.classList.contains('block')) {
             return;
         }
 
+        // Klone den Block und füge ihn in den if-content Bereich hinzu
         const newBlock = sourceBlock.cloneNode(true);
+        newBlock.style.marginTop = '5px'; // Ein wenig Abstand für optische Klarheit
+
         newBlock.addEventListener('contextmenu', function(event) {
             event.preventDefault();
             newBlock.remove();
-            updateCodePane(); // Aktualisiert den Code-Bereich
+            updateCodePane();
         });
 
-        ifContent.appendChild(newBlock); // Fügen Sie den neuen Block in den '.if-content'-Bereich ein
-        updateCodePane();
+        content.appendChild(newBlock);
     });
 });
+
+document.querySelectorAll('.block:not(.if-block)').forEach(block => {
+    block.addEventListener('dragstart', function(e) {
+        e.dataTransfer.setData('text/plain', e.target.dataset.code);
+        e.dataTransfer.dropEffect = 'move';
+    });
+});
+
 
 // Zum Löschen von Blöcken, wenn sie außerhalb der Ablagebereiche abgelegt werden
 document.body.addEventListener('drop', function(e) {
