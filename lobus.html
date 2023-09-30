@@ -121,7 +121,16 @@ body {
 
 const blockAreas = document.querySelectorAll('.block-area');
 
-        // ... [Vorhergehender Code]
+    
+// Drag-Logik
+document.querySelectorAll('.block').forEach(block => {
+    block.addEventListener('dragstart', function(e) {
+        e.dataTransfer.setData('text/plain', e.target.dataset.code);
+        e.dataTransfer.dropEffect = 'move';
+    });
+});
+
+    // ... [Vorhergehender Code]
 
 blockAreas.forEach(area => {
     area.addEventListener('drop', function(e) {
@@ -147,34 +156,6 @@ document.body.addEventListener('drop', function(e) {
         sourceBlock.remove();
         updateCodePane();
     }
-});
-
-// Drag-Logik
-document.querySelectorAll('.block').forEach(block => {
-    block.addEventListener('dragstart', function(e) {
-        e.dataTransfer.setData('text/plain', e.target.dataset.code);
-        e.dataTransfer.dropEffect = 'move';
-    });
-});
-
-blockAreas.forEach(area => {
-    area.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-    });
-
-    area.addEventListener('drop', function(e) {
-        e.preventDefault();
-
-        const code = e.dataTransfer.getData('text/plain');
-        if (code) {
-            const newBlock = document.querySelector(`[data-code="${code}"]`).cloneNode(true);
-            e.target.appendChild(newBlock);
-            updateCodePane();
-        } else {
-            e.target.remove();
-        }
-    });
 });
 
 function updateCodePane() {
