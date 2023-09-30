@@ -212,6 +212,17 @@ blockAreas.forEach(area => {
         // ... Ihr bisheriger JavaScript-Code ...
 
 // Das 'dragover'-Ereignis ermöglicht es uns, ein Element als Drop-Ziel zu definieren
+// ... Ihr bisheriger JavaScript-Code ...
+
+// Erlaubt das Ziehen von Blöcken
+document.querySelectorAll('.block').forEach(block => {
+    block.addEventListener('dragstart', function(e) {
+        e.dataTransfer.setData('text/plain', e.target.dataset.code);
+        e.dataTransfer.dropEffect = 'move';
+    });
+});
+
+// Spezifische Drop-Logik für den .if-content Bereich
 document.querySelectorAll('.if-content').forEach(content => {
     content.addEventListener('dragover', function(e) {
         e.preventDefault();
@@ -219,20 +230,19 @@ document.querySelectorAll('.if-content').forEach(content => {
     });
 
     content.addEventListener('drop', function(e) {
-        e.preventDefault();
+        e.stopPropagation(); // Dies verhindert, dass übergeordnete Drop-Handler ausgelöst werden
 
         const code = e.dataTransfer.getData('text/plain');
         const sourceBlock = document.querySelector(`[data-code="${code}"]`);
 
-        // Check, ob der Block bereits in einem `block-area` ist
-        if (sourceBlock.parentElement && sourceBlock.parentElement.classList.contains('block')) {
+        // Wenn der Block bereits in einer 'block-area' oder einem anderen 'block' ist, brechen wir ab
+        if (sourceBlock.parentElement && 
+            (sourceBlock.parentElement.classList.contains('block-area') || 
+             sourceBlock.parentElement.classList.contains('block'))) {
             return;
         }
 
-        // Klone den Block und füge ihn in den if-content Bereich hinzu
         const newBlock = sourceBlock.cloneNode(true);
-        newBlock.style.marginTop = '5px'; // Ein wenig Abstand für optische Klarheit
-
         newBlock.addEventListener('contextmenu', function(event) {
             event.preventDefault();
             newBlock.remove();
@@ -242,6 +252,7 @@ document.querySelectorAll('.if-content').forEach(content => {
         content.appendChild(newBlock);
     });
 });
+
 
 document.querySelectorAll('.block:not(.if-block)').forEach(block => {
     block.addEventListener('dragstart', function(e) {
