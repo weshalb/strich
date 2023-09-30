@@ -121,6 +121,34 @@ body {
 
 const blockAreas = document.querySelectorAll('.block-area');
 
+        // ... [Vorhergehender Code]
+
+blockAreas.forEach(area => {
+    area.addEventListener('drop', function(e) {
+        e.preventDefault();
+        const code = e.dataTransfer.getData('text/plain');
+        const sourceBlock = document.querySelector(`[data-code="${code}"]`);
+        if (sourceBlock.parentElement && sourceBlock.parentElement.classList.contains('block-area')) {
+            return;
+        }
+        
+        const newBlock = sourceBlock.cloneNode(true);
+        area.appendChild(newBlock);
+        updateCodePane();
+    });
+});
+
+// Zum Löschen von Blöcken, wenn sie außerhalb der Ablagebereiche abgelegt werden
+document.body.addEventListener('drop', function(e) {
+    e.preventDefault();
+    const code = e.dataTransfer.getData('text/plain');
+    const sourceBlock = document.querySelector(`[data-code="${code}"]`);
+    if (sourceBlock.parentElement && sourceBlock.parentElement.classList.contains('block-area')) {
+        sourceBlock.remove();
+        updateCodePane();
+    }
+});
+
 // Drag-Logik
 document.querySelectorAll('.block').forEach(block => {
     block.addEventListener('dragstart', function(e) {
