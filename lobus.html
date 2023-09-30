@@ -74,6 +74,10 @@ body {
     transform: translateX(0);
 }
 
+      .hidden {
+    display: none;
+}
+
   </style>
 </head>
 <body>
@@ -99,14 +103,23 @@ body {
     </div>
     <script>
       document.getElementById('addPage').addEventListener('click', function() {
+    const pageCount = document.querySelectorAll('.page-command').length + 1;
+
     const newButton = document.createElement('button');
-    newButton.innerText = 'Neue Seite';
+    newButton.innerText = 'Seite ' + pageCount;
     newButton.classList.add('page-command');
+    newButton.addEventListener('click', function() {
+        switchPage(pageCount);
+    });
+
     document.querySelector('.page-controls').appendChild(newButton);
+
+    const newBlockArea = document.createElement('div');
+    newBlockArea.classList.add('block-area', 'hidden');
+    blockArea.parentElement.appendChild(newBlockArea);
 });
 
-const blockArea = document.getElementById('blockArea');
-const codePane = document.getElementById('codePane');
+const blockAreas = document.querySelectorAll('.block-area');
 
 // Drag-Logik
 document.querySelectorAll('.block').forEach(block => {
@@ -116,25 +129,29 @@ document.querySelectorAll('.block').forEach(block => {
     });
 });
 
-blockArea.addEventListener('dragover', function(e) {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-});
+blockAreas.forEach(area => {
+    area.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+    });
 
-blockArea.addEventListener('drop', function(e) {
-    e.preventDefault();
+    area.addEventListener('drop', function(e) {
+        e.preventDefault();
 
-    const code = e.dataTransfer.getData('text/plain');
-    const newBlock = document.querySelector(`[data-code="${code}"]`).cloneNode(true);
-
-    blockArea.appendChild(newBlock);
-
-    updateCodePane();
+        const code = e.dataTransfer.getData('text/plain');
+        if (code) {
+            const newBlock = document.querySelector(`[data-code="${code}"]`).cloneNode(true);
+            e.target.appendChild(newBlock);
+            updateCodePane();
+        } else {
+            e.target.remove();
+        }
+    });
 });
 
 function updateCodePane() {
     codePane.innerHTML = '';
-    document.querySelectorAll('#blockArea .block').forEach(block => {
+    document.querySelectorAll('.block-area:not(.hidden) .block').forEach(block => {
         const code = block.dataset.code;
         const codeElement = document.createElement('div');
         codeElement.textContent = code;
@@ -142,10 +159,31 @@ function updateCodePane() {
     });
 }
 
+// Seitenumschaltung
+function switchPage(pageNumber) {
+    document.querySelectorAll('.block-area').forEach((area, index) => {
+        if (index === pageNumber - 1) {
+            area.classList.remove('hidden');
+        } else {
+            area.classList.add('hidden');
+        }
+    });
+    updateCodePane();
+}
+
 // Zum Anzeigen des Code-Bereichs
 setTimeout(() => {
     codePane.classList.add('active');
 }, 2000);
+
+// Um Blöcke außerhalb des Kästchens zu entfernen
+document.body.addEventListener('dragover', function(e) {
+    e.preventDefault();
+});
+
+document.body.addEventListener('drop', function(e) {
+    e.preventDefault();
+});
 
     </script>
 </body>
