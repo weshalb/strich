@@ -123,167 +123,97 @@ body {
   </style>
    <div class="container">
     <div class="block-selection">
-        <div class="block" draggable="true" data-code="alert('MESSAGE');">
-            Alert: <span class="editable-content" data-editable-type="string">Hello!</span>
-        </div>
-        <div class="block" draggable="true" data-code="console.log('MESSAGE');">
-            Console Log: <span class="editable-content" data-editable-type="string">Logged!</span>
-        </div>
-        <div class="block" draggable="true" data-code="var VARIABLE = VALUE;">
-            Set <span class="editable-content" data-editable-type="variable">x</span> = <span class="editable-content" data-editable-type="value">10</span>
-        </div>
-        <div class="block if-block" draggable="true" data-code="if (CONDITION) {">
-    <div class="if-top">If (<span class="editable-content" data-editable-type="condition">condition</span>) {</div>
-    <div class="if-content"></div>
-    <div class="if-bottom">}</div>
-</div>
-
-
-        </div>
-        <div class="workspace">
-            <div class="block-area" id="blockArea"></div>
-        </div>
-        <div class="code-pane" id="codePane"></div>
+        <!-- Beispiele für Blöcke -->
+        <div class="block" draggable="true" data-code="alert('MESSAGE');">Alert: <span class="editable-content" data-editable-type="string">Hello!</span></div>
+        <div class="block" draggable="true" data-code="console.log('MESSAGE');">Console Log: <span class="editable-content" data-editable-type="string">Logged!</span></div>
+        <div class="block" draggable="true" data-code="var VARIABLE = VALUE;">Set <span class="editable-content" data-editable-type="variable">x</span> = <span class="editable-content" data-editable-type="value">10</span></div>
+        <div class="block if-block" draggable="true" data-code="if (CONDITION) {"><div class="if-top">If (<span class="editable-content" data-editable-type="condition">condition</span>) {</div><div class="if-content"></div><div class="if-bottom">}</div></div>
     </div>
+    <div class="workspace">
+        <div class="block-area" id="blockArea"></div>
+    </div>
+    <div class="code-pane" id="codePane"></div>
+</div>
 
     <!-- JavaScript am Ende des Body, um die Performance zu verbessern -->
     <script>
 
 document.addEventListener('DOMContentLoaded', () => {
-
     const codePane = document.getElementById('codePane');
 
-    function handleDragStart(e) {
-        e.dataTransfer.setData('text/plain', e.target.dataset.code);
-    }
-
-    function handleDropOnIfContent(e) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        const code = e.dataTransfer.getData('text/plain');
-        const sourceBlock = document.querySelector(`[data-code="${code}"]`);
-        if (!sourceBlock) return;
-
-        const newBlock = sourceBlock.cloneNode(true);
-        addBlockEventListeners(newBlock);
-
-        e.target.appendChild(newBlock);
-        updateCodePane();
-    }
-
-    function handleDropOnBlockArea(e) {
-        e.preventDefault();
-
-        const code = e.dataTransfer.getData('text/plain');
-        const sourceBlock = document.querySelector(`[data-code="${code}"]`);
-        if (!sourceBlock) return;
-
-        const newBlock = sourceBlock.cloneNode(true);
-        addBlockEventListeners(newBlock);
-
-        e.target.appendChild(newBlock);
-        updateCodePane();
-    }
-
-function addBlockEventListeners(block) {
-    block.addEventListener('dragstart', handleDragStart);
-    
-    block.addEventListener('contextmenu', function(e) {
-        e.stopPropagation();  // Verhindert die Weitergabe des Events an übergeordnete Elemente
-
-        // Überprüfen, ob sich der Block direkt im if-content Bereich befindet
-        if (block.parentElement && block.parentElement.classList.contains('if-content')) {
+    function addBlockEventListeners(block) {
+        block.addEventListener('dragstart', e => e.dataTransfer.setData('text/plain', e.target.dataset.code));
+        block.addEventListener('contextmenu', function(e) {
+            e.stopPropagation();
             e.preventDefault();
             block.remove();
             updateCodePane();
-            return; // Verlassen der Funktion nach dem Löschen des Blocks
-        }
-
-        // Überprüfen Sie, ob sich der Block im Arbeitsbereich (aber nicht im if-content) befindet
-        if (block.parentElement && block.parentElement.classList.contains('block-area')) {
-            e.preventDefault();
-            block.remove();
-            updateCodePane();
-        }
-    });
-}
-
-
-
-function updateCodePane() {
-    codePane.innerHTML = '';
-    document.querySelectorAll('.block-area:not(.hidden) .block').forEach(block => {
-        let code = block.dataset.code;
-
-        block.querySelectorAll('.editable-content').forEach(span => {
-            const type = span.dataset.editableType;
-            let placeholder = type.toUpperCase();  // z.B. "CONDITION", "VARIABLE", "VALUE"
-            code = code.replace(placeholder, span.textContent.trim());
         });
+    }
 
-        if (block.classList.contains('if-block')) {
-            const innerBlocks = block.querySelector('.if-content').childNodes;
-            let innerCode = Array.from(innerBlocks).map(b => {
-                let bCode = b.dataset.code;
-                b.querySelectorAll('.editable-content').forEach(span => {
-                    const type = span.dataset.editableType;
-                    let placeholder = type.toUpperCase();
-                    bCode = bCode.replace(placeholder, span.textContent.trim());
-                });
-                return bCode;
-            }).join('\n\t');
-            code += '\n\t' + innerCode + '\n}';
-        } else if (block.parentElement.classList.contains('if-content')) {
-            return;
-        }
+    function updateCodePane() {
+        codePane.innerHTML = '';
+        const blocks = document.querySelectorAll('.block-area:not(.hidden) .block');
+        blocks.forEach(block => {
+            let code = block.dataset.code;
+            const editableContents = block.querySelectorAll('.editable-content');
+            editableContents.forEach(span => {
+                const type = span.dataset.editableType;
+                code = code.replace(type.toUpperCase(), span.textContent.trim());
+            });
+            if (block.classList.contains('if-block')) {
+                const innerBlocks = block.querySelector('.if-content').childNodes;
+                let innerCode = Array.from(innerBlocks).map(b => {
+                    let bCode = b.dataset.code;
+                    const editableContents = b.querySelectorAll('.editable-content');
+                    editableContents.forEach(span => {
+                        const type = span.dataset.editableType;
+                        bCode = bCode.replace(type.toUpperCase(), span.textContent.trim());
+                    });
+                    return bCode;
+                }).join('\n\t');
+                code += '\n\t' + innerCode + '\n}';
+            }
+            code += '\n';
+            codePane.innerHTML += code;
+        });
+    }
 
-        // Zeilenumbruch am Ende eines jeden Blocks hinzufügen
-        code += '\n';
-
-        const codeElement = document.createElement('div');
-        codeElement.textContent = code;
-        codePane.appendChild(codeElement);
-    });
-}
-
-document.querySelectorAll('.editable-content').forEach(span => {
-    span.addEventListener('click', function() {
-        const input = document.createElement('input');
-        input.value = span.textContent;
-        input.className = 'editable-input';
-        
-        // Übergang vom Span zum Eingabefeld
-        span.style.display = 'none';
-        span.parentElement.appendChild(input);
-        input.focus();
-
-        // Das Eingabefeld zurück zum Span ändern, wenn es nicht mehr im Fokus ist oder wenn die Eingabe abgeschlossen ist
-        input.addEventListener('blur', function() {
-            span.textContent = input.value;
-            input.remove();
-            span.style.display = '';
-            updateCodePane();  // Hier wird die updateCodePane Funktion aufgerufen
+    document.querySelectorAll('.editable-content').forEach(span => {
+        span.addEventListener('click', function() {
+            const input = document.createElement('input');
+            input.value = span.textContent;
+            input.className = 'editable-input';
+            span.style.display = 'none';
+            span.parentElement.appendChild(input);
+            input.focus();
+            input.addEventListener('blur', function() {
+                span.textContent = input.value;
+                input.remove();
+                span.style.display = '';
+                updateCodePane();
+            });
         });
     });
-});
 
-    document.querySelectorAll('.block').forEach(block => {
-        addBlockEventListeners(block);
-    });
-
-    document.querySelectorAll('.if-content').forEach(content => {
-        content.addEventListener('dragover', e => e.preventDefault());
-        content.addEventListener('drop', handleDropOnIfContent);
-    });
-
-    document.querySelectorAll('.block-area').forEach(area => {
+    const blockAreas = document.querySelectorAll('.block-area, .if-content');
+    blockAreas.forEach(area => {
         area.addEventListener('dragover', e => e.preventDefault());
-        area.addEventListener('drop', handleDropOnBlockArea);
+        area.addEventListener('drop', function(e) {
+            e.preventDefault();
+            const code = e.dataTransfer.getData('text/plain');
+            const sourceBlock = document.querySelector(`[data-code="${code}"]`);
+            if (!sourceBlock) return;
+            const newBlock = sourceBlock.cloneNode(true);
+            addBlockEventListeners(newBlock);
+            area.appendChild(newBlock);
+            updateCodePane();
+        });
     });
-});
 
-      
-    </script>
+    document.querySelectorAll('.block').forEach(addBlockEventListeners);
+});
+</script>
+
 </body>
 </html>
