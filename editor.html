@@ -95,24 +95,16 @@
 <body>
 
 <div class="container">
-    <div class="block-builder">
-        <h2>Erstelle einen neuen Block:</h2>
-        Block-Struktur (Verwenden Sie {...} für Block-Inhalte und [...] für editierbare Bereiche):<br>
-        <textarea id="blockStructure" rows="3" cols="30" placeholder="z.B. 'try {...} catch ([e]) {...}'"></textarea><br>
-        Code (optional):<br>
-        <textarea id="blockCode" rows="3" cols="30"></textarea><br>
-        <button onclick="createBlock()">Block erstellen</button>
-        <button onclick="exportBlocks()">Blöcke als JSON exportieren</button>
-        <pre id="exportOutput"></pre>
-    </div>
-    <div class="block-display">
-        <h2>Blöcke:</h2>
-        <div class="block-list" id="blockList"></div>
-    </div>
-    <div class="code-pane">
-        <h2>Code:</h2>
-        <!-- Hier kann der generierte Code angezeigt werden -->
-    </div>
+    <h2>Erstelle einen neuen Block:</h2>
+    Block-Struktur (Verwenden Sie {...} für Block-Inhalte und [...] für editierbare Bereiche):<br>
+    <textarea id="blockStructure" rows="3" cols="50" placeholder="z.B. 'try {...} catch ([e]) {...}'"></textarea><br>
+    <button onclick="createBlock()">Block erstellen</button>
+
+    <h2>Ablage für Blöcke:</h2>
+    <div class="block-area" id="blockList"></div>
+
+    <button onclick="exportBlocks()">Blöcke als JSON exportieren</button>
+    <pre id="exportOutput"></pre>
 </div>
 
 <script>
@@ -132,50 +124,25 @@
         const parts = blockStructure.split(/({...}|\[.*?\])/);
 
         parts.forEach((part) => {
-            const blockPart = document.createElement('div');
-            blockPart.className = 'block-part';
-
             if (part === "{...}") {
-                blockPart.className += ' block-content';
+                const blockContent = document.createElement('div');
+                blockContent.className = 'block-content';
+                block.appendChild(blockContent);
             } else if (part.startsWith("[") && part.endsWith("]")) {
                 const editable = document.createElement('span');
                 editable.className = 'editable';
                 editable.textContent = part.slice(1, -1);
                 editable.contentEditable = true;
-                blockPart.appendChild(editable);
+                block.appendChild(editable);
             } else {
-                blockPart.appendChild(document.createTextNode(part));
+                block.appendChild(document.createTextNode(part));
             }
-
-            block.appendChild(blockPart);
         });
 
         blockList.appendChild(block);
         blockStructureTextarea.value = '';
     }
-
-    function exportBlocks() {
-        const blocks = [];
-        document.querySelectorAll('.block').forEach(blockElement => {
-            const structure = [];
-            blockElement.querySelectorAll('.block-part').forEach(partElement => {
-                let text = '';
-                partElement.childNodes.forEach(node => {
-                    if (node.nodeType === Node.TEXT_NODE) {
-                        text += node.textContent;
-                    } else if (node.classList.contains('editable')) {
-                        text += `[${node.textContent}]`;
-                    }
-                });
-                structure.push(text);
-            });
-            blocks.push({structure: structure.join(' ')});
-        });
-
-        document.getElementById('exportOutput').textContent = JSON.stringify(blocks, null, 2);
-    }
 </script>
-
 </body>
 
 </html>
