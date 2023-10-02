@@ -95,16 +95,23 @@
 <body>
 
 <div class="container">
-    <h2>Erstelle einen neuen Block:</h2>
-    Block-Struktur (Verwenden Sie {...} für Block-Inhalte und [...] für editierbare Bereiche):<br>
-    <textarea id="blockStructure" rows="3" cols="50" placeholder="z.B. 'try {...} catch ([e]) {...}'"></textarea><br>
-    <button onclick="createBlock()">Block erstellen</button>
+    <div class="block-builder">
+        <h2>Erstelle einen neuen Block:</h2>
+        Block-Struktur (Verwenden Sie {...} für Block-Inhalte und [...] für editierbare Bereiche):<br>
+        <textarea id="blockStructure" rows="3" cols="50" placeholder="z.B. 'try {...} catch ([e]) {...}'"></textarea><br>
+        <button onclick="createBlock()">Block erstellen</button>
+    </div>
 
-    <h2>Ablage für Blöcke:</h2>
-    <div class="block-area" id="blockList"></div>
+    <div class="block-display">
+        <h2>Ablage für Blöcke:</h2>
+        <div class="block-area" id="blockList"></div>
+    </div>
 
-    <button onclick="exportBlocks()">Blöcke als JSON exportieren</button>
-    <pre id="exportOutput"></pre>
+    <div class="code-pane">
+        <h2>Exportierter Code:</h2>
+        <pre id="exportOutput"></pre>
+        <button onclick="exportBlocks()">Blöcke als JSON exportieren</button>
+    </div>
 </div>
 
 <script>
