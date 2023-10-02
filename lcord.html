@@ -218,8 +218,12 @@ function updateCodePane() {
 
         block.querySelectorAll('.editable-content').forEach(span => {
             const type = span.dataset.editableType;
-            let placeholder = type.toUpperCase();  // z.B. "CONDITION", "VARIABLE", "VALUE"
-            code = code.replace(placeholder, span.textContent.trim());
+            let placeholder = type.toUpperCase();
+            if (type === "string") {
+                code = code.replace('MESSAGE', `'${span.textContent.trim()}'`);
+            } else {
+                code = code.replace(placeholder, span.textContent.trim());
+            }
         });
 
         if (block.classList.contains('if-block')) {
@@ -246,6 +250,7 @@ function updateCodePane() {
         codePane.appendChild(codeElement);
     });
 }
+
 
 document.querySelectorAll('.editable-content').forEach(span => {
     span.addEventListener('click', function() {
