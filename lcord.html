@@ -150,6 +150,72 @@ body {
     <!-- JavaScript am Ende des Body, um die Performance zu verbessern -->
     <script>
 
+        
+function importBlocks(jsonData) {
+    const blocks = JSON.parse(jsonData);
+    blocks.forEach(blockData => {
+        const block = document.createElement('div');
+        block.className = 'block';
+        block.dataset.code = blockData.code;
+
+        blockData.structure.forEach(part => {
+            if (part.type === 'text') {
+                block.appendChild(document.createTextNode(part.content));
+            } else if (part.type === 'editable') {
+                const editable = document.createElement('span');
+                editable.className = 'editable-content';
+                editable.textContent = part.content;
+                editable.contentEditable = true;
+                block.appendChild(editable);
+            } else if (part.type === 'dropArea') {
+                const dropArea = document.createElement('div');
+                dropArea.className = 'drop-area';
+                block.appendChild(dropArea);
+            }
+        });
+
+        document.getElementById('blockArea').appendChild(block);
+    });
+
+    updateCodePane(); // Aktualisiert den Code-Abschnitt
+}
+
+        const importedJson = `[
+  {
+    "structure": [
+      {
+        "type": "text",
+        "content": "try { "
+      },
+      {
+        "type": "dropArea"
+      },
+      {
+        "type": "text",
+        "content": " } catch ("
+      },
+      {
+        "type": "editable",
+        "content": "e"
+      },
+      {
+        "type": "text",
+        "content": ") { "
+      },
+      {
+        "type": "dropArea"
+      },
+      {
+        "type": "text",
+        "content": " }"
+      }
+    ],
+    "code": ""
+  }
+]`;
+
+importBlocks(importedJson);
+
 document.addEventListener('DOMContentLoaded', () => {
 
     const codePane = document.getElementById('codePane');
@@ -290,70 +356,6 @@ document.querySelectorAll('.editable-content').forEach(span => {
     });
 });
         
-function importBlocks(jsonData) {
-    const blocks = JSON.parse(jsonData);
-    blocks.forEach(blockData => {
-        const block = document.createElement('div');
-        block.className = 'block';
-        block.dataset.code = blockData.code;
-
-        blockData.structure.forEach(part => {
-            if (part.type === 'text') {
-                block.appendChild(document.createTextNode(part.content));
-            } else if (part.type === 'editable') {
-                const editable = document.createElement('span');
-                editable.className = 'editable-content';
-                editable.textContent = part.content;
-                editable.contentEditable = true;
-                block.appendChild(editable);
-            } else if (part.type === 'dropArea') {
-                const dropArea = document.createElement('div');
-                dropArea.className = 'drop-area';
-                block.appendChild(dropArea);
-            }
-        });
-
-        document.getElementById('blockArea').appendChild(block);
-    });
-
-    updateCodePane(); // Aktualisiert den Code-Abschnitt
-}
-
-        const importedJson = `[
-  {
-    "structure": [
-      {
-        "type": "text",
-        "content": "try { "
-      },
-      {
-        "type": "dropArea"
-      },
-      {
-        "type": "text",
-        "content": " } catch ("
-      },
-      {
-        "type": "editable",
-        "content": "e"
-      },
-      {
-        "type": "text",
-        "content": ") { "
-      },
-      {
-        "type": "dropArea"
-      },
-      {
-        "type": "text",
-        "content": " }"
-      }
-    ],
-    "code": ""
-  }
-]`;
-
-importBlocks(importedJson);
     </script>
 </body>
 </html>
