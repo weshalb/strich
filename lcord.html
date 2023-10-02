@@ -186,6 +186,29 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCodePane();
     }
 
+function addBlockEventListeners(block) {
+    block.addEventListener('dragstart', handleDragStart);
+    
+    block.addEventListener('contextmenu', function(e) {
+        e.stopPropagation();  // Verhindert die Weitergabe des Events an übergeordnete Elemente
+
+        // Überprüfen, ob sich der Block direkt im if-content Bereich befindet
+        if (block.parentElement && block.parentElement.classList.contains('if-content')) {
+            e.preventDefault();
+            block.remove();
+            updateCodePane();
+            return; // Verlassen der Funktion nach dem Löschen des Blocks
+        }
+
+        // Überprüfen Sie, ob sich der Block im Arbeitsbereich (aber nicht im if-content) befindet
+        if (block.parentElement && block.parentElement.classList.contains('block-area')) {
+            e.preventDefault();
+            block.remove();
+            updateCodePane();
+        }
+    });
+}
+
 
 
 function updateCodePane() {
@@ -228,137 +251,44 @@ function updateCodePane() {
     });
 }
 
-    function makeEditable(element) {
-    element.addEventListener('click', function(e) {
-        e.stopPropagation();
-
-        // Wenn bereits ein Eingabefeld existiert, fügen Sie nicht noch eines hinzu.
-        if (document.querySelector('.editable-input')) return;
-
-        const input = document.createElement('input');
-        input.type = "text";
-        input.value = element.textContent.trim();
-        input.className = 'editable-input';
-
-        element.style.display = 'none';
-        element.parentElement.insertBefore(input, element);
-
-        input.focus();
-
-        // Bei "blur" oder "Enter"-Taste
-        input.addEventListener('blur', updateFromInput);
-        input.addEventListener('keydown', function(event) {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                input.blur(); // löst das blur-Ereignis aus
-            }
-        });
-    });
-}
-
-function updateFromInput(e) {
-    const input = e.target;
-    const span = input.nextSibling;
-
-    span.textContent = input.value.trim();
-    span.style.display = '';
-    input.remove();
-
-    updateCodePane(); // aktualisieren Sie den Code-Bereich sofort
-}
-
-function addBlockEventListeners(block) {
-    block.addEventListener('dragstart', handleDragStart);
-    
-    block.addEventListener('contextmenu', function(e) {
-        e.stopPropagation();  // Verhindert die Weitergabe des Events an übergeordnete Elemente
-
-        // Überprüfen, ob sich der Block direkt im if-content Bereich befindet
-        if (block.parentElement && block.parentElement.classList.contains('if-content')) {
-            e.preventDefault();
-            block.remove();
-            updateCodePane();
-            return; // Verlassen der Funktion nach dem Löschen des Blocks
-        }
-
-        // Überprüfen Sie, ob sich der Block im Arbeitsbereich (aber nicht im if-content) befindet
-        if (block.parentElement && block.parentElement.classList.contains('block-area')) {
-            e.preventDefault();
-            block.remove();
-            updateCodePane();
-        }
-    });
-
-    block.querySelectorAll('.editable-content').forEach(span => {
-        makeEditable(span);
-    });
-}
-
 
 document.querySelectorAll('.editable-content').forEach(span => {
-    span.addEventListener('click', function(e) {
-        e.stopPropagation(); // Verhindert, dass das drag/drop-Verhalten ausgelöst wird.
-
-        // Falls bereits ein Input-Element existiert, fügen Sie nicht noch ein weiteres hinzu.
-        if(document.querySelector('.editable-input')) return;
-
+    span.addEventListener('click', function() {
         const input = document.createElement('input');
-        input.type = "text";
-        input.value = span.textContent.trim();
+        input.value = span.textContent;
         input.className = 'editable-input';
         
+        // Übergang vom Span zum Eingabefeld
         span.style.display = 'none';
-        span.parentElement.insertBefore(input, span);
-
+        span.parentElement.appendChild(input);
         input.focus();
 
-        // Bei "blur" oder "Enter"-Taste
-        input.addEventListener('blur', updateFromInput);
-        input.addEventListener('keydown', function(event) {
-            if(event.key === "Enter") {
-                event.preventDefault();
-                input.blur(); // löst das blur-Ereignis aus
-            }
+        // Das Eingabefeld zurück zum Span ändern, wenn es nicht mehr im Fokus ist oder wenn die Eingabe abgeschlossen ist
+        input.addEventListener('blur', function() {
+            span.textContent = input.value;
+            input.remove();
+            span.style.display = '';
+            updateCodePane();  // Hier wird die updateCodePane Funktion aufgerufen
         });
     });
-
-    function updateFromInput(e) {
-        const input = e.target;
-        const span = input.nextSibling;
-
-        span.textContent = input.value.trim();
-        span.style.display = '';
-        input.remove();
-        
-        updateCodePane(); // aktualisieren Sie den Code-Bereich sofort
-    }
 });
 
-
-
-   // Fügen Sie dieses Stück Code hinzu:
-document.querySelectorAll('.block-area, .if-content').forEach(area => {
-    area.addEventListener('dragover', e => {
-        e.preventDefault();
-        e.stopPropagation();
+    document.querySelectorAll('.block').forEach(block => {
+        addBlockEventListeners(block);
     });
-    area.addEventListener('drop', function(e) {
-        e.stopPropagation();
-        if (e.currentTarget.classList.contains('if-content')) {
-            handleDropOnIfContent(e);
-        } else {
-            handleDropOnBlockArea(e);
-        }
+
+    document.querySelectorAll('.if-content').forEach(content => {
+        content.addEventListener('dragover', e => e.preventDefault());
+        content.addEventListener('drop', handleDropOnIfContent);
+    });
+
+    document.querySelectorAll('.block-area').forEach(area => {
+        area.addEventListener('dragover', e => e.preventDefault());
+        area.addEventListener('drop', handleDropOnBlockArea);
     });
 });
 
-
-
-
-      document.querySelectorAll('.editable-content').forEach(span => {
-    makeEditable(span);
-});
-
+      
     </script>
 </body>
 </html>
