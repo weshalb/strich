@@ -182,9 +182,11 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCodePane();
     }
 
-   function addBlockEventListeners(block) {
+function addBlockEventListeners(block) {
     block.addEventListener('dragstart', handleDragStart);
     block.addEventListener('contextmenu', function(e) {
+        e.stopPropagation();  // Verhindert die Weitergabe des Events an übergeordnete Elemente
+
         // Überprüfen Sie, ob sich der Block im Arbeitsbereich befindet
         if (block.parentElement && block.parentElement.classList.contains('block-area')) {
             e.preventDefault();
@@ -193,6 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 }
+
 
 
     function updateCodePane() {
