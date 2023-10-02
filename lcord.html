@@ -184,10 +184,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function addBlockEventListeners(block) {
     block.addEventListener('dragstart', handleDragStart);
+    
     block.addEventListener('contextmenu', function(e) {
         e.stopPropagation();  // Verhindert die Weitergabe des Events an übergeordnete Elemente
 
-        // Überprüfen Sie, ob sich der Block im Arbeitsbereich befindet
+        // Überprüfen, ob sich der Block direkt im if-content Bereich befindet
+        if (block.parentElement && block.parentElement.classList.contains('if-content')) {
+            e.preventDefault();
+            block.remove();
+            updateCodePane();
+            return; // Verlassen der Funktion nach dem Löschen des Blocks
+        }
+
+        // Überprüfen Sie, ob sich der Block im Arbeitsbereich (aber nicht im if-content) befindet
         if (block.parentElement && block.parentElement.classList.contains('block-area')) {
             e.preventDefault();
             block.remove();
