@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blöcke Ersteller</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 20px;
+        }
+
+        .block-creation {
+            margin-bottom: 20px;
+        }
+
+        .block-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .block {
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .block-part {
+            margin: 5px 0;
+        }
+
+        .editable {
+            border: 1px dashed #333;
+            padding: 2px 5px;
+            display: inline-block;
+            margin: 0 3px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="block-creation">
+        <h2>Erstelle einen neuen Block:</h2>
+        Block-Struktur (Verwenden Sie {...} für Block-Inhalte und [...] für editierbare Bereiche):<br>
+        <textarea id="blockStructure" rows="5" cols="50" placeholder="z.B. 'try {...} catch ([e]) {...}'"></textarea><br>
+        <button onclick="createBlock()">Block erstellen</button>
+    </div>
+
+    <div class="block-list" id="blockList">
+        <!-- Hier werden die erstellten Blöcke angezeigt -->
+    </div>
+
+    <script>
+        function createBlock() {
+            const blockList = document.getElementById('blockList');
+            const blockStructureTextarea = document.getElementById('blockStructure');
+            const blockStructure = blockStructureTextarea.value;
+
+            // Überprüfen, ob der Block-Inhalt eingegeben wurde
+            if (!blockStructure.trim()) {
+                alert('Bitte geben Sie die Blockstruktur ein.');
+                return;
+            }
+
+            const block = document.createElement('div');
+            block.className = 'block';
+
+            const parts = blockStructure.split(/{(.*?)}/);
+
+            parts.forEach((part, index) => {
+                const blockPart = document.createElement('div');
+                blockPart.className = 'block-part';
+
+                if (index % 2 === 0) {
+                    // Textbereiche zwischen {...}
+                    const subParts = part.split(/\[(.*?)\]/);
+                    subParts.forEach((subPart, subIndex) => {
+                        if (subIndex % 2 === 0) {
+                            blockPart.appendChild(document.createTextNode(subPart));
+                        } else {
+                            const editable = document.createElement('span');
+                            editable.className = 'editable';
+                            editable.textContent = subPart;
+                            editable.contentEditable = true;
+                            blockPart.appendChild(editable);
+                        }
+                    });
+                } else {
+                    blockPart.textContent = "...";
+                }
+
+                block.appendChild(blockPart);
+            });
+
+            blockList.appendChild(block);
+            blockStructureTextarea.value = '';  // Textarea zurücksetzen
+        }
+    </script>
+
+</body>
+
+</html>
