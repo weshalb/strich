@@ -115,7 +115,6 @@
     </div>
 </div>
 
-
 <script>
     function createBlock() {
         const blockList = document.getElementById('blockList');
@@ -132,31 +131,44 @@
         const block = document.createElement('div');
         block.className = 'block';
 
-        const parts = blockStructure.split(/{(.*?)}/);
+        if (blockStructure.includes("{...}")) {
+            block.classList.add("if-block");
+            block.draggable = true;
 
-        parts.forEach((part, index) => {
-            const blockPart = document.createElement('div');
-            blockPart.className = 'block-part';
+            const ifTop = document.createElement('div');
+            ifTop.className = "if-top";
+            ifTop.innerHTML = `If (<span class="editable-content" data-editable-type="condition">condition</span>) {`;
+            block.appendChild(ifTop);
 
-            if (index % 2 === 0) {
-                const subParts = part.split(/\[(.*?)\]/);
-                subParts.forEach((subPart, subIndex) => {
-                    if (subIndex % 2 === 0) {
-                        blockPart.appendChild(document.createTextNode(subPart));
-                    } else {
-                        const editable = document.createElement('span');
-                        editable.className = 'editable';
-                        editable.textContent = subPart;
-                        editable.contentEditable = true;
-                        blockPart.appendChild(editable);
-                    }
-                });
-            } else {
-                blockPart.textContent = "...";
-            }
+            const ifContent = document.createElement('div');
+            ifContent.className = "if-content";
+            block.appendChild(ifContent);
 
-            block.appendChild(blockPart);
-        });
+            const ifBottom = document.createElement('div');
+            ifBottom.className = "if-bottom";
+            ifBottom.textContent = "}";
+            block.appendChild(ifBottom);
+
+        } else {
+            // Implementierung für normale Blöcke (ohne "{...}")
+            const parts = blockStructure.split(/\[(.*?)\]/);
+
+            parts.forEach((part, index) => {
+                const blockPart = document.createElement('div');
+                blockPart.className = 'block-part';
+
+                if (index % 2 === 0) {
+                    blockPart.appendChild(document.createTextNode(part));
+                } else {
+                    const editable = document.createElement('span');
+                    editable.className = 'editable';
+                    editable.textContent = part;
+                    editable.contentEditable = true;
+                    blockPart.appendChild(editable);
+                }
+                block.appendChild(blockPart);
+            });
+        }
 
         const blockCodeElement = document.createElement('div');
         blockCodeElement.className = 'block-code';
@@ -173,19 +185,15 @@
         document.querySelectorAll('.block').forEach(blockElement => {
             const structure = [];
             blockElement.querySelectorAll('.block-part').forEach(partElement => {
-                if (partElement.textContent.trim() === '...') {
-                    structure.push('{...}');
-                } else {
-                    let text = '';
-                    partElement.childNodes.forEach(node => {
-                        if (node.nodeType === Node.TEXT_NODE) {
-                            text += node.textContent;
-                        } else if (node.classList.contains('editable')) {
-                            text += `[${node.textContent}]`;
-                        }
-                    });
-                    structure.push(text);
-                }
+                let text = '';
+                partElement.childNodes.forEach(node => {
+                    if (node.nodeType === Node.TEXT_NODE) {
+                        text += node.textContent;
+                    } else if (node.classList.contains('editable')) {
+                        text += `[${node.textContent}]`;
+                    }
+                });
+                structure.push(text);
             });
             const blockCode = blockElement.querySelector('.block-code').textContent;
             blocks.push({structure: structure.join(' '), code: blockCode});
