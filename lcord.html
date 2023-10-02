@@ -253,7 +253,9 @@ function updateCodePane() {
 
 
 document.querySelectorAll('.editable-content').forEach(span => {
-    span.addEventListener('click', function() {
+    span.addEventListener('click', function(e) {
+        e.stopPropagation(); // Verhindert, dass das drag/drop-Verhalten ausgelöst wird.
+
         const input = document.createElement('input');
         input.value = span.textContent;
         input.className = 'editable-input';
@@ -268,10 +270,11 @@ document.querySelectorAll('.editable-content').forEach(span => {
             span.textContent = input.value;
             input.remove();
             span.style.display = '';
-            updateCodePane();  // Hier wird die updateCodePane Funktion aufgerufen
+            updateCodePane();  // Aktualisieren Sie den Code-Bereich sofort
         });
     });
 });
+
 
     document.querySelectorAll('.block').forEach(block => {
         addBlockEventListeners(block);
