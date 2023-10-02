@@ -10,14 +10,27 @@
             font-family: Arial, sans-serif;
             background-color: #181818;
             color: #e0e0e0;
+            margin: 0;
         }
 
         .container {
-            padding: 20px;
+            display: flex;
+            height: 100vh;
         }
 
-        textarea, button {
-            margin-top: 10px;
+        .block-builder, .block-display, .code-pane {
+            padding: 20px;
+            background-color: #282828;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .block-builder {
+            border-right: 1px solid #444;
+        }
+
+        .block-display {
+            border-right: 1px solid #444;
         }
 
         .block-list {
@@ -27,18 +40,17 @@
             margin-top: 20px;
         }
 
-        .block {
+        .block, .if-top, .if-bottom {
+            background-color: #383838;
             padding: 10px;
             border: 1px solid #ccc;
-            background-color: #383838;
             border-radius: 5px;
             cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            width: 300px;
+            transition: background-color 0.3s;
+            width: 100%;
         }
 
-        .block:hover {
+        .block:hover, .if-top:hover, .if-bottom:hover {
             background-color: #484848;
         }
 
@@ -53,6 +65,7 @@
             margin: 0 3px;
             color: #e0e0e0;
             background-color: #282828;
+            cursor: text;
         }
 
         .editable:hover {
@@ -64,24 +77,44 @@
             font-family: monospace;
             color: #00cc66;
         }
+
+        .if-content {
+            margin: 10px;
+            border: 1px dashed #444;
+            min-height: 50px;
+            background-color: #181818;
+        }
+
+        textarea, button {
+            margin-top: 10px;
+        }
+
     </style>
 </head>
 
 <body>
 
 <div class="container">
-    <h2>Erstelle einen neuen Block:</h2>
-    Block-Struktur (Verwenden Sie {...} für Block-Inhalte und [...] für editierbare Bereiche):<br>
-    <textarea id="blockStructure" rows="3" cols="50" placeholder="z.B. 'try {...} catch ([e]) {...}'"></textarea><br>
-    Code (optional):<br>
-    <textarea id="blockCode" rows="3" cols="50"></textarea><br>
-    <button onclick="createBlock()">Block erstellen</button>
-
-    <div class="block-list" id="blockList"></div>
-
-    <button onclick="exportBlocks()">Blöcke als JSON exportieren</button>
-    <pre id="exportOutput"></pre>
+    <div class="block-builder">
+        <h2>Erstelle einen neuen Block:</h2>
+        Block-Struktur (Verwenden Sie {...} für Block-Inhalte und [...] für editierbare Bereiche):<br>
+        <textarea id="blockStructure" rows="3" cols="30" placeholder="z.B. 'try {...} catch ([e]) {...}'"></textarea><br>
+        Code (optional):<br>
+        <textarea id="blockCode" rows="3" cols="30"></textarea><br>
+        <button onclick="createBlock()">Block erstellen</button>
+        <button onclick="exportBlocks()">Blöcke als JSON exportieren</button>
+        <pre id="exportOutput"></pre>
+    </div>
+    <div class="block-display">
+        <h2>Blöcke:</h2>
+        <div class="block-list" id="blockList"></div>
+    </div>
+    <div class="code-pane">
+        <h2>Code:</h2>
+        <!-- Hier kann der generierte Code angezeigt werden -->
+    </div>
 </div>
+
 
 <script>
     function createBlock() {
