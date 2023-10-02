@@ -129,15 +129,14 @@
         const block = document.createElement('div');
         block.className = 'block';
 
-        const parts = blockStructure.split(/({...}|...|\[.*?\])/);
+        const parts = blockStructure.split(/({...}|\[.*?\])/);
 
         parts.forEach((part) => {
             const blockPart = document.createElement('div');
             blockPart.className = 'block-part';
 
             if (part === "{...}") {
-                blockPart.textContent = "...";
-                blockPart.contentEditable = true;
+                blockPart.className += ' block-content';
             } else if (part.startsWith("[") && part.endsWith("]")) {
                 const editable = document.createElement('span');
                 editable.className = 'editable';
