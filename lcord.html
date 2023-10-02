@@ -123,11 +123,6 @@ body {
   </style>
    <div class="container">
     <div class="block-selection">
-        <!-- Hinzugefügte Import-Sektion -->
-        <h2>Blöcke importieren:</h2>
-        <textarea id="importArea" rows="5" cols="50" placeholder="Fügen Sie den JSON-Code Ihrer Blöcke hier ein..."></textarea><br>
-        <button onclick="importBlocks()">Blöcke importieren</button>
-        <!-- Ende der hinzugefügten Import-Sektion -->
         
         <div class="block" draggable="true" data-code="alert('MESSAGE');">
             Alert: <span class="editable-content" data-editable-type="string">Hello!</span>
@@ -294,47 +289,6 @@ document.querySelectorAll('.editable-content').forEach(span => {
         area.addEventListener('drop', handleDropOnBlockArea);
     });
 });
-
-      
-    function importBlocks() {
-        const importArea = document.getElementById('importArea');
-        let blocks;
-        
-        try {
-            blocks = JSON.parse(importArea.value);
-        } catch(e) {
-            alert('Fehler beim Parsen des JSONs: ' + e.message);
-            return;
-        }
-
-        const blockSelection = document.querySelector('.block-selection');
-
-        blocks.forEach(blockData => {
-            const blockElement = document.createElement('div');
-            blockElement.className = 'block';
-            blockElement.draggable = true;
-            blockElement.dataset.code = blockData.code;
-
-            blockData.structure.split(/\[(.*?)\]/).forEach((part, idx) => {
-                const span = document.createElement('span');
-                
-                if (idx % 2 === 0) {
-                    span.textContent = part;
-                } else {
-                    span.className = 'editable-content';
-                    span.dataset.editableType = 'string';
-                    span.textContent = part;
-                }
-                
-                blockElement.appendChild(span);
-            });
-
-            blockSelection.appendChild(blockElement);
-            addBlockEventListeners(blockElement);
-        });
-        
-        updateCodePane();
-    }
     </script>
 </body>
 </html>
