@@ -215,10 +215,23 @@ function addBlockEventListeners(block) {
     codePane.innerHTML = '';
     document.querySelectorAll('.block-area:not(.hidden) .block').forEach(block => {
         let code = block.dataset.code;
+        block.querySelectorAll('.editable-content').forEach(span => {
+            const type = span.dataset.editableType;
+            let placeholder = type.toUpperCase();  // z.B. "CONDITION", "VARIABLE", "VALUE"
+            code = code.replace(placeholder, span.textContent.trim());
+        });
 
         if (block.classList.contains('if-block')) {
             const innerBlocks = block.querySelector('.if-content').childNodes;
-            let innerCode = Array.from(innerBlocks).map(b => b.dataset.code).join('\n\t');
+            let innerCode = Array.from(innerBlocks).map(b => {
+                let bCode = b.dataset.code;
+                b.querySelectorAll('.editable-content').forEach(span => {
+                    const type = span.dataset.editableType;
+                    let placeholder = type.toUpperCase();
+                    bCode = bCode.replace(placeholder, span.textContent.trim());
+                });
+                return bCode;
+            }).join('\n\t');
             code += '\n\t' + innerCode + '\n}';
         } else if (block.parentElement.classList.contains('if-content')) {
             // Wenn es ein innerer Block eines if-Blocks ist, überspringen Sie diesen Block
@@ -233,6 +246,7 @@ function addBlockEventListeners(block) {
         codePane.appendChild(codeElement);
     });
 }
+
 
 
 
