@@ -215,6 +215,7 @@ function addBlockEventListeners(block) {
     codePane.innerHTML = '';
     document.querySelectorAll('.block-area:not(.hidden) .block').forEach(block => {
         let code = block.dataset.code;
+
         block.querySelectorAll('.editable-content').forEach(span => {
             const type = span.dataset.editableType;
             let placeholder = type.toUpperCase();  // z.B. "CONDITION", "VARIABLE", "VALUE"
@@ -234,7 +235,6 @@ function addBlockEventListeners(block) {
             }).join('\n\t');
             code += '\n\t' + innerCode + '\n}';
         } else if (block.parentElement.classList.contains('if-content')) {
-            // Wenn es ein innerer Block eines if-Blocks ist, überspringen Sie diesen Block
             return;
         }
 
@@ -246,6 +246,28 @@ function addBlockEventListeners(block) {
         codePane.appendChild(codeElement);
     });
 }
+
+document.querySelectorAll('.editable-content').forEach(span => {
+    span.addEventListener('click', function() {
+        const input = document.createElement('input');
+        input.value = span.textContent;
+        input.className = 'editable-input';
+        
+        // Übergang vom Span zum Eingabefeld
+        span.style.display = 'none';
+        span.parentElement.appendChild(input);
+        input.focus();
+
+        // Das Eingabefeld zurück zum Span ändern, wenn es nicht mehr im Fokus ist oder wenn die Eingabe abgeschlossen ist
+        input.addEventListener('blur', function() {
+            span.textContent = input.value;
+            input.remove();
+            span.style.display = '';
+            updateCodePane();  // Hier wird die updateCodePane Funktion aufgerufen
+        });
+    });
+});
+
 
 
 
