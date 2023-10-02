@@ -130,9 +130,9 @@ body {
             <div class="block" draggable="true" data-code="console.log('Logged!');">Console Log</div>
             <div class="block" draggable="true" data-code="var x = 10;">Set Variable</div>
             <div class="block if-block" draggable="true" data-code="ifCode">
-                <div class="if-top">If</div>
+                <div class="if-top">If () {</div>
                 <div class="if-content"></div>
-                <div class="if-bottom">End If</div>
+                <div class="if-bottom">}</div>
             </div>
         </div>
         <div class="workspace">
@@ -191,14 +191,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateCodePane() {
-        codePane.innerHTML = '';
-        document.querySelectorAll('.block-area:not(.hidden) .block').forEach(block => {
-            const code = block.dataset.code;
-            const codeElement = document.createElement('div');
-            codeElement.textContent = code;
-            codePane.appendChild(codeElement);
-        });
-    }
+    codePane.innerHTML = '';
+    document.querySelectorAll('.block-area:not(.hidden) .block').forEach(block => {
+        let code = block.dataset.code;
+        if (block.classList.contains('if-block')) {
+            const innerBlocks = block.querySelector('.if-content').childNodes;
+            let innerCode = Array.from(innerBlocks).map(b => b.dataset.code).join('\n\t');
+            code += '\n\t' + innerCode + '\n}';
+        }
+        const codeElement = document.createElement('div');
+        codeElement.textContent = code;
+        codePane.appendChild(codeElement);
+    });
+}
+
 
     document.querySelectorAll('.block').forEach(block => {
         addBlockEventListeners(block);
