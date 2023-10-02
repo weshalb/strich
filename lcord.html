@@ -337,19 +337,26 @@ document.querySelectorAll('.editable-content').forEach(span => {
 
 
     document.querySelectorAll('.block').forEach(block => {
-        addBlockEventListeners(block);
-    });
+    block.addEventListener('dragover', e => e.stopPropagation());
+    block.addEventListener('drop', e => e.stopPropagation());
+});
 
     document.querySelectorAll('.if-content').forEach(content => {
         content.addEventListener('dragover', e => e.preventDefault());
         content.addEventListener('drop', handleDropOnIfContent);
     });
 
-    document.querySelectorAll('.block-area').forEach(area => {
-        area.addEventListener('dragover', e => e.preventDefault());
-        area.addEventListener('drop', handleDropOnBlockArea);
+   document.querySelectorAll('.block-area, .if-content').forEach(area => {
+    area.addEventListener('dragover', e => e.preventDefault());
+    area.addEventListener('drop', function(e) {
+        if (e.currentTarget.classList.contains('if-content')) {
+            handleDropOnIfContent(e);
+        } else {
+            handleDropOnBlockArea(e);
+        }
     });
 });
+
 
       document.querySelectorAll('.editable-content').forEach(span => {
     makeEditable(span);
