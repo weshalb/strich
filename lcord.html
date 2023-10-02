@@ -252,38 +252,25 @@ function addBlockEventListeners(block) {
     });
 });
 
-        document.querySelectorAll('.editable-content').forEach(el => {
-    el.addEventListener('click', function() {
-        const currentText = el.textContent;
-        const inputType = el.getAttribute('data-editable-type');
+document.querySelectorAll('.editable-content').forEach(span => {
+    span.addEventListener('click', function() {
+        const oldValue = span.textContent;
+        span.contentEditable = "true";
+        span.focus();
 
-        let inputElement;
-        if (inputType === "string" || inputType === "variable" || inputType === "value") {
-            inputElement = document.createElement('input');
-            inputElement.value = currentText;
-        } else if (inputType === "condition") {
-            inputElement = document.createElement('select');
-            const options = ["true", "false", "x > 10", "y < 5"];
-            options.forEach(option => {
-                const optionElement = document.createElement('option');
-                optionElement.value = option;
-                optionElement.textContent = option;
-                if (currentText === option) optionElement.selected = true;
-                inputElement.appendChild(optionElement);
-            });
-        }
+        span.addEventListener('blur', function() {
+            span.contentEditable = "false";
+            // Hier können Sie auch weitere Aktionen ausführen, wenn Sie möchten
+        });
 
-        el.textContent = '';
-        el.appendChild(inputElement);
-
-        inputElement.focus();
-        inputElement.addEventListener('blur', function() {
-            const newValue = inputElement.value;
-            el.removeChild(inputElement);
-            el.textContent = newValue;
+        span.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                span.blur();
+            }
         });
     });
 });
+
 
       
     </script>
