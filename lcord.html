@@ -211,7 +211,7 @@ function addBlockEventListeners(block) {
 
 
 
-   function updateCodePane() {
+function updateCodePane() {
     codePane.innerHTML = '';
     document.querySelectorAll('.block-area:not(.hidden) .block').forEach(block => {
         let code = block.dataset.code;
@@ -268,12 +268,6 @@ document.querySelectorAll('.editable-content').forEach(span => {
     });
 });
 
-
-
-
-
-
-
     document.querySelectorAll('.block').forEach(block => {
         addBlockEventListeners(block);
     });
@@ -286,27 +280,6 @@ document.querySelectorAll('.editable-content').forEach(span => {
     document.querySelectorAll('.block-area').forEach(area => {
         area.addEventListener('dragover', e => e.preventDefault());
         area.addEventListener('drop', handleDropOnBlockArea);
-    });
-});
-
-document.querySelectorAll('.editable-content').forEach(span => {
-    span.addEventListener('click', function() {
-        const input = document.createElement('input');
-        input.value = span.textContent;
-        input.className = 'editable-input';
-        
-        // Übergang vom Span zum Eingabefeld
-        span.style.display = 'none';
-        span.parentElement.appendChild(input);
-        input.focus();
-
-        // Das Eingabefeld zurück zum Span ändern, wenn es nicht mehr im Fokus ist oder wenn die Eingabe abgeschlossen ist
-        input.addEventListener('blur', function() {
-            span.textContent = input.value;
-            input.remove();
-            span.style.display = '';
-            updateCodePane();
-        });
     });
 });
 
