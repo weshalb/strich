@@ -268,22 +268,25 @@ function addBlockEventListeners(block) {
 
 document.querySelectorAll('.editable-content').forEach(span => {
     span.addEventListener('click', function() {
-        const oldValue = span.textContent;
-        span.contentEditable = "true";
-        span.focus();
+        const input = document.createElement('input');
+        input.value = span.textContent;
+        input.className = 'editable-input';
+        
+        // Übergang vom Span zum Eingabefeld
+        span.style.display = 'none';
+        span.parentElement.appendChild(input);
+        input.focus();
 
-        span.addEventListener('blur', function() {
-            span.contentEditable = "false";
-            // Hier können Sie auch weitere Aktionen ausführen, wenn Sie möchten
-        });
-
-        span.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                span.blur();
-            }
+        // Das Eingabefeld zurück zum Span ändern, wenn es nicht mehr im Fokus ist oder wenn die Eingabe abgeschlossen ist
+        input.addEventListener('blur', function() {
+            span.textContent = input.value;
+            input.remove();
+            span.style.display = '';
+            updateCodePane();
         });
     });
 });
+
 
 
       
