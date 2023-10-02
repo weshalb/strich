@@ -158,25 +158,25 @@
 }
 
     function exportBlocks() {
-        const blocks = [];
-        document.querySelectorAll('.block').forEach(blockElement => {
-            const structure = [];
-            blockElement.querySelectorAll('.block-part').forEach(partElement => {
-                let text = '';
-                partElement.childNodes.forEach(node => {
-                    if (node.nodeType === Node.TEXT_NODE) {
-                        text += node.textContent;
-                    } else if (node.classList.contains('editable')) {
-                        text += `[${node.textContent}]`;
-                    }
-                });
-                structure.push(text);
-            });
-            blocks.push({structure: structure.join(' ')});
+    const blocks = [];
+    document.querySelectorAll('.block').forEach(blockElement => {
+        const structure = [];
+        const code = blockElement.dataset.code || '';
+        blockElement.childNodes.forEach(node => {
+            if (node.nodeType === Node.TEXT_NODE) {
+                structure.push({type: 'text', content: node.textContent});
+            } else if (node.classList.contains('editable')) {
+                structure.push({type: 'editable', content: node.textContent});
+            } else if (node.className === 'drop-area') {
+                structure.push({type: 'dropArea'});
+            }
         });
+        blocks.push({structure, code});
+    });
 
-        document.getElementById('exportOutput').textContent = JSON.stringify(blocks, null, 2);
-    }
+    document.getElementById('exportOutput').textContent = JSON.stringify(blocks, null, 2);
+}
+
 </script>
 
 </body>
