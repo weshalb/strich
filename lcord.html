@@ -150,111 +150,6 @@ body {
     <!-- JavaScript am Ende des Body, um die Performance zu verbessern -->
     <script>
 
-function updateCodePane() {
-    codePane.innerHTML = '';
-    document.querySelectorAll('.block-area:not(.hidden) .block').forEach(block => {
-        let code = block.dataset.code;
-
-        block.querySelectorAll('.editable-content').forEach(span => {
-            const type = span.dataset.editableType;
-            let placeholder = type.toUpperCase();
-            if (type === "string") {
-                code = code.replace('MESSAGE', `'${span.textContent.trim()}'`);
-            } else {
-                code = code.replace(placeholder, span.textContent.trim());
-            }
-        });
-
-        if (block.classList.contains('if-block')) {
-            const innerBlocks = block.querySelector('.if-content').childNodes;
-            let innerCode = Array.from(innerBlocks).map(b => {
-                let bCode = b.dataset.code;
-                b.querySelectorAll('.editable-content').forEach(span => {
-                    const type = span.dataset.editableType;
-                    let placeholder = type.toUpperCase();
-                    bCode = bCode.replace(placeholder, span.textContent.trim());
-                });
-                return bCode;
-            }).join('\n\t');
-            code += '\n\t' + innerCode + '\n}';
-        } else if (block.parentElement.classList.contains('if-content')) {
-            return;
-        }
-
-        // Zeilenumbruch am Ende eines jeden Blocks hinzufügen
-        code += '\n';
-
-        const codeElement = document.createElement('div');
-        codeElement.textContent = code;
-        codePane.appendChild(codeElement);
-    });
-}
-        
-function importBlocks(jsonData) {
-    const blocks = JSON.parse(jsonData);
-    blocks.forEach(blockData => {
-        const block = document.createElement('div');
-        block.className = 'block';
-        block.dataset.code = blockData.code;
-
-        blockData.structure.forEach(part => {
-            if (part.type === 'text') {
-                block.appendChild(document.createTextNode(part.content));
-            } else if (part.type === 'editable') {
-                const editable = document.createElement('span');
-                editable.className = 'editable-content';
-                editable.textContent = part.content;
-                editable.contentEditable = true;
-                block.appendChild(editable);
-            } else if (part.type === 'dropArea') {
-                const dropArea = document.createElement('div');
-                dropArea.className = 'drop-area';
-                block.appendChild(dropArea);
-            }
-        });
-
-        document.getElementById('blockArea').appendChild(block);
-    });
-
-    updateCodePane(); // Aktualisiert den Code-Abschnitt
-}
-
-        const importedJson = `[
-  {
-    "structure": [
-      {
-        "type": "text",
-        "content": "try { "
-      },
-      {
-        "type": "dropArea"
-      },
-      {
-        "type": "text",
-        "content": " } catch ("
-      },
-      {
-        "type": "editable",
-        "content": "e"
-      },
-      {
-        "type": "text",
-        "content": ") { "
-      },
-      {
-        "type": "dropArea"
-      },
-      {
-        "type": "text",
-        "content": " }"
-      }
-    ],
-    "code": ""
-  }
-]`;
-
-importBlocks(importedJson);
-
 document.addEventListener('DOMContentLoaded', () => {
 
     const codePane = document.getElementById('codePane');
@@ -318,6 +213,45 @@ function addBlockEventListeners(block) {
 
 
 
+function updateCodePane() {
+    codePane.innerHTML = '';
+    document.querySelectorAll('.block-area:not(.hidden) .block').forEach(block => {
+        let code = block.dataset.code;
+
+        block.querySelectorAll('.editable-content').forEach(span => {
+            const type = span.dataset.editableType;
+            let placeholder = type.toUpperCase();
+            if (type === "string") {
+                code = code.replace('MESSAGE', `'${span.textContent.trim()}'`);
+            } else {
+                code = code.replace(placeholder, span.textContent.trim());
+            }
+        });
+
+        if (block.classList.contains('if-block')) {
+            const innerBlocks = block.querySelector('.if-content').childNodes;
+            let innerCode = Array.from(innerBlocks).map(b => {
+                let bCode = b.dataset.code;
+                b.querySelectorAll('.editable-content').forEach(span => {
+                    const type = span.dataset.editableType;
+                    let placeholder = type.toUpperCase();
+                    bCode = bCode.replace(placeholder, span.textContent.trim());
+                });
+                return bCode;
+            }).join('\n\t');
+            code += '\n\t' + innerCode + '\n}';
+        } else if (block.parentElement.classList.contains('if-content')) {
+            return;
+        }
+
+        // Zeilenumbruch am Ende eines jeden Blocks hinzufügen
+        code += '\n';
+
+        const codeElement = document.createElement('div');
+        codeElement.textContent = code;
+        codePane.appendChild(codeElement);
+    });
+}
 
 
 document.querySelectorAll('.editable-content').forEach(span => {
