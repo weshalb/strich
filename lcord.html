@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blöcke-Editor im Dunkelmodus</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #181818;
+    color: #e0e0e0;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.block-selection, .workspace, .code-pane {
+    background-color: #282828;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.block, .if-top, .if-bottom {
+    background-color: #383838;
+    color: #e0e0e0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.block:hover {
+    background-color: #484848;
+}
+
+.workspace {
+    border-left: 1px solid #444;
+}
+
+.page-controls button {
+    background-color: #383838;
+    color: #e0e0e0;
+    border: 1px solid #e0e0e0;
+    padding: 5px 15px;
+    margin-right: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.page-controls button:hover {
+    background-color: #484848;
+}
+
+.block-area {
+    margin-top: 30px;
+    height: calc(100% - 50px);
+    border: 1px dashed #444;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #181818;
+}
+
+.if-block {
+    border: none;
+    padding: 0;
+    margin: 0;
+    background: none;
+    position: relative;
+}
+
+.if-content {
+    border-left: 1px solid #444;
+    border-right: 1px solid #444;
+    padding: 10px;
+    min-height: 50px;
+    background-color: #282828;
+    margin-bottom: 10px;
+}
+
+.code-pane {
+    width: 25%;
+    overflow-y: auto;
+    border-left: 1px solid #444;
+}
+
+  </style>
+    <div class="container">
+        <div class="block-selection">
+            <div class="block" draggable="true" data-code="CodeBlock1">Block 1</div>
+            <div class="block" draggable="true" data-code="CodeBlock2">Block 2</div>
+            <div class="block" draggable="true" data-code="alert('Hello!');">Alert</div>
+            <div class="block" draggable="true" data-code="console.log('Logged!');">Console Log</div>
+            <div class="block" draggable="true" data-code="var x = 10;">Set Variable</div>
+            <div class="block if-block" draggable="true" data-code="ifCode">
+                <div class="if-top">If</div>
+                <div class="if-content"></div>
+                <div class="if-bottom">End If</div>
+            </div>
+        </div>
+        <div class="workspace">
+            <div class="page-controls">
+                <button id="addPage">+ Seite hinzufügen</button>
+                <button class="page-command">Seite 1</button>
+            </div>
+            <div class="block-area" id="blockArea"></div>
+        </div>
+        <div class="code-pane" id="codePane"></div>
+    </div>
+
+    <!-- JavaScript am Ende des Body, um die Performance zu verbessern -->
+    <script>
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    const codePane = document.getElementById('codePane');
+
+    function handleDragStart(e) {
+        e.dataTransfer.setData('text/plain', e.target.dataset.code);
+    }
+
+    function handleDropOnIfContent(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const code = e.dataTransfer.getData('text/plain');
+        const sourceBlock = document.querySelector(`[data-code="${code}"]`);
+        if (!sourceBlock) return;
+
+        const newBlock = sourceBlock.cloneNode(true);
+        addBlockEventListeners(newBlock);
+
+        e.target.appendChild(newBlock);
+        updateCodePane();
+    }
+
+    function handleDropOnBlockArea(e) {
+        e.preventDefault();
+
+        const code = e.dataTransfer.getData('text/plain');
+        const sourceBlock = document.querySelector(`[data-code="${code}"]`);
+        if (!sourceBlock) return;
+
+        const newBlock = sourceBlock.cloneNode(true);
+        addBlockEventListeners(newBlock);
+
+        e.target.appendChild(newBlock);
+        updateCodePane();
+    }
+
+    function addBlockEventListeners(block) {
+        block.addEventListener('dragstart', handleDragStart);
+        block.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            block.remove();
+            updateCodePane();
+        });
+    }
+
+    function updateCodePane() {
+        codePane.innerHTML = '';
+        document.querySelectorAll('.block-area:not(.hidden) .block').forEach(block => {
+            const code = block.dataset.code;
+            const codeElement = document.createElement('div');
+            codeElement.textContent = code;
+            codePane.appendChild(codeElement);
+        });
+    }
+
+    document.querySelectorAll('.block').forEach(block => {
+        addBlockEventListeners(block);
+    });
+
+    document.querySelectorAll('.if-content').forEach(content => {
+        content.addEventListener('dragover', e => e.preventDefault());
+        content.addEventListener('drop', handleDropOnIfContent);
+    });
+
+    document.querySelectorAll('.block-area').forEach(area => {
+        area.addEventListener('dragover', e => e.preventDefault());
+        area.addEventListener('drop', handleDropOnBlockArea);
+    });
+
+    document.getElementById('addPage').addEventListener('click', function() {
+        const pageCount = document.querySelectorAll('.page-command').length + 1;
+
+        const newButton = document.createElement('button');
+        newButton.innerText = 'Seite ' + pageCount;
+        newButton.classList.add('page-command');
+        newButton.addEventListener('click', function() {
+            switchPage(pageCount);
+        });
+
+        document.querySelector('.page-controls').appendChild(newButton);
+
+        const newBlockArea = document.createElement('div');
+        newBlockArea.classList.add('block-area', 'hidden');
+        document.getElementById('blockArea').parentElement.appendChild(newBlockArea);
+    });
+
+    function switchPage(pageNumber) {
+        document.querySelectorAll('.block-area').forEach((area, index) => {
+            if (index === pageNumber - 1) {
+                area.classList.remove('hidden');
+            } else {
+                area.classList.add('hidden');
+            }
+        });
+        updateCodePane();
+    }
+
+    switchPage(1);  // Laden der ersten Seite beim Start
+});
+
+      
+    </script>
+</body>
+</html>
