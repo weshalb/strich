@@ -256,24 +256,41 @@ document.querySelectorAll('.editable-content').forEach(span => {
     span.addEventListener('click', function(e) {
         e.stopPropagation(); // Verhindert, dass das drag/drop-Verhalten ausgelöst wird.
 
+        // Falls bereits ein Input-Element existiert, fügen Sie nicht noch ein weiteres hinzu.
+        if(document.querySelector('.editable-input')) return;
+
         const input = document.createElement('input');
-        input.value = span.textContent;
+        input.type = "text";
+        input.value = span.textContent.trim();
         input.className = 'editable-input';
         
-        // Übergang vom Span zum Eingabefeld
         span.style.display = 'none';
-        span.parentElement.appendChild(input);
+        span.parentElement.insertBefore(input, span);
+
         input.focus();
 
-        // Das Eingabefeld zurück zum Span ändern, wenn es nicht mehr im Fokus ist oder wenn die Eingabe abgeschlossen ist
-        input.addEventListener('blur', function() {
-            span.textContent = input.value;
-            input.remove();
-            span.style.display = '';
-            updateCodePane();  // Aktualisieren Sie den Code-Bereich sofort
+        // Bei "blur" oder "Enter"-Taste
+        input.addEventListener('blur', updateFromInput);
+        input.addEventListener('keydown', function(event) {
+            if(event.key === "Enter") {
+                event.preventDefault();
+                input.blur(); // löst das blur-Ereignis aus
+            }
         });
     });
+
+    function updateFromInput(e) {
+        const input = e.target;
+        const span = input.nextSibling;
+
+        span.textContent = input.value.trim();
+        span.style.display = '';
+        input.remove();
+        
+        updateCodePane(); // aktualisieren Sie den Code-Bereich sofort
+    }
 });
+
 
 
     document.querySelectorAll('.block').forEach(block => {
