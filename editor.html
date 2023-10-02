@@ -89,6 +89,13 @@
             margin-top: 10px;
         }
 
+           .drop-area {
+    border: 1px dashed #444;
+    min-height: 30px;
+    margin: 5px 0;
+    background-color: #181818;
+}
+
     </style>
 </head>
 
@@ -116,39 +123,39 @@
 
 <script>
     function createBlock() {
-        const blockList = document.getElementById('blockList');
-        const blockStructureTextarea = document.getElementById('blockStructure');
-        const blockStructure = blockStructureTextarea.value;
+    const blockList = document.getElementById('blockList');
+    const blockStructureTextarea = document.getElementById('blockStructure');
+    const blockStructure = blockStructureTextarea.value;
 
-        if (!blockStructure.trim()) {
-            alert('Bitte geben Sie die Blockstruktur ein.');
-            return;
-        }
-
-        const block = document.createElement('div');
-        block.className = 'block';
-
-        const parts = blockStructure.split(/({...}|\[.*?\])/);
-
-        parts.forEach((part) => {
-            if (part === "{...}") {
-                const blockContent = document.createElement('div');
-                blockContent.className = 'block-content';
-                block.appendChild(blockContent);
-            } else if (part.startsWith("[") && part.endsWith("]")) {
-                const editable = document.createElement('span');
-                editable.className = 'editable';
-                editable.textContent = part.slice(1, -1);
-                editable.contentEditable = true;
-                block.appendChild(editable);
-            } else {
-                block.appendChild(document.createTextNode(part));
-            }
-        });
-
-        blockList.appendChild(block);
-        blockStructureTextarea.value = '';
+    if (!blockStructure.trim()) {
+        alert('Bitte geben Sie die Blockstruktur ein.');
+        return;
     }
+
+    const block = document.createElement('div');
+    block.className = 'block';
+
+    const parts = blockStructure.split(/({...}|\[.*?\])/);
+
+    parts.forEach((part) => {
+        if (part === "{...}") {
+            const dropArea = document.createElement('div');
+            dropArea.className = 'drop-area';
+            block.appendChild(dropArea);
+        } else if (part.startsWith("[") && part.endsWith("]")) {
+            const editable = document.createElement('span');
+            editable.className = 'editable';
+            editable.textContent = part.slice(1, -1);
+            editable.contentEditable = true;
+            block.appendChild(editable);
+        } else {
+            block.appendChild(document.createTextNode(part));
+        }
+    });
+
+    blockList.appendChild(block);
+    blockStructureTextarea.value = '';
+}
 
     function exportBlocks() {
         const blocks = [];
