@@ -336,10 +336,11 @@ document.querySelectorAll('.editable-content').forEach(span => {
 
 
 
-    document.querySelectorAll('.block').forEach(block => {
+ document.querySelectorAll('.block').forEach(block => {
     block.addEventListener('dragover', e => e.stopPropagation());
     block.addEventListener('drop', e => e.stopPropagation());
 });
+
 
     document.querySelectorAll('.if-content').forEach(content => {
         content.addEventListener('dragover', e => e.preventDefault());
@@ -347,8 +348,12 @@ document.querySelectorAll('.editable-content').forEach(span => {
     });
 
    document.querySelectorAll('.block-area, .if-content').forEach(area => {
-    area.addEventListener('dragover', e => e.preventDefault());
+    area.addEventListener('dragover', e => {
+        e.preventDefault();
+        e.stopPropagation();
+    });
     area.addEventListener('drop', function(e) {
+        e.stopPropagation();
         if (e.currentTarget.classList.contains('if-content')) {
             handleDropOnIfContent(e);
         } else {
@@ -356,6 +361,7 @@ document.querySelectorAll('.editable-content').forEach(span => {
         }
     });
 });
+
 
 
       document.querySelectorAll('.editable-content').forEach(span => {
