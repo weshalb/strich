@@ -111,6 +111,14 @@
             font-family: "Courier New", Courier, monospace;
             line-height: 1.5;
         }
+
+        .drop-space {
+            min-height: 100px;
+            border: 2px dashed #444;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 
@@ -121,9 +129,9 @@
         <div class="workspace">
             <div class="block-selection" id="blockSelection"></div>
             
-            <!-- Adding a dedicated drop area for your blocks -->
-            <div class="drop-space" id="dropSpace" ondragover="allowDrop(event)" ondrop="handleDrop(event)">
-                Drag your blocks here...
+            <!-- Dedizierter Drop-Bereich für Ihre Blöcke -->
+            <div class="drop-space" id="dropSpace" ondragover="allowDrop(event)" ondrop="handleBlockDrop(event)">
+                Ziehen Sie Ihre Blöcke hierhin...
             </div>
             
             <div class="code-pane" id="codePane"></div>
@@ -171,11 +179,18 @@
             event.preventDefault();
         }
 
-        function handleDrop(event) {
+        function handleBlockDrop(event) {
             event.preventDefault();
             const blockHTML = event.dataTransfer.getData('text/plain');
+            const newBlock = document.createElement('div');
+            newBlock.outerHTML = blockHTML;
+            newBlock.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                newBlock.remove();
+                updateCodePane();
+            });
             const dropSpace = document.getElementById('dropSpace');
-            dropSpace.innerHTML = blockHTML; // Places the block inside the drop area
+            dropSpace.appendChild(newBlock);
             updateCodePane();
         }
 
