@@ -1,101 +1,116 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Imported Blocks Editor</title>
     <style>
+        /* Existing and improved CSS styles go here */
+
         body {
-    font-family: Arial, sans-serif;
-    background-color: #181818;
-    color: #e0e0e0;
-    margin: 0;
-    padding: 0;
-}
+            font-family: Arial, sans-serif;
+            background-color: #181818;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+        }
 
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100vh;
-    padding: 20px;
-}
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
 
-textarea {
-    width: 80%;
-    margin-bottom: 10px;
-    padding: 10px;
-    background-color: #282828;
-    color: #e0e0e0;
-    border: 1px solid #444;
-    border-radius: 5px;
-}
+        textarea {
+            width: 80%;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #282828;
+            color: #e0e0e0;
+            border: 1px solid #444;
+            border-radius: 5px;
+        }
 
-button {
-    background-color: #383838;
-    color: #e0e0e0;
-    border: none;
-    border-radius: 5px;
-    padding: 5px 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
+        button {
+            background-color: #383838;
+            color: #e0e0e0;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-bottom: 20px;
+        }
 
-button:hover {
-    background-color: #484848;
-}
+        button:hover {
+            background-color: #484848;
+        }
 
-.block-selection, .workspace, .code-pane {
-    width: 80%;
-    background-color: #282828;
-    padding: 20px;
-    margin-top: 10px;
-    overflow-y: auto;
-    border-radius: 5px;
-}
+        .workspace {
+            display: flex;
+            width: 80%;
+            gap: 20px;
+        }
 
-.block {
-    background-color: #383838;
-    color: #e0e0e0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 5px 10px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
+        .block-selection,
+        .code-pane {
+            flex: 1;
+            background-color: #282828;
+            padding: 20px;
+            overflow-y: auto;
+            border-radius: 5px;
+        }
 
-.block:hover {
-    background-color: #484848;
-}
+        .block {
+            background-color: #383838;
+            color: #e0e0e0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
 
-.editable-content {
-    background-color: #181818;
-    padding: 2px 5px;
-    border-radius: 3px;
-    display: inline-block;
-}
+        .block:hover {
+            background-color: #484848;
+        }
 
-.drop-area {
-    width: 50px;
-    height: 30px;
-    background-color: #181818;
-    display: inline-block;
-    margin: 0 5px;
-    border: 2px dashed #444;
-    border-radius: 5px;
-    vertical-align: middle;
-}
+        .editable-content {
+            background-color: #181818;
+            padding: 2px 5px;
+            border-radius: 3px;
+            display: inline-block;
+        }
 
-.code-pane {
-    margin-top: 20px;
-    padding: 10px;
-    height: 200px;
-    overflow-y: auto;
-    border: 1px solid #444;
-    border-radius: 5px;
-}
+        .drop-area {
+            width: 100px;
+            height: 60px;
+            background-color: #181818;
+            margin: 0 5px;
+            border: 2px dashed #444;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
+        .code-pane {
+            padding: 10px;
+            height: calc(100vh - 380px);
+            overflow-y: auto;
+            border: 1px solid #444;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            font-family: "Courier New", Courier, monospace;
+            line-height: 1.5;
+        }
     </style>
 </head>
 
@@ -105,7 +120,7 @@ button:hover {
         <button onclick="importBlocks()">Import Blocks</button>
         <div class="workspace">
             <div class="block-selection" id="blockSelection"></div>
-            <div class="code-pane" id="codePane"></div>
+            <div class="code-pane" id="codePane">Generated Code Appears Here...</div>
         </div>
     </div>
 
@@ -140,61 +155,53 @@ button:hover {
                 });
 
                 blockSelection.appendChild(block);
+                block.addEventListener('dragstart', function(event) {
+                    event.dataTransfer.setData('text/plain', block.outerHTML);
+                });
             });
         }
 
         function handleDrop(event) {
             event.preventDefault();
-            const blockCode = event.dataTransfer.getData('block-code');
-            const block = document.querySelector(`[data-code="${blockCode}"]`).cloneNode(true);
-            event.target.appendChild(block);
+            const blockHTML = event.dataTransfer.getData('text/plain');
+            event.target.innerHTML = blockHTML;
             updateCodePane();
         }
 
         function updateCodePane() {
-    const codePane = document.getElementById('codePane');
-    const blocks = document.querySelectorAll('.block-selection .block');
-    
-    let code = '';
-    
-    blocks.forEach(block => {
-        let blockCode = block.dataset.code;
+            const codePane = document.getElementById('codePane');
+            const blocks = document.querySelectorAll('.block-selection .block');
+            let code = '';
 
-        // If the block contains editable content
-        block.querySelectorAll('.editable-content').forEach(editable => {
-            let placeholder = 'PLACEHOLDER';  // Generic placeholder, adjust if necessary
-            blockCode = blockCode.replace(placeholder, editable.textContent.trim());
-        });
+            blocks.forEach(block => {
+                let blockCode = block.dataset.code || "";
 
-        // If the block contains a drop area (like if-blocks)
-        const dropArea = block.querySelector('.drop-area');
-        if (dropArea) {
-            let nestedCode = '';
-            dropArea.querySelectorAll('.block').forEach(nestedBlock => {
-                let nestedBlockCode = nestedBlock.dataset.code;
-                nestedBlock.querySelectorAll('.editable-content').forEach(editable => {
-                    let placeholder = 'PLACEHOLDER'; // Generic placeholder, adjust if necessary
-                    nestedBlockCode = nestedBlockCode.replace(placeholder, editable.textContent.trim());
+                // If the block contains editable content
+                block.querySelectorAll('.editable-content').forEach(editable => {
+                    let placeholder = 'PLACEHOLDER';  // Generic placeholder, adjust if necessary
+                    blockCode = blockCode.replace(placeholder, editable.textContent.trim());
                 });
-                nestedCode += `\t${nestedBlockCode}\n`; // Add indentation for nested code
+
+                // If the block contains a drop area (like if-blocks)
+                const dropArea = block.querySelector('.drop-area');
+                if (dropArea) {
+                    let nestedCode = '';
+                    dropArea.querySelectorAll('.block').forEach(nestedBlock => {
+                        let nestedBlockCode = nestedBlock.dataset.code;
+                        nestedBlock.querySelectorAll('.editable-content').forEach(editable => {
+                            let placeholder = 'PLACEHOLDER'; // Generic placeholder, adjust if necessary
+                            nestedBlockCode = nestedBlockCode.replace(placeholder, editable.textContent.trim());
+                        });
+                        nestedCode += `\t${nestedBlockCode}\n`; // Add indentation for nested code
+                    });
+                    blockCode = blockCode.replace('//NESTED_CODE', nestedCode); // Replace a NESTED_CODE placeholder in your block's code with the nested code
+                }
+
+                code += `${blockCode}\n`;
             });
-            blockCode = blockCode.replace('//NESTED_CODE', nestedCode); // Replace a NESTED_CODE placeholder in your block's code with the nested code
+
+            codePane.textContent = code;
         }
-
-        code += `${blockCode}\n`;
-    });
-    
-    codePane.textContent = code;
-}
-
-
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.block').forEach(block => {
-                block.ondragstart = (event) => {
-                    event.dataTransfer.setData('block-code', block.dataset.code);
-                };
-            });
-        });
     </script>
 </body>
 
