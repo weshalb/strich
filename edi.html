@@ -120,7 +120,13 @@
         <button onclick="importBlocks()">Import Blocks</button>
         <div class="workspace">
             <div class="block-selection" id="blockSelection"></div>
-            <div class="code-pane" id="codePane">Generated Code Appears Here...</div>
+            
+            <!-- Adding a dedicated drop area for your blocks -->
+            <div class="drop-space" id="dropSpace" ondragover="allowDrop(event)" ondrop="handleDrop(event)">
+                Drag your blocks here...
+            </div>
+            
+            <div class="code-pane" id="codePane"></div>
         </div>
     </div>
 
@@ -161,10 +167,15 @@
             });
         }
 
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
         function handleDrop(event) {
             event.preventDefault();
             const blockHTML = event.dataTransfer.getData('text/plain');
-            event.target.innerHTML = blockHTML;
+            const dropSpace = document.getElementById('dropSpace');
+            dropSpace.innerHTML = blockHTML; // Places the block inside the drop area
             updateCodePane();
         }
 
