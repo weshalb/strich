@@ -140,94 +140,104 @@
 
     <script>
         function importBlocks() {
-            const jsonData = document.getElementById('importArea').value;
-            const blocks = JSON.parse(jsonData);
-            const blockSelection = document.getElementById('blockSelection');
-            blockSelection.innerHTML = '';
+    const jsonData = document.getElementById('importArea').value;
+    const blocks = JSON.parse(jsonData);
+    const blockSelection = document.getElementById('blockSelection');
+    blockSelection.innerHTML = '';
 
-            blocks.forEach(blockData => {
-                const block = document.createElement('div');
-                block.className = 'block';
-                block.draggable = true;
+    blocks.forEach(blockData => {
+        const block = document.createElement('div');
+        block.className = 'block';
+        block.draggable = true;
+        block.addEventListener('dragstart', function(event) {
+            event.dataTransfer.setData('text/plain', block.outerHTML);
+        });
+        
+        blockData.structure.forEach(part => {
+            if (part.type === 'text') {
+                block.appendChild(document.createTextNode(part.content));
+            } else if (part.type === 'editable') {
+                const editable = document.createElement('span');
+                editable.className = 'editable-content';
+                editable.textContent = part.content;
+                editable.contentEditable = true;
+                block.appendChild(editable);
+            } else if (part.type === 'dropArea') {
+                const dropArea = document.createElement('div');
+                dropArea.className = 'drop-area';
+                block.appendChild(dropArea);
+            }
+        });
 
-                blockData.structure.forEach(part => {
-                    if (part.type === 'text') {
-                        block.appendChild(document.createTextNode(part.content));
-                    } else if (part.type === 'editable') {
-                        const editable = document.createElement('span');
-                        editable.className = 'editable-content';
-                        editable.textContent = part.content;
-                        editable.contentEditable = true;
-                        block.appendChild(editable);
-                    } else if (part.type === 'dropArea') {
-                        const dropArea = document.createElement('div');
-                        dropArea.className = 'drop-area';
-                        dropArea.ondrop = handleDrop;
-                        dropArea.ondragover = (event) => event.preventDefault();
-                        block.appendChild(dropArea);
-                    }
-                });
+        blockSelection.appendChild(block);
+    });
+}
 
-                blockSelection.appendChild(block);
-                block.addEventListener('dragstart', function(event) {
-                    event.dataTransfer.setData('text/plain', block.outerHTML);
-                });
-            });
-        }
+function allowDrop(event) {
+    event.preventDefault();
+}
 
-        function allowDrop(event) {
-            event.preventDefault();
-        }
+function handleBlockDrop(event) {
+    event.preventDefault();
+    const blockHTML = event.dataTransfer.getData('text/plain');
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = blockHTML;
+    const newBlock = tempDiv.firstChild;
+    
+    newBlock.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        newBlock.remove();
+        updateCodePane();
+    });
+    
+    event.target.appendChild(newBlock);
+    updateCodePane();
+}
 
-        function handleBlockDrop(event) {
-            event.preventDefault();
-            const blockHTML = event.dataTransfer.getData('text/plain');
-            const newBlock = document.createElement('div');
-            newBlock.outerHTML = blockHTML;
-            newBlock.addEventListener('contextmenu', function(e) {
-                e.preventDefault();
-                newBlock.remove();
-                updateCodePane();
-            });
-            const dropSpace = document.getElementById('dropSpace');
-            dropSpace.appendChild(newBlock);
-            updateCodePane();
-        }
+function updateCodePane() {
+    const codePane = document.getElementById('codePane');
+    const blocks = document.querySelectorAll('.workspace .block');
+    let generatedCode = '';
 
-        function updateCodePane() {
-            const codePane = document.getElementById('codePane');
-            const blocks = document.querySelectorAll('.block-selection .block');
-            let code = '';
+    blocks.forEach(block => {
+        generatedCode += extractCodeFromBlock(block) + '\n';
+    });
 
-            blocks.forEach(block => {
-                let blockCode = block.dataset.code || "";
+    codePane.textContent = generatedCode.trim();
+}
 
-                // If the block contains editable content
-                block.querySelectorAll('.editable-content').forEach(editable => {
-                    let placeholder = 'PLACEHOLDER';  // Generic placeholder, adjust if necessary
-                    blockCode = blockCode.replace(placeholder, editable.textContent.trim());
-                });
+function extractCodeFromBlock(block) {
+    let code = block.dataset.code || '';
 
-                // If the block contains a drop area (like if-blocks)
-                const dropArea = block.querySelector('.drop-area');
-                if (dropArea) {
-                    let nestedCode = '';
-                    dropArea.querySelectorAll('.block').forEach(nestedBlock => {
-                        let nestedBlockCode = nestedBlock.dataset.code;
-                        nestedBlock.querySelectorAll('.editable-content').forEach(editable => {
-                            let placeholder = 'PLACEHOLDER'; // Generic placeholder, adjust if necessary
-                            nestedBlockCode = nestedBlockCode.replace(placeholder, editable.textContent.trim());
-                        });
-                        nestedCode += `\t${nestedBlockCode}\n`; // Add indentation for nested code
-                    });
-                    blockCode = blockCode.replace('//NESTED_CODE', nestedCode); // Replace a NESTED_CODE placeholder in your block's code with the nested code
-                }
+    block.querySelectorAll('.editable-content').forEach(editable => {
+        let placeholder = 'PLACEHOLDER';  // Das ist ein generischer Platzhalter. Diesen sollten Sie ggf. anpassen.
+        code = code.replace(placeholder, editable.textContent.trim());
+    });
 
-                code += `${blockCode}\n`;
-            });
+    // Wenn der Block eine Drop-Bereich enthält (z.B. für if-Anweisungen)
+    const dropArea = block.querySelector('.drop-area');
+    if (dropArea) {
+        let nestedCode = '';
+        const nestedBlocks = dropArea.querySelectorAll('.block');
+        nestedBlocks.forEach(nestedBlock => {
+            nestedCode += '\t' + extractCodeFromBlock(nestedBlock) + '\n';
+        });
+        code = code.replace('//NESTED_CODE', nestedCode.trim());
+    }
 
-            codePane.textContent = code;
-        }
+    return code;
+}
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.block').forEach(block => {
+        block.addEventListener('dragstart', (event) => {
+            event.dataTransfer.setData('text/plain', block.outerHTML);
+        });
+    });
+});
+
     </script>
 </body>
 
