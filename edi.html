@@ -141,18 +141,15 @@
     <script>
         function importBlocks() {
     const jsonData = document.getElementById('importArea').value;
-    const blocks = JSON.parse(jsonData);
+    const blocksData = JSON.parse(jsonData);
     const blockSelection = document.getElementById('blockSelection');
     blockSelection.innerHTML = '';
 
-    blocks.forEach(blockData => {
+    blocksData.forEach(blockData => {
         const block = document.createElement('div');
         block.className = 'block';
         block.draggable = true;
-        block.addEventListener('dragstart', function(event) {
-            event.dataTransfer.setData('text/plain', block.outerHTML);
-        });
-        
+
         blockData.structure.forEach(part => {
             if (part.type === 'text') {
                 block.appendChild(document.createTextNode(part.content));
@@ -170,29 +167,42 @@
         });
 
         blockSelection.appendChild(block);
+        block.addEventListener('dragstart', handleBlockDragStart);
+        block.addEventListener('dragover', handleBlockDragOver);
+        block.addEventListener('drop', handleBlockDrop);
     });
+
+    // Nach dem Importieren der Blöcke, aktualisieren Sie den CodePane.
+    updateCodePane();
 }
 
-function allowDrop(event) {
+function handleBlockDragStart(event) {
+    event.dataTransfer.setData('text/plain', 'BLOCK');
+}
+
+function handleBlockDragOver(event) {
     event.preventDefault();
 }
 
 function handleBlockDrop(event) {
     event.preventDefault();
-    const blockHTML = event.dataTransfer.getData('text/plain');
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = blockHTML;
-    const newBlock = tempDiv.firstChild;
-    
-    newBlock.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-        newBlock.remove();
-        updateCodePane();
-    });
-    
-    event.target.appendChild(newBlock);
+    const blockType = event.dataTransfer.getData('text/plain');
+    if (blockType !== 'BLOCK') return;
+
+    const sourceBlock = event.target.closest('.block');
+    const destinationDropArea = event.target.closest('.drop-area');
+
+    if (!sourceBlock || !destinationDropArea) return;
+
+    destinationDropArea.appendChild(sourceBlock);
     updateCodePane();
 }
+
+
+function allowDrop(event) {
+    event.preventDefault();
+}
+
 
 function updateCodePane() {
     const codePane = document.getElementById('codePane');
