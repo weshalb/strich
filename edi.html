@@ -65,18 +65,21 @@
         }
 
         .block {
-            background-color: #383838;
-            color: #e0e0e0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 5px 10px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
+    background-color: #383838;
+    color: #e0e0e0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    flex-direction: column; /* Änderung hier */
+    align-items: flex-start; /* Änderung hier */
+    gap: 5px;
+    width: 100%; /* Änderung hier */
+}
+
 
         .block:hover {
             background-color: #484848;
@@ -89,17 +92,18 @@
             display: inline-block;
         }
 
-        .drop-area {
-            width: 100px;
-            height: 60px;
-            background-color: #181818;
-            margin: 0 5px;
-            border: 2px dashed #444;
-            border-radius: 5px;
-            align-items: center;
-            justify-content: center;
-            display: block;
-        }
+       .drop-area {
+    width: 100%; /* Änderung hier */
+    height: 60px;
+    background-color: #181818;
+    margin: 0 5px;
+    border: 2px dashed #444;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 
         .code-pane {
             padding: 10px;
