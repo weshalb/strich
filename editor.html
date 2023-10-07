@@ -176,11 +176,10 @@
     blockStructureTextarea.value = '';
 }
 
-    function exportBlocks() {
+   function exportBlocks() {
     const blocks = [];
     document.querySelectorAll('.block').forEach(blockElement => {
         const structure = [];
-        const code = blockElement.dataset.code || '';
         blockElement.childNodes.forEach(node => {
             if (node.nodeType === Node.TEXT_NODE) {
                 structure.push({type: 'text', content: node.textContent});
@@ -190,20 +189,17 @@
                 structure.push({type: 'dropArea'});
             }
         });
-        blocks.push({structure, code});
+        blocks.push({structure});
     });
 
-    document.getElementById('exportOutput').textContent = JSON.stringify(blocks, null, 2);
+    // Datei zum Download bereitstellen
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(blocks, null, 2));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "blocks.json");
+    downloadAnchorNode.click();
+}
 
-         // Datei zum Download bereitstellen
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(blocks, null, 2));
-        const downloadAnchorNode = document.createElement('a');
-        downloadAnchorNode.setAttribute("href", dataStr);
-        downloadAnchorNode.setAttribute("download", "blocks.json");
-        document.body.appendChild(downloadAnchorNode);
-        downloadAnchorNode.click();
-        downloadAnchorNode.remove();
-    }
 </script>
 
 </body>
