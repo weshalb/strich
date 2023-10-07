@@ -185,12 +185,12 @@
     reader.onload = function(e) {
         const jsonData = e.target.result;
         const blocks = JSON.parse(jsonData);
-        renderBlocks(blocks);
+        importBlocks(blocks); // Verwenden Sie die importBlocks Funktion zum Rendern
     };
     reader.readAsText(file);
 }
 
-function renderBlocks(blocks) {
+function importBlocks(blocks) {
     const blockSelection = document.getElementById('blockSelection');
     blockSelection.innerHTML = '';
 
