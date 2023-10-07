@@ -124,8 +124,9 @@
 
 <body>
     <div class="container">
-        <textarea id="importArea" rows="10" placeholder="Paste your exported JSON here..."></textarea>
-        <button onclick="importBlocks()">Import Blocks</button>
+        <input type="file" id="fileInput">
+<button onclick="loadFile()">Blöcke importieren</button>
+
         <div class="workspace">
             <div class="block-selection" id="blockSelection"></div>
             
@@ -139,9 +140,24 @@
     </div>
 
     <script>
-        function importBlocks() {
-    const jsonData = document.getElementById('importArea').value;
-    const blocks = JSON.parse(jsonData);
+        function loadFile() {
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+    if (!file) {
+        alert('Bitte wählen Sie eine Datei aus.');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const jsonData = e.target.result;
+        const blocks = JSON.parse(jsonData);
+        renderBlocks(blocks);
+    };
+    reader.readAsText(file);
+}
+
+function renderBlocks(blocks) {
     const blockSelection = document.getElementById('blockSelection');
     blockSelection.innerHTML = '';
 
