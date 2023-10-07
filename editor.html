@@ -96,6 +96,24 @@
     background-color: #181818;
 }
 
+        h2 {
+            border-bottom: 1px solid #444;
+            padding-bottom: 10px;
+        }
+
+        button {
+            background-color: #383838;
+            border: none;
+            padding: 10px 15px;
+            color: #e0e0e0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background-color: #484848;
+        }
     </style>
 </head>
 
@@ -104,8 +122,10 @@
 <div class="container">
     <div class="block-builder">
         <h2>Erstelle einen neuen Block:</h2>
-        Block-Struktur (Verwenden Sie {...} für Block-Inhalte und [...] für editierbare Bereiche):<br>
-        <textarea id="blockStructure" rows="3" cols="50" placeholder="z.B. 'try {...} catch ([e]) {...}'"></textarea><br>
+        <label>
+            Block-Struktur (Verwenden Sie {...} für Block-Inhalte und [...] für editierbare Bereiche):<br>
+            <textarea id="blockStructure" rows="3" cols="50" placeholder="z.B. 'try {...} catch ([e]) {...}'"></textarea>
+        </label><br>
         <button onclick="createBlock()">Block erstellen</button>
     </div>
 
@@ -116,8 +136,7 @@
 
     <div class="code-pane">
         <h2>Exportierter Code:</h2>
-        <pre id="exportOutput"></pre>
-        <button onclick="exportBlocks()">Blöcke als JSON exportieren</button>
+        <button onclick="exportBlocks()">Blöcke als JSON-Datei exportieren</button>
     </div>
 </div>
 
@@ -175,10 +194,17 @@
     });
 
     document.getElementById('exportOutput').textContent = JSON.stringify(blocks, null, 2);
-}
 
+         // Datei zum Download bereitstellen
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(blocks, null, 2));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", "blocks.json");
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+    }
 </script>
 
 </body>
-
 </html>
