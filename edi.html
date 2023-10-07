@@ -119,13 +119,50 @@
             padding: 10px;
             margin-top: 20px;
         }
+
+        .file-input-wrapper {
+    position: relative;
+    background-color: #383838;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+.file-input-wrapper:hover {
+    background-color: #484848;
+}
+
+#fileLabel {
+    color: #e0e0e0;
+    cursor: pointer;
+}
+
+.drop-space {
+    min-height: 100px;
+    border: 2px dashed #444;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column; /* Damit Blöcke vertikal angeordnet werden */
+    align-items: flex-start; /* Damit Blöcke am Anfang des Drop-Bereichs ausgerichtet werden */
+}
+
     </style>
 </head>
 
 <body>
     <div class="container">
-        <input type="file" id="fileInput">
+        <div class="file-input-wrapper">
+    <label for="fileInput" id="fileLabel">Datei auswählen...</label>
+    <input type="file" id="fileInput" style="display:none">
+</div>
 <button onclick="loadFile()">Blöcke importieren</button>
+
 
         <div class="workspace">
             <div class="block-selection" id="blockSelection"></div>
@@ -252,6 +289,11 @@ document.addEventListener('DOMContentLoaded', () => {
             event.dataTransfer.setData('text/plain', block.outerHTML);
         });
     });
+});
+
+        document.getElementById('fileInput').addEventListener('change', function() {
+    const fileName = this.files[0].name;
+    document.getElementById('fileLabel').textContent = fileName;
 });
 
     </script>
