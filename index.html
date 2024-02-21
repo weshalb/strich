@@ -52,6 +52,7 @@
       margin: 20px 0; /* Margin oben und unten */
       font-size: 24px;
       cursor: pointer; /* Cursor ändern, um Klick zu signalisieren */
+      transition: transform 0.5s ease; /* Übergangseffekt für Transformationen */
     }
     .box:hover {
       background-color: rgba(255, 255, 255, 0.2); /* Hervorhebung bei Hover */
@@ -84,21 +85,18 @@
 
     document.querySelectorAll('.box').forEach(box => {
       box.addEventListener('click', () => {
-        activateSpin();
+        activateSpin(box);
       });
     });
 
-    function activateSpin() {
-      document.querySelectorAll('.spin').forEach(box => {
-        box.innerHTML = '?'; // Zurücksetzen auf Fragezeichen
-        box.classList.add('spin'); // Klasse hinzufügen, um Animation zu aktivieren
-      });
+    function activateSpin(box) {
+      box.innerHTML = '?'; // Zurücksetzen auf Fragezeichen
+      box.classList.add('spin'); // Klasse hinzufügen, um Animation zu aktivieren
       setTimeout(() => {
-        const randomIndex1 = Math.floor(Math.random() * genres.length);
-        const randomIndex2 = Math.floor(Math.random() * genres.length);
-        document.getElementById('genre1').innerHTML = genres[randomIndex1];
-        document.getElementById('genre2').innerHTML = genres[randomIndex2];
-      }, 2000); // 2 Sekunden warten, bevor die Zufalls-Genres angezeigt werden
+        const randomIndex = Math.floor(Math.random() * genres.length);
+        box.innerHTML = genres[randomIndex]; // Zufälliges Genre einfügen
+        box.classList.remove('spin'); // Klasse entfernen, um Animation zu deaktivieren
+      }, 2000); // 2 Sekunden warten, bevor das zufällige Genre angezeigt wird
     }
   </script>
 </body>
