@@ -30,13 +30,14 @@
     }
     .content {
       display: flex;
+      flex-direction: column; /* Unterer Inhalt untereinander */
       justify-content: center;
       align-items: center;
       height: calc(100vh - 100px); /* Vollständige Höhe abzüglich Höhe des Headers */
     }
     .row {
       display: flex;
-      justify-content: space-around;
+      justify-content: center;
       width: 80%;
     }
     .box {
@@ -47,10 +48,18 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin: 20px 0;
+      margin: 20px;
+      font-size: 24px;
     }
     .box:hover {
       background-color: rgba(255, 255, 255, 0.2); /* Hervorhebung bei Hover */
+    }
+    .spin {
+      animation: spin 2s infinite ease-in-out; /* Animation für das Glücksrad */
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -64,24 +73,43 @@
   </header>
   <div class="content">
     <div class="row">
-      <div class="box">Genre</div>
-      <div class="box">Genre</div>
+      <div class="box spin" id="genre1">?</div>
+      <div class="box spin" id="genre2">?</div>
     </div>
   </div>
   <script>
-    // Hier kannst du JavaScript hinzufügen, um die Navigation zu steuern oder weitere Interaktionen zu ermöglichen.
     const producerBtn = document.getElementById('producerBtn');
     const editorBtn = document.getElementById('editorBtn');
+    const genres = ['Rock', 'Pop', 'Electronic', 'Hip Hop', 'R&B', 'Jazz', 'Classical', 'Reggae', 'Funk', 'Metal'];
 
     producerBtn.addEventListener('click', () => {
-      // Hier kannst du die Logik für den Producer-Modus implementieren
       console.log('Producer mode activated');
+      activateSpin();
     });
 
     editorBtn.addEventListener('click', () => {
-      // Hier kannst du die Logik für den Editor-Modus implementieren
       console.log('Editor mode activated');
+      deactivateSpin();
     });
+
+    function activateSpin() {
+      document.querySelectorAll('.spin').forEach(box => {
+        box.innerHTML = '?'; // Zurücksetzen auf Fragezeichen
+        box.classList.add('spin'); // Klasse hinzufügen, um Animation zu aktivieren
+      });
+      setTimeout(() => {
+        const randomIndex1 = Math.floor(Math.random() * genres.length);
+        const randomIndex2 = Math.floor(Math.random() * genres.length);
+        document.getElementById('genre1').innerHTML = genres[randomIndex1];
+        document.getElementById('genre2').innerHTML = genres[randomIndex2];
+      }, 2000); // 2 Sekunden warten, bevor die Zufalls-Genres angezeigt werden
+    }
+
+    function deactivateSpin() {
+      document.querySelectorAll('.spin').forEach(box => {
+        box.classList.remove('spin'); // Klasse entfernen, um Animation zu deaktivieren
+      });
+    }
   </script>
 </body>
 </html>
