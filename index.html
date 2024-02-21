@@ -37,7 +37,8 @@
     }
     .row {
       display: flex;
-      justify-content: center;
+      flex-direction: column; /* Boxen untereinander anordnen */
+      align-items: center;
       width: 80%;
     }
     .box {
@@ -48,8 +49,9 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin: 20px;
+      margin: 20px 0; /* Margin oben und unten */
       font-size: 24px;
+      cursor: pointer; /* Cursor ändern, um Klick zu signalisieren */
     }
     .box:hover {
       background-color: rgba(255, 255, 255, 0.2); /* Hervorhebung bei Hover */
@@ -73,23 +75,17 @@
   </header>
   <div class="content">
     <div class="row">
-      <div class="box spin" id="genre1">?</div>
-      <div class="box spin" id="genre2">?</div>
+      <div class="box" id="genre1">?</div>
+      <div class="box" id="genre2">?</div>
     </div>
   </div>
   <script>
-    const producerBtn = document.getElementById('producerBtn');
-    const editorBtn = document.getElementById('editorBtn');
     const genres = ['Rock', 'Pop', 'Electronic', 'Hip Hop', 'R&B', 'Jazz', 'Classical', 'Reggae', 'Funk', 'Metal'];
 
-    producerBtn.addEventListener('click', () => {
-      console.log('Producer mode activated');
-      activateSpin();
-    });
-
-    editorBtn.addEventListener('click', () => {
-      console.log('Editor mode activated');
-      deactivateSpin();
+    document.querySelectorAll('.box').forEach(box => {
+      box.addEventListener('click', () => {
+        activateSpin();
+      });
     });
 
     function activateSpin() {
@@ -103,12 +99,6 @@
         document.getElementById('genre1').innerHTML = genres[randomIndex1];
         document.getElementById('genre2').innerHTML = genres[randomIndex2];
       }, 2000); // 2 Sekunden warten, bevor die Zufalls-Genres angezeigt werden
-    }
-
-    function deactivateSpin() {
-      document.querySelectorAll('.spin').forEach(box => {
-        box.classList.remove('spin'); // Klasse entfernen, um Animation zu deaktivieren
-      });
     }
   </script>
 </body>
