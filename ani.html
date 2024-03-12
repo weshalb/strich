@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Character Animation Viewer</title>
+  <style>
+    #canvas-container {
+      width: 100%;
+      height: 500px; /* Adjust height as needed */
+    }
+  </style>
+</head>
+<body>
+  <input type="file" id="model-input" accept=".glb,.gltf,.fbx,.obj" onchange="loadModel(event)">
+  <input type="file" id="animation-input" accept=".glb,.gltf,.fbx" onchange="loadAnimation(event)">
+  <input type="range" id="speed-input" min="0.1" max="2" step="0.1" value="1" onchange="updateSpeed()">
+  <div id="canvas-container"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.rawgit.com/mrdoob/three.js/dev/examples/js/loaders/GLTFLoader.js"></script>
+  <script>
+    let scene, camera, renderer;
+    let mixer;
+    let speed = 1;
+
+    function init() {
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.getElementById('canvas-container').appendChild(renderer.domElement);
+    }
+
+    function loadModel(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function () {
+        const loader = new THREE.GLTFLoader();
+        loader.load(reader.result, function (gltf) {
+          scene.add(gltf.scene);
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function loadAnimation(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function () {
+        const loader = new THREE.GLTFLoader();
+        loader.load(reader.result, function (gltf) {
+          mixer = new THREE.AnimationMixer(gltf.scene);
+          const action = mixer.clipAction(gltf.animations[0]);
+          action.play();
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function updateSpeed() {
+      speed = parseFloat(document.getElementById('speed-input').value);
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (mixer) {
+        mixer.update(0.01 * speed); // Adjust time as needed
+      }
+      renderer.render(scene, camera);
+    }
+
+    init();
+    animate();
+  </script>
+</body>
+</html>
