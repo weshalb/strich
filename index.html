@@ -1,103 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aviation Cult</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom right, #1e1e1e, #343434); /* Dunkler Gradient-Hintergrund */
-      color: #fff; /* Textfarbe weiß */
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px;
-    }
-    .navigation {
-      display: flex;
-    }
-    .navigation button {
-      background: none;
-      border: none;
-      color: #fff;
-      cursor: pointer;
-      margin-left: 20px;
-    }
-    .content {
-      display: flex;
-      flex-direction: column; /* Unterer Inhalt untereinander */
-      justify-content: center;
-      align-items: center;
-      height: calc(100vh - 100px); /* Vollständige Höhe abzüglich Höhe des Headers */
-    }
-    .row {
-      display: flex;
-      flex-direction: column; /* Boxen untereinander anordnen */
-      align-items: center;
-      width: 80%;
-    }
-    .box {
-      width: 200px;
-      height: 200px;
-      background-color: rgba(255, 255, 255, 0.1); /* Transparente Box */
-      border-radius: 10px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 20px 0; /* Margin oben und unten */
-      font-size: 24px;
-      cursor: pointer; /* Cursor ändern, um Klick zu signalisieren */
-      transition: transform 0.5s ease; /* Übergangseffekt für Transformationen */
-    }
-    .box:hover {
-      background-color: rgba(255, 255, 255, 0.2); /* Hervorhebung bei Hover */
-    }
-    .spin {
-      animation: spin 2s infinite ease-in-out; /* Animation für das Glücksrad */
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music File Waveform Viewer</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            background: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .file-upload-box {
+            border: 2px solid white;
+            padding: 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 50px; /* Adjust as needed for top of the page */
+        }
+        #waveform {
+            width: 90%;
+            height: 150px;
+            margin-top: 50px;
+        }
+        .audio-controls {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        .audio-controls button, .audio-controls input {
+            margin: 10px;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <div class="brand">Aviation Cult</div>
-    <div class="navigation">
-      <button id="producerBtn">Producer</button>
-      <button id="editorBtn">Editor</button>
+    <div class="file-upload-box">
+        <label for="file-input">Choose your music file</label>
+        <input type="file" id="file-input" accept="audio/*" hidden>
     </div>
-  </header>
-  <div class="content">
-    <div class="row">
-      <div class="box" id="genre1">?</div>
-      <div class="box" id="genre2">?</div>
+    <div id="waveform"></div>
+    <div class="audio-controls">
+        <button id="playPause">Play</button>
+        <input type="range" id="seekbar" value="0" max="100" />
     </div>
-  </div>
-  <script>
-    const genres = ['Rock', 'Pop', 'Electronic', 'Hip Hop', 'R&B', 'Jazz', 'Classical', 'Reggae', 'Funk', 'Metal'];
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+    <script>
+        const fileInput = document.getElementById('file-input');
+        const waveformContainer = document.getElementById('waveform');
+        const playPauseBtn = document.getElementById('playPause');
+        const seekbar = document.getElementById('seekbar');
 
-    document.querySelectorAll('.box').forEach(box => {
-      box.addEventListener('click', () => {
-        activateSpin(box);
-      });
-    });
+        let wavesurfer = WaveSurfer.create({
+            container: waveformContainer,
+            waveColor: 'white',
+            progressColor: 'gray',
+            cursorColor: 'white'
+        });
 
-    function activateSpin(box) {
-      box.innerHTML = '?'; // Zurücksetzen auf Fragezeichen
-      box.classList.add('spin'); // Klasse hinzufügen, um Animation zu aktivieren
-      setTimeout(() => {
-        const randomIndex = Math.floor(Math.random() * genres.length);
-        box.innerHTML = genres[randomIndex]; // Zufälliges Genre einfügen
-        box.classList.remove('spin'); // Klasse entfernen, um Animation zu deaktivieren
-      }, 2000); // 2 Sekunden warten, bevor das zufällige Genre angezeigt wird
-    }
-  </script>
+        fileInput.addEventListener('change', function(event) {
+            const files = event.target.files;
+            if (files.length > 0) {
+                wavesurfer.load(URL.createObjectURL(files[0]));
+            }
+        });
+
+        wavesurfer.on('ready', function() {
+            playPauseBtn.addEventListener('click', function() {
+                wavesurfer.playPause();
+                if (wavesurfer.isPlaying()) {
+                    playPauseBtn.textContent = 'Pause';
+                } else {
+                    playPauseBtn.textContent = 'Play';
+                }
+            });
+
+            seekbar.addEventListener('input', function() {
+                const time = (seekbar.value * wavesurfer.getDuration()) / 100;
+                wavesurfer.seekTo(time / wavesurfer.getDuration());
+            });
+
+            wavesurfer.on('audioprocess', function() {
+                seekbar.value = (wavesurfer.getCurrentTime() / wavesurfer.getDuration()) * 100;
+            });
+        });
+    </script>
 </body>
 </html>
