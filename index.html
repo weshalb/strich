@@ -71,25 +71,27 @@
     }
 
     function animate() {
-        animationId = requestAnimationFrame(animate);
-        analyser.getByteFrequencyData(dataArray);
+    animationId = requestAnimationFrame(animate);
+    analyser.getByteFrequencyData(dataArray);
 
-        ctx.fillStyle = 'rgb(0, 0, 0)';  // Background Color of Canvas
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'rgb(0, 0, 0)';  // Background Color of Canvas
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        let barWidth = (canvas.width / bufferLength) * 2.5;
-        let barHeight;
-        let x = 0;
+    let barWidth = (canvas.width / bufferLength) * 2.5;
+    let barHeight;
+    let x = 0;
+    const scaleFactor = 0.5;  // Scale factor to reduce the height of the bars
 
-        for (let i = 0; i < bufferLength; i++) {
-            barHeight = dataArray[i] * 2;
+    for (let i = 0; i < bufferLength; i++) {
+        barHeight = dataArray[i] * scaleFactor;  // Apply scale factor here
 
-            ctx.fillStyle = 'rgb(255, 255, 255)';  // Color of the bars
-            ctx.fillRect(x, canvas.height - barHeight / 2, barWidth, barHeight / 2);
+        ctx.fillStyle = 'rgb(255, 255, 255)';  // Color of the bars
+        ctx.fillRect(x, canvas.height - barHeight / 2, barWidth, barHeight / 2);
 
-            x += barWidth + 1;
-        }
+        x += barWidth + 1;
     }
+}
+
 
     playPauseBtn.addEventListener('click', () => {
         if (audioContext && audioContext.state === 'running') {
