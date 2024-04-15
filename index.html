@@ -1,106 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Audio Waveform Viewer</title>
-    <style>
-        body, html {
-            height: 100%;
-            margin: 0;
-            background: black;
-            color: white;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .file-upload-box {
-            border: 2px solid white;
-            padding: 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            margin-top: 50px; /* Adjust as needed for top of the page */
-        }
-        #waveform {
-            width: 90%;
-            height: 150px;
-            margin-top: 50px;
-        }
-        .audio-controls {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.5);
-        }
-        .audio-controls button, .audio-controls input {
-            margin: 10px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audio Visualizer</title>
+<style>
+    body, html {
+        height: 100%;
+        margin: 0;
+        background: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    canvas {
+        width: 100%;
+        height: 100%;
+    }
+    .controls {
+        position: fixed;
+        bottom: 20px;
+        width: 100%;
+        text-align: center;
+    }
+</style>
 </head>
 <body>
-    <div class="file-upload-box">
-        <label for="file-input">Choose your music file</label>
-        <input type="file" id="file-input" accept="audio/*" hidden>
-    </div>
-    <div id="waveform"></div>
-    <div class="audio-controls">
-        <button id="playPause">Play</button>
-        <input type="range" id="seekbar" value="0" max="100" step="0.1" style="width: 60%;">
-    </div>
-    <script src="https://unpkg.com/wavesurfer.js"></script>
-    <script>
-        const fileInput = document.getElementById('file-input');
-        const waveformContainer = document.getElementById('waveform');
-        const playPauseBtn = document.getElementById('playPause');
-        const seekbar = document.getElementById('seekbar');
+<canvas id="canvas"></canvas>
+<div class="controls">
+    <input type="file" id="file-input" accept="audio/*">
+    <button id="playPause">Play</button>
+</div>
+<script>
+    const fileInput = document.getElementById('file-input');
+    const playPauseBtn = document.getElementById('playPause');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let audioSource, analyser, audioContext, bufferLength, dataArray, animationId, sourceNode;
 
-        let wavesurfer = WaveSurfer.create({
-            container: waveformContainer,
-            waveColor: 'white',
-            progressColor: 'gray',
-            cursorColor: 'white',
-            barWidth: 2
-        });
-
-        fileInput.addEventListener('change', function(event) {
-            const files = event.target.files;
-            if (files.length > 0) {
-                wavesurfer.load(URL.createObjectURL(files[0]));
+    function setupWebAudio(file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            if (!audioContext) {
+                audioContext = new AudioContext();
             }
-        });
-
-        wavesurfer.on('ready', function() {
-            playPauseBtn.addEventListener('click', function() {
-                wavesurfer.playPause();
-                if (wavesurfer.isPlaying()) {
-                    playPauseBtn.textContent = 'Pause';
-                } else {
-                    playPauseBtn.textContent = 'Play';
+            audioContext.decodeAudioData(e.target.result, function (buffer) {
+                if (sourceNode) {
+                    sourceNode.disconnect();
+                    cancelAnimationFrame(animationId);
                 }
-            });
+                sourceNode = audioContext.createBufferSource();
+                sourceNode.buffer = buffer;
 
-            seekbar.addEventListener('input', function() {
-                const time = (seekbar.value * wavesurfer.getDuration()) / 100;
-                wavesurfer.seekTo(time / wavesurfer.getDuration());
-            });
+                analyser = audioContext.createAnalyser();
+                sourceNode.connect(analyser);
+                analyser.connect(audioContext.destination);
+                analyser.fftSize = 256;
+                bufferLength = analyser.frequencyBinCount;
+                dataArray = new Uint8Array(bufferLength);
 
-            wavesurfer.on('audioprocess', function() {
-                if (!seekbar.isDragging) {
-                    seekbar.value = (wavesurfer.getCurrentTime() / wavesurfer.getDuration()) * 100;
-                }
+                sourceNode.start();
+                playPauseBtn.textContent = 'Pause';
+                animate();
             });
+        };
+        reader.readAsArrayBuffer(file);
+    }
 
-            wavesurfer.on('seek', function () {
-                if (!wavesurfer.isPlaying()) {
-                    seekbar.value = (wavesurfer.getCurrentTime() / wavesurfer.getDuration()) * 100;
-                }
+    function animate() {
+        animationId = requestAnimationFrame(animate);
+        analyser.getByteFrequencyData(dataArray);
+
+        ctx.fillStyle = 'rgb(0, 0, 0)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        let barWidth = (canvas.width / bufferLength) * 2.5;
+        let barHeight;
+        let x = 0;
+
+        for (let i = 0; i < bufferLength; i++) {
+            barHeight = dataArray[i] * 2;
+
+            ctx.fillStyle = 'rgb(' + (barHeight+100) + ', 50, 50)';
+            ctx.fillRect(x, canvas.height - barHeight / 2, barWidth, barHeight / 2);
+
+            x += barWidth + 1;
+        }
+    }
+
+    playPauseBtn.addEventListener('click', () => {
+        if (audioContext && audioContext.state === 'running') {
+            audioContext.suspend().then(() => {
+                playPauseBtn.textContent = 'Play';
             });
-        });
-    </script>
+        } else if (audioContext) {
+            audioContext.resume().then(() => {
+                playPauseBtn.textContent = 'Pause';
+            });
+        }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setupWebAudio(file);
+        }
+    });
+</script>
 </body>
 </html>
