@@ -3,114 +3,89 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Audio Visualizer</title>
+<title>Golfing Over It</title>
+<!-- Include Matter.js library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
 <style>
-    body, html {
-        height: 100%;
-        margin: 0;
-        background: black;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: Arial, sans-serif;
-        color: white;
-    }
-    #canvas {
-        width: 600px;  /* Set the width of the canvas */
-        height: 200px; /* Set the height of the canvas */
-        background: black;
-    }
-    .controls {
-        position: fixed;
-        bottom: 20px;
-        width: 100%;
-        text-align: center;
-    }
+  /* CSS styles for the game */
+  #game-container {
+    width: 800px;
+    height: 600px;
+    border: 2px solid black;
+    position: relative;
+    overflow: hidden;
+  }
+  .obstacle {
+    width: 100px;
+    height: 20px;
+    background-color: gray;
+    position: absolute;
+  }
+  #ball {
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 </style>
 </head>
 <body>
-<canvas id="canvas"></canvas>
-<div class="controls">
-    <input type="file" id="file-input" accept="audio/*">
-    <button id="playPause">Play</button>
+<div id="game-container">
+  <div class="obstacle" style="bottom: 100px; left: 200px;"></div>
+  <div class="obstacle" style="bottom: 200px; left: 400px;"></div>
+  <div class="obstacle" style="bottom: 300px; left: 600px;"></div>
+  <div id="ball"></div>
 </div>
+
 <script>
-    const fileInput = document.getElementById('file-input');
-    const playPauseBtn = document.getElementById('playPause');
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    let audioSource, analyser, audioContext, bufferLength, dataArray, animationId, sourceNode;
+  // Initialize Matter.js engine
+  const engine = Matter.Engine.create();
+  const world = engine.world;
 
-    function setupWebAudio(file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            if (!audioContext) {
-                audioContext = new AudioContext();
-            }
-            audioContext.decodeAudioData(e.target.result, function (buffer) {
-                if (sourceNode) {
-                    sourceNode.disconnect();
-                    cancelAnimationFrame(animationId);
-                }
-                sourceNode = audioContext.createBufferSource();
-                sourceNode.buffer = buffer;
+  // Create Matter.js bodies for obstacles
+  const obstacles = document.querySelectorAll('.obstacle');
+  obstacles.forEach(obstacle => {
+    const obstacleBody = Matter.Bodies.rectangle(
+      obstacle.offsetLeft + obstacle.offsetWidth / 2,
+      obstacle.offsetTop + obstacle.offsetHeight / 2,
+      obstacle.offsetWidth,
+      obstacle.offsetHeight,
+      { isStatic: true }
+    );
+    Matter.World.add(world, obstacleBody);
+  });
 
-                analyser = audioContext.createAnalyser();
-                sourceNode.connect(analyser);
-                analyser.connect(audioContext.destination);
-                analyser.fftSize = 256;
-                bufferLength = analyser.frequencyBinCount;
-                dataArray = new Uint8Array(bufferLength);
+  // Create Matter.js body for the ball
+  const ball = Matter.Bodies.circle(400, 100, 10, { friction: 0.1 });
+  Matter.World.add(world, ball);
 
-                sourceNode.start();
-                playPauseBtn.textContent = 'Pause';
-                animate();
-            });
-        };
-        reader.readAsArrayBuffer(file);
-    }
+  // Start the engine
+  Matter.Engine.run(engine);
 
-    function animate() {
-    animationId = requestAnimationFrame(animate);
-    analyser.getByteFrequencyData(dataArray);
-
-    ctx.fillStyle = 'rgb(0, 0, 0)';  // Background Color of Canvas
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    let barWidth = (canvas.width / bufferLength) * 2.5;
-    let barHeight;
-    let x = 0;
-    const scaleFactor = 0.5;  // Scale factor to reduce the height of the bars
-
-    for (let i = 0; i < bufferLength; i++) {
-        barHeight = dataArray[i] * scaleFactor;  // Apply scale factor here
-
-        ctx.fillStyle = 'rgb(255, 255, 255)';  // Color of the bars
-        ctx.fillRect(x, canvas.height - barHeight / 2, barWidth, barHeight / 2);
-
-        x += barWidth + 1;
-    }
-}
-
-
-    playPauseBtn.addEventListener('click', () => {
-        if (audioContext && audioContext.state === 'running') {
-            audioContext.suspend().then(() => {
-                playPauseBtn.textContent = 'Play';
-            });
-        } else if (audioContext) {
-            audioContext.resume().then(() => {
-                playPauseBtn.textContent = 'Pause';
-            });
-        }
+  // Handle collision events
+  Matter.Events.on(engine, 'collisionStart', event => {
+    event.pairs.forEach(pair => {
+      const { bodyA, bodyB } = pair;
+      if (bodyA === ball || bodyB === ball) {
+        // Ball collided with an obstacle, stop its movement and apply rolling physics
+        // You would need to implement rolling physics here
+      }
     });
+  });
 
-    fileInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setupWebAudio(file);
-        }
-    });
+  // Add event listener to kick the ball
+  let isMoving = false;
+  document.addEventListener('keydown', event => {
+    if (!isMoving && event.key === ' ') {
+      isMoving = true;
+      // Apply initial force to the ball to kick it
+      Matter.Body.applyForce(ball, ball.position, { x: 0, y: -0.05 });
+    }
+  });
 </script>
 </body>
 </html>
