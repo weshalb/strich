@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Golf Game</title>
+    <title>Drag and Shoot Golf Game</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,65 +16,88 @@
     </style>
 </head>
 <body>
-    <h1>Simple Golf Game</h1>
+    <h1>Drag and Shoot Golf Game</h1>
     <canvas id="canvas" width="600" height="400"></canvas>
     <script>
         const canvas = document.getElementById("canvas");
         const ctx = canvas.getContext("2d");
 
         // Ball properties
-        let ballX = 50;
-        let ballY = canvas.height / 2;
-        let ballRadius = 10;
-        let dx = 2;
-        let dy = -2;
+        let ball = {
+            x: 50,
+            y: canvas.height / 2,
+            radius: 10,
+            color: "green",
+            dx: 0,
+            dy: 0,
+            dragging: false // To track if the ball is being dragged
+        };
 
-        // Hole properties
-        let holeX = canvas.width - 50;
-        let holeY = canvas.height / 2;
-        let holeRadius = 15;
+        // Track mouse position
+        let mouseX, mouseY;
 
+        // Event listeners for mouse events
+        canvas.addEventListener("mousedown", startDragging);
+        canvas.addEventListener("mousemove", drag);
+        canvas.addEventListener("mouseup", shoot);
+
+        // Start dragging the ball
+        function startDragging(event) {
+            let rect = canvas.getBoundingClientRect();
+            mouseX = event.clientX - rect.left;
+            mouseY = event.clientY - rect.top;
+
+            if (distance(mouseX, mouseY, ball.x, ball.y) < ball.radius) {
+                ball.dragging = true;
+            }
+        }
+
+        // Drag the ball
+        function drag(event) {
+            if (ball.dragging) {
+                let rect = canvas.getBoundingClientRect();
+                mouseX = event.clientX - rect.left;
+                mouseY = event.clientY - rect.top;
+            }
+        }
+
+        // Shoot the ball
+        function shoot() {
+            if (ball.dragging) {
+                let dx = ball.x - mouseX;
+                let dy = ball.y - mouseY;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                ball.dx = dx / distance * -5; // Adjust the speed here
+                ball.dy = dy / distance * -5; // Adjust the speed here
+                ball.dragging = false;
+            }
+        }
+
+        // Calculate distance between two points
+        function distance(x1, y1, x2, y2) {
+            return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+        }
+
+        // Draw the ball
         function drawBall() {
             ctx.beginPath();
-            ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
-            ctx.fillStyle = "green";
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = ball.color;
             ctx.fill();
             ctx.closePath();
         }
 
-        function drawHole() {
-            ctx.beginPath();
-            ctx.arc(holeX, holeY, holeRadius, 0, Math.PI * 2);
-            ctx.fillStyle = "black";
-            ctx.fill();
-            ctx.closePath();
-        }
-
+        // Update ball position and draw
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             drawBall();
-            drawHole();
-
-            // Move the ball
-            ballX += dx;
-            ballY += dy;
-
-            // Check if ball hits the hole
-            if (Math.abs(ballX - holeX) < ballRadius && Math.abs(ballY - holeY) < ballRadius) {
-                alert("Hole in one! You win!");
-                document.location.reload();
-            }
-
-            // Check if ball hits walls
-            if (ballX + dx > canvas.width - ballRadius || ballX + dx < ballRadius) {
-                dx = -dx;
-            }
-            if (ballY + dy > canvas.height - ballRadius || ballY + dy < ballRadius) {
-                dy = -dy;
-            }
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+            requestAnimationFrame(draw);
         }
 
-        setInterval(draw, 10);
+        // Start the animation
+        draw();
     </script>
 </body>
 </html>
