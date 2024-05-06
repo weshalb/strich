@@ -30,6 +30,7 @@
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
+    cursor: pointer; /* Add cursor style for indicating the ability to drag */
   }
 </style>
 </head>
@@ -66,26 +67,40 @@
   // Start the engine
   Matter.Engine.run(engine);
 
-  // Handle collision events
-  Matter.Events.on(engine, 'collisionStart', event => {
-    event.pairs.forEach(pair => {
-      const { bodyA, bodyB } = pair;
-      if (bodyA === ball || bodyB === ball) {
-        // Ball collided with an obstacle, stop its movement and apply rolling physics
-        // You would need to implement rolling physics here
-      }
-    });
-  });
+  // Track mouse/touch drag for shooting
+  let dragStart = null;
+  let dragEnd = null;
 
-  // Add event listener to kick the ball
-  let isMoving = false;
-  document.addEventListener('keydown', event => {
-    if (!isMoving && event.key === ' ') {
-      isMoving = true;
-      // Apply initial force to the ball to kick it
-      Matter.Body.applyForce(ball, ball.position, { x: 0, y: -0.05 });
-    }
-  });
+  document.getElementById('ball').addEventListener('mousedown', startDrag);
+  document.addEventListener('mousemove', trackDrag);
+  document.addEventListener('mouseup', endDrag);
+
+  document.getElementById('ball').addEventListener('touchstart', startDrag);
+  document.addEventListener('touchmove', trackDrag);
+  document.addEventListener('touchend', endDrag);
+
+  function startDrag(event) {
+    dragStart = { x: event.clientX || event.touches[0].clientX, y: event.clientY || event.touches[0].clientY };
+  }
+
+  function trackDrag(event) {
+    if (!dragStart) return;
+    dragEnd = { x: event.clientX || event.touches[0].clientX, y: event.clientY || event.touches[0].clientY };
+  }
+
+  function endDrag() {
+    if (!dragStart || !dragEnd) return;
+
+    const dx = dragStart.x - dragEnd.x;
+    const dy = dragStart.y - dragEnd.y;
+
+    // Apply force to the ball based on the drag distance and direction
+    Matter.Body.applyForce(ball, ball.position, { x: dx * 0.01, y: dy * 0.01 });
+
+    // Reset drag variables
+    dragStart = null;
+    dragEnd = null;
+  }
 </script>
 </body>
 </html>
