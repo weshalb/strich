@@ -1,106 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Golfing Over It</title>
-<!-- Include Matter.js library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
-<style>
-  /* CSS styles for the game */
-  #game-container {
-    width: 800px;
-    height: 600px;
-    border: 2px solid black;
-    position: relative;
-    overflow: hidden;
-  }
-  .obstacle {
-    width: 100px;
-    height: 20px;
-    background-color: gray;
-    position: absolute;
-  }
-  #ball {
-    width: 20px;
-    height: 20px;
-    background-color: red;
-    border-radius: 50%;
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    cursor: pointer; /* Add cursor style for indicating the ability to drag */
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Golf Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #canvas {
+            border: 1px solid black;
+            margin: 0 auto;
+        }
+    </style>
 </head>
 <body>
-<div id="game-container">
-  <div class="obstacle" style="bottom: 100px; left: 200px;"></div>
-  <div class="obstacle" style="bottom: 200px; left: 400px;"></div>
-  <div class="obstacle" style="bottom: 300px; left: 600px;"></div>
-  <div id="ball"></div>
-</div>
+    <h1>Simple Golf Game</h1>
+    <canvas id="canvas" width="600" height="400"></canvas>
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
 
-<script>
-  // Initialize Matter.js engine
-  const engine = Matter.Engine.create();
-  const world = engine.world;
+        // Ball properties
+        let ballX = 50;
+        let ballY = canvas.height / 2;
+        let ballRadius = 10;
+        let dx = 2;
+        let dy = -2;
 
-  // Create Matter.js bodies for obstacles
-  const obstacles = document.querySelectorAll('.obstacle');
-  obstacles.forEach(obstacle => {
-    const obstacleBody = Matter.Bodies.rectangle(
-      obstacle.offsetLeft + obstacle.offsetWidth / 2,
-      obstacle.offsetTop + obstacle.offsetHeight / 2,
-      obstacle.offsetWidth,
-      obstacle.offsetHeight,
-      { isStatic: true }
-    );
-    Matter.World.add(world, obstacleBody);
-  });
+        // Hole properties
+        let holeX = canvas.width - 50;
+        let holeY = canvas.height / 2;
+        let holeRadius = 15;
 
-  // Create Matter.js body for the ball
-  const ball = Matter.Bodies.circle(400, 100, 10, { friction: 0.1 });
-  Matter.World.add(world, ball);
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
+            ctx.fillStyle = "green";
+            ctx.fill();
+            ctx.closePath();
+        }
 
-  // Start the engine
-  Matter.Engine.run(engine);
+        function drawHole() {
+            ctx.beginPath();
+            ctx.arc(holeX, holeY, holeRadius, 0, Math.PI * 2);
+            ctx.fillStyle = "black";
+            ctx.fill();
+            ctx.closePath();
+        }
 
-  // Track mouse/touch drag for shooting
-  let dragStart = null;
-  let dragEnd = null;
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawBall();
+            drawHole();
 
-  document.getElementById('ball').addEventListener('mousedown', startDrag);
-  document.addEventListener('mousemove', trackDrag);
-  document.addEventListener('mouseup', endDrag);
+            // Move the ball
+            ballX += dx;
+            ballY += dy;
 
-  document.getElementById('ball').addEventListener('touchstart', startDrag);
-  document.addEventListener('touchmove', trackDrag);
-  document.addEventListener('touchend', endDrag);
+            // Check if ball hits the hole
+            if (Math.abs(ballX - holeX) < ballRadius && Math.abs(ballY - holeY) < ballRadius) {
+                alert("Hole in one! You win!");
+                document.location.reload();
+            }
 
-  function startDrag(event) {
-    dragStart = { x: event.clientX || event.touches[0].clientX, y: event.clientY || event.touches[0].clientY };
-  }
+            // Check if ball hits walls
+            if (ballX + dx > canvas.width - ballRadius || ballX + dx < ballRadius) {
+                dx = -dx;
+            }
+            if (ballY + dy > canvas.height - ballRadius || ballY + dy < ballRadius) {
+                dy = -dy;
+            }
+        }
 
-  function trackDrag(event) {
-    if (!dragStart) return;
-    dragEnd = { x: event.clientX || event.touches[0].clientX, y: event.clientY || event.touches[0].clientY };
-  }
-
-  function endDrag() {
-    if (!dragStart || !dragEnd) return;
-
-    const dx = dragStart.x - dragEnd.x;
-    const dy = dragStart.y - dragEnd.y;
-
-    // Apply force to the ball based on the drag distance and direction
-    Matter.Body.applyForce(ball, ball.position, { x: dx * 0.01, y: dy * 0.01 });
-
-    // Reset drag variables
-    dragStart = null;
-    dragEnd = null;
-  }
-</script>
+        setInterval(draw, 10);
+    </script>
 </body>
 </html>
