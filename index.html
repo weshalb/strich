@@ -303,10 +303,7 @@ function displayData(data, page) {
             <div class="entry-title">"${jsonData.title}" by ${jsonData.user}</div>
             <div class="entry-description">${jsonData.hashtag}</div>
             <pre class="code language-javascript"><code>${jsonData.code}</code></pre>
-            <audio controls>
-                <source src="${jsonAudio}" type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>`;
+            <audio src="${jsonAudio}" type="audio/mpeg" controls="true" class="audio-1"></audio>`;
 
         container.appendChild(entryDiv);
     });
