@@ -298,7 +298,7 @@ function displayData(data, page) {
         entryDiv.classList.add('entry');
         entryDiv.innerHTML = `
             <div class="entry-title">${jsonData.title} by ${jsonData.user}</div>
-            <div class="entry-hashtag">${jsonData.description}</div>
+            <div class="entry-description">${jsonData.hashtag}</div>
             <pre class="code language-javascript"><code>${jsonData.code}</code></pre>
         `;
 
