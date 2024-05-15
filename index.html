@@ -307,21 +307,6 @@ function displayData(data, page) {
             </audio>
         `;
 
-        entryDiv.addEventListener('click', () => {
-            const codeElement = entryDiv.querySelector('.code');
-            if (codeElement.style.display === 'none') {
-                codeElement.style.display = 'block';
-            } else {
-                codeElement.style.display = 'none';
-            }
-        });
-
-        entryDiv.querySelector('.code').addEventListener('click', (e) => {
-            e.stopPropagation();
-            const htmlFilePath = jsonData.filePath.replace('.json', '.html');
-            window.location.href = `https://strich.org/${htmlFilePath}`;
-        });
-
         container.appendChild(entryDiv);
     });
 
