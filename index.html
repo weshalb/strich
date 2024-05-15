@@ -301,7 +301,10 @@ function displayData(data, page) {
             <div class="entry-title">"${jsonData.title}" by ${jsonData.user}</div>
             <div class="entry-description">${jsonData.hashtag}</div>
             <pre class="code language-javascript"><code>${jsonData.code}</code></pre>
-            <source src="${jsonAudio}" type="audio/mpeg">
+            <audio controls>
+                <source src="${jsonAudio}" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
         `;
 
         entryDiv.addEventListener('click', () => {
