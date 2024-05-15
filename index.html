@@ -290,12 +290,12 @@ function displayData(data, page) {
     
     let start = (page - 1) * entriesPerPage;
     let end = start + entriesPerPage;
-    const jsonAudio = jsonData.title + ".mp3";
 
     const paginatedData = data.slice(start, end);
 
     paginatedData.forEach(jsonData => {
         const entryDiv = document.createElement('div');
+        let jsonAudio = jsonData.title + ".mp3";
         entryDiv.classList.add('entry');
         entryDiv.innerHTML = `
             <div class="entry-title">"${jsonData.title}" by ${jsonData.user}</div>
