@@ -170,9 +170,23 @@
     color: #E2E8F0;
 }
 
-        audio {
-    background-color: transparent; /* Set background to transparent */
+/* Style for the audio player container */
+.audio-player {
+    display: flex;
+    align-items: center;
+    background-color: transparent;
 }
+
+/* Style for the play/pause button */
+.audio-player button {
+    /* Your button styles here */
+}
+
+/* Style for the volume control */
+.audio-player input[type="range"] {
+    /* Your range input styles here */
+}
+
 /* Responsive Menu Icon */
 @media (max-width: 768px) {
     .nav-items {
@@ -308,7 +322,14 @@ function displayData(data, page) {
                 <source src="${jsonAudio}" type="audio/mpeg">
                 Your browser does not support the audio element.
             </audio>
-        `;
+            <div class="audio-player">
+<audio id="myAudio">
+    <source src="${jsonAudio}" type="audio/mpeg">
+    Your browser does not support the audio element.
+    </audio>
+    <button id="playPauseBtn">Play</button>
+    <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="1">
+</div>`;
 
         container.appendChild(entryDiv);
     });
