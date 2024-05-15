@@ -295,9 +295,7 @@ function displayData(data, page) {
 
     paginatedData.forEach(jsonData => {
         const entryDiv = document.createElement('div');
-        let jsonAudio = jsonData.title + ".mp3";
-        console.log(jsonData.title);
-        console.log(jsonData.user);
+        let jsonAudio = "editaudios/" + jsonData.user + "/" + jsonData.title + ".mp3";
         entryDiv.classList.add('entry');
         entryDiv.innerHTML = `
             <div class="entry-title">"${jsonData.title}" by ${jsonData.user}</div>
