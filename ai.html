@@ -10,20 +10,19 @@
             const outputElement = document.getElementById("outputMessage");
 
             try {
-                const response = await fetch('https://www.cleverbot.com/getreply', {
-                    method: 'GET',
+                const response = await fetch('https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill', {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        key: 'free',
-                        input: inputMessage
+                        inputs: inputMessage
                     })
                 });
 
                 if (response.ok) {
                     const data = await response.json();
-                    outputElement.textContent = data.output;
+                    outputElement.textContent = data.generated_text;
                 } else {
                     const errorText = await response.text();
                     outputElement.textContent = `Error: ${response.status} ${response.statusText} - ${errorText}`;
