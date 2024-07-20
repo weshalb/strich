@@ -10,22 +10,20 @@
             const outputElement = document.getElementById("outputMessage");
 
             try {
-                const response = await fetch('https://api.inferkit.com/v1/models/standard/generate', {
-                    method: 'POST',
+                const response = await fetch('https://www.cleverbot.com/getreply', {
+                    method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        prompt: {
-                            text: inputMessage
-                        },
-                        length: 50
+                        key: 'free',
+                        input: inputMessage
                     })
                 });
 
                 if (response.ok) {
                     const data = await response.json();
-                    outputElement.textContent = data.data.text;
+                    outputElement.textContent = data.output;
                 } else {
                     const errorText = await response.text();
                     outputElement.textContent = `Error: ${response.status} ${response.statusText} - ${errorText}`;
