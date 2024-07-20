@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Free Chatbot Interaction</title>
     <script>
-        async function sendMessage() {
+        async function sendMessage(retryCount = 0) {
             const inputMessage = document.getElementById("inputMessage").value;
             const outputElement = document.getElementById("outputMessage");
 
@@ -23,6 +23,10 @@
                 if (response.ok) {
                     const data = await response.json();
                     outputElement.textContent = data.generated_text;
+                } else if (response.status === 503 && retryCount < 5) {
+                    const errorData = await response.json();
+                    outputElement.textContent = `Model is loading, retrying in ${Math.ceil(errorData.estimated_time)} seconds...`;
+                    setTimeout(() => sendMessage(retryCount + 1), errorData.estimated_time * 1000);
                 } else {
                     const errorText = await response.text();
                     outputElement.textContent = `Error: ${response.status} ${response.statusText} - ${errorText}`;
