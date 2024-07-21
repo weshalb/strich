@@ -12,7 +12,7 @@
             font-family: 'Roboto', sans-serif;
             background-color: #121212;
             color: #FFFFFF;
-            overflow-x: hidden; /* Verhindert horizontales Scrollen */
+            overflow-x: hidden;
         }
         header {
             width: 100%;
@@ -60,27 +60,15 @@
         .menu-content a:last-child {
             border-bottom: none;
         }
-        .main-container {
-            margin-top: 120px;
-            opacity: 0;
-            animation: fadeIn 2s forwards;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-        .content-left {
-            max-width: 45%;
-        }
-        .content-right {
-            max-width: 350px;
+        .logo-container {
+            margin-top: 100px;
+            text-align: center;
         }
         .logo {
             font-size: 64px;
             font-weight: bold;
             text-transform: uppercase;
             margin-bottom: 20px;
-            text-align: center;
         }
         .logo .phonk {
             color: #FFFFFF;
@@ -94,6 +82,16 @@
             height: 1px;
             background-color: #333;
             margin: 20px auto;
+        }
+        .main-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            margin-top: 40px;
+            padding: 0 20px;
+        }
+        .content-left, .content-right {
+            max-width: 45%;
         }
         .description {
             font-size: 24px;
@@ -161,10 +159,12 @@
             </div>
         </div>
     </header>
-    <div class="logo">
-        <span class="phonk">PHONK</span><span class="dex">DEX</span>
+    <div class="logo-container">
+        <div class="logo">
+            <span class="phonk">PHONK</span><span class="dex">DEX</span>
+        </div>
+        <div class="separator"></div>
     </div>
-    <div class="separator"></div>
     <div class="main-container">
         <div class="content-left">
             <div class="description">
@@ -198,7 +198,6 @@
             menuContent.style.display = menuContent.style.display === 'block' ? 'none' : 'block';
         }
 
-        // Schließe das Menü, wenn irgendwo außerhalb des Menüs geklickt wird
         window.onclick = function(event) {
             if (!event.target.matches('.menu-toggle')) {
                 const menuContent = document.getElementById('menu-content');
