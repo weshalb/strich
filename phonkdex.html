@@ -61,17 +61,25 @@
             border-bottom: none;
         }
         .main-container {
-            text-align: center;
             margin-top: 120px;
             opacity: 0;
             animation: fadeIn 2s forwards;
             padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .content-left {
+            max-width: 50%;
+        }
+        .content-right {
+            max-width: 350px;
         }
         .logo {
             font-size: 64px;
             font-weight: bold;
             text-transform: uppercase;
             margin-bottom: 20px;
+            text-align: center;
         }
         .logo .phonk {
             color: #FFFFFF;
@@ -92,7 +100,6 @@
         }
         .buttons {
             display: flex;
-            justify-content: center;
             gap: 20px;
             margin-top: 20px;
         }
@@ -107,6 +114,9 @@
         }
         .buttons a:hover {
             background-color: #555;
+        }
+        iframe {
+            border-radius: 8px;
         }
         @keyframes fadeIn {
             to {
@@ -127,19 +137,24 @@
             </div>
         </div>
     </header>
+    <div class="logo">
+        <span class="phonk">PHONK</span><span class="dex">DEX</span>
+    </div>
+    <div class="separator"></div>
     <div class="main-container">
-        <div class="logo">
-            <span class="phonk">PHONK</span><span class="dex">DEX</span>
+        <div class="content-left">
+            <div class="description">
+                Der ultimative Discord Bot für alle deine Bedürfnisse.
+            </div>
+            <div class="buttons">
+                <a href="#invite">INVITE</a>
+                <a href="#join">JOIN OUR DISCORD</a>
+            </div>
+            <div class="separator"></div>
         </div>
-        <div class="separator"></div>
-        <div class="description">
-            Der ultimative Discord Bot für alle deine Bedürfnisse.
+        <div class="content-right">
+            <iframe src="https://discord.com/widget?id=1205547399431458816&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
         </div>
-        <div class="buttons">
-            <a href="#invite">INVITE</a>
-            <a href="#join">JOIN OUR DISCORD</a>
-        </div>
-        <div class="separator"></div>
     </div>
 
     <script>
