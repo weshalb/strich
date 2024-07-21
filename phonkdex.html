@@ -67,9 +67,10 @@
             padding: 0 20px;
             display: flex;
             justify-content: space-between;
+            align-items: flex-start;
         }
         .content-left {
-            max-width: 50%;
+            max-width: 45%;
         }
         .content-right {
             max-width: 350px;
@@ -115,6 +116,29 @@
         .buttons a:hover {
             background-color: #555;
         }
+        .features {
+            margin-top: 40px;
+        }
+        .features h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .features ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .features li {
+            background-color: #1F1F1F;
+            padding: 20px;
+            border-radius: 8px;
+            width: 200px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
         iframe {
             border-radius: 8px;
         }
@@ -151,6 +175,17 @@
                 <a href="#join">JOIN OUR DISCORD</a>
             </div>
             <div class="separator"></div>
+            <div class="features">
+                <h2>Features</h2>
+                <ul>
+                    <li>Automatische Moderation</li>
+                    <li>Benutzerdefinierte Befehle</li>
+                    <li>Musik-Streaming</li>
+                    <li>Benachrichtigungen</li>
+                    <li>Statistiken und Analysen</li>
+                    <li>Vieles mehr...</li>
+                </ul>
+            </div>
         </div>
         <div class="content-right">
             <iframe src="https://discord.com/widget?id=1205547399431458816&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
