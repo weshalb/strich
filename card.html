@@ -28,6 +28,9 @@
             margin-bottom: 20px;
             position: relative;
             overflow: hidden;
+            background-color: #000;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .card-content {
@@ -39,18 +42,25 @@
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            background-color: #fff;
+            background-color: #000;
+            border-radius: 15px;
         }
 
         .card-content img {
-            width: 100%;
+            width: 80%;
             height: auto;
+            border-radius: 10px;
         }
 
         .card-content h2,
         .card-content p {
             margin: 0;
             text-align: center;
+            color: #fff;
+        }
+
+        .card-content h2 {
+            margin-top: 10px;
         }
 
         .stars {
@@ -62,6 +72,7 @@
             font-size: 24px;
             cursor: pointer;
             opacity: 0.3;
+            color: #fff;
         }
 
         .star.selected {
@@ -85,10 +96,10 @@
     <div class="container">
         <div class="card">
             <div id="cardContent" class="card-content">
+                <h2 id="cardName">LYKIA</h2>
                 <img id="cardImage" src="" alt="Bild">
-                <h2 id="cardName">Name</h2>
-                <p id="cardDescription">Beschreibung</p>
-                <p id="cardGenre">Genre</p>
+                <p id="cardGenre">GENRE: MEMPHIS</p>
+                <p id="cardDescription">A PRODUCER FROM GERMANY FOCUSING PRIMARILY ON MEMPHIS</p>
                 <div id="stars" class="stars">
                     <span class="star" data-value="1">★</span>
                     <span class="star" data-value="2">★</span>
@@ -99,7 +110,7 @@
             </div>
         </div>
         <div class="controls">
-            <input type="color" id="backgroundColor" value="#ffffff">
+            <input type="color" id="backgroundColor" value="#000000">
             <input type="file" id="uploadImage" accept="image/*">
             <input type="text" id="nameInput" placeholder="Name eingeben">
             <textarea id="descriptionInput" placeholder="Beschreibung eingeben"></textarea>
