@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kartenersteller</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card {
+            width: 300px;
+            height: 600px;
+            border: 1px solid #000;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-content {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #fff;
+        }
+
+        .card-content img {
+            width: 100%;
+            height: auto;
+        }
+
+        .card-content h2,
+        .card-content p {
+            margin: 0;
+            text-align: center;
+        }
+
+        .stars {
+            display: flex;
+            justify-content: center;
+        }
+
+        .star {
+            font-size: 24px;
+            cursor: pointer;
+            opacity: 0.3;
+        }
+
+        .star.selected {
+            opacity: 1;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .controls input,
+        .controls textarea,
+        .controls button {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div id="cardContent" class="card-content">
+                <img id="cardImage" src="" alt="Bild">
+                <h2 id="cardName">Name</h2>
+                <p id="cardDescription">Beschreibung</p>
+                <p id="cardGenre">Genre</p>
+                <div id="stars" class="stars">
+                    <span class="star" data-value="1">★</span>
+                    <span class="star" data-value="2">★</span>
+                    <span class="star" data-value="3">★</span>
+                    <span class="star" data-value="4">★</span>
+                    <span class="star" data-value="5">★</span>
+                </div>
+            </div>
+        </div>
+        <div class="controls">
+            <input type="color" id="backgroundColor" value="#ffffff">
+            <input type="file" id="uploadImage" accept="image/*">
+            <input type="text" id="nameInput" placeholder="Name eingeben">
+            <textarea id="descriptionInput" placeholder="Beschreibung eingeben"></textarea>
+            <input type="text" id="genreInput" placeholder="Genre eingeben">
+            <button id="downloadBtn">Karte herunterladen</button>
+        </div>
+    </div>
+
+    <!-- Einbinden von html2canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script>
+        document.getElementById('backgroundColor').addEventListener('input', function () {
+            document.getElementById('cardContent').style.backgroundColor = this.value;
+        });
+
+        document.getElementById('uploadImage').addEventListener('change', function (e) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                document.getElementById('cardImage').src = event.target.result;
+            }
+            reader.readAsDataURL(e.target.files[0]);
+        });
+
+        document.getElementById('nameInput').addEventListener('input', function () {
+            document.getElementById('cardName').innerText = this.value;
+        });
+
+        document.getElementById('descriptionInput').addEventListener('input', function () {
+            document.getElementById('cardDescription').innerText = this.value;
+        });
+
+        document.getElementById('genreInput').addEventListener('input', function () {
+            document.getElementById('cardGenre').innerText = this.value;
+        });
+
+        document.querySelectorAll('.star').forEach(star => {
+            star.addEventListener('click', function () {
+                const value = this.dataset.value;
+                document.querySelectorAll('.star').forEach(s => {
+                    s.classList.remove('selected');
+                    s.style.opacity = s.dataset.value <= value ? '1' : '0.3';
+                });
+            });
+        });
+
+        document.getElementById('downloadBtn').addEventListener('click', function () {
+            const card = document.querySelector('.card');
+            html2canvas(card).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'karte.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        });
+    </script>
+</body>
+</html>
