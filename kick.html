@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Shake on Audio Kick</title>
+    <style>
+        #canvas {
+            display: block;
+            margin: 20px auto;
+            border: 1px solid black;
+        }
+        #waveform {
+            display: block;
+            margin: 20px auto;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <input type="file" id="audioFile" accept="audio/*">
+    <input type="file" id="videoFile" accept="video/*">
+    <video id="video" controls style="display: none;"></video>
+    <canvas id="canvas"></canvas>
+    <canvas id="waveform" width="800" height="100"></canvas>
+
+    <script>
+        const audioFileInput = document.getElementById('audioFile');
+        const videoFileInput = document.getElementById('videoFile');
+        const videoElement = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        const waveformCanvas = document.getElementById('waveform');
+        const waveformContext = waveformCanvas.getContext('2d');
+
+        audioFileInput.addEventListener('change', handleAudioFile);
+        videoFileInput.addEventListener('change', handleVideoFile);
+
+        let audioContext;
+        let audioBuffer;
+        let kickTimes = [];
+
+        async function handleAudioFile(event) {
+            const file = event.target.files[0];
+            if (file) {
+                console.log('Loading audio file...');
+                const arrayBuffer = await file.arrayBuffer();
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                detectKicks(audioBuffer);
+            }
+        }
+
+        function detectKicks(buffer) {
+            const offlineContext = new OfflineAudioContext(1, buffer.length, buffer.sampleRate);
+            const source = offlineContext.createBufferSource();
+            source.buffer = buffer;
+
+            const filter = offlineContext.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.value = 150; // Kick drum frequency range
+
+            source.connect(filter);
+            filter.connect(offlineContext.destination);
+            source.start(0);
+
+            offlineContext.startRendering().then((renderedBuffer) => {
+                const data = renderedBuffer.getChannelData(0);
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i] > 0.9) { // Higher threshold for detecting a kick
+                        kickTimes.push(i / offlineContext.sampleRate);
+                    }
+                }
+                console.log('Kick times detected:', kickTimes);
+                drawWaveform(buffer, kickTimes);
+            });
+        }
+
+        function drawWaveform(buffer, kicks) {
+            const data = buffer.getChannelData(0);
+            const step = Math.ceil(data.length / waveformCanvas.width);
+            const amp = waveformCanvas.height / 2;
+
+            waveformContext.fillStyle = 'black';
+            waveformContext.clearRect(0, 0, waveformCanvas.width, waveformCanvas.height);
+
+            for (let i = 0; i < waveformCanvas.width; i++) {
+                let min = 1.0;
+                let max = -1.0;
+                for (let j = 0; j < step; j++) {
+                    const datum = data[(i * step) + j]; 
+                    if (datum < min) min = datum;
+                    if (datum > max) max = datum;
+                }
+                waveformContext.fillRect(i, (1 + min) * amp, 1, Math.max(1, (max - min) * amp));
+            }
+
+            // Draw kick markers
+            waveformContext.fillStyle = 'red';
+            kicks.forEach(kickTime => {
+                const x = (kickTime / buffer.duration) * waveformCanvas.width;
+                waveformContext.fillRect(x, 0, 2, waveformCanvas.height);
+            });
+        }
+
+        async function handleVideoFile(event) {
+            const file = URL.createObjectURL(event.target.files[0]);
+            videoElement.src = file;
+
+            videoElement.addEventListener('loadeddata', () => {
+                canvas.width = videoElement.videoWidth;
+                canvas.height = videoElement.videoHeight;
+
+                videoElement.addEventListener('play', () => {
+                    console.log('Video is playing');
+                    function drawFrame() {
+                        if (!videoElement.paused && !videoElement.ended) {
+                            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                            requestAnimationFrame(drawFrame);
+                        }
+                    }
+
+                    requestAnimationFrame(drawFrame);
+
+                    videoElement.addEventListener('timeupdate', () => {
+                        const currentTime = videoElement.currentTime;
+                        console.log('Current video time:', currentTime);
+                        if (kickTimes.some(time => Math.abs(time - currentTime) < 0.1)) {
+                            console.log('Kick detected at:', currentTime);
+                            shakeVideo();
+                        }
+                    });
+                });
+            });
+        }
+
+        function shakeVideo() {
+            const shakeIntensity = 10; // Increased intensity for visibility
+            const shakeDuration = 100; // in milliseconds
+            const originalX = 0;
+            const originalY = 0;
+
+            const startTime = Date.now();
+            function shake() {
+                const elapsedTime = Date.now() - startTime;
+                if (elapsedTime < shakeDuration) {
+                    const offsetX = (Math.random() - 0.5) * shakeIntensity;
+                    const offsetY = (Math.random() - 0.5) * shakeIntensity;
+                    context.setTransform(1, 0, 0, 1, offsetX, offsetY);
+                    requestAnimationFrame(shake);
+                } else {
+                    context.setTransform(1, 0, 0, 1, originalX, originalY);
+                }
+            }
+            shake();
+        }
+    </script>
+</body>
+</html>
