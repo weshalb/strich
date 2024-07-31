@@ -8,6 +8,7 @@
         #canvas {
             display: block;
             margin: 20px auto;
+            border: 1px solid black;
         }
     </style>
 </head>
@@ -58,7 +59,7 @@
             offlineContext.startRendering().then((renderedBuffer) => {
                 const data = renderedBuffer.getChannelData(0);
                 for (let i = 0; i < data.length; i++) {
-                    if (data[i] > 0.8) { // Threshold for detecting a kick
+                    if (data[i] > 0.9) { // Higher threshold for detecting a kick
                         kickTimes.push(i / offlineContext.sampleRate);
                     }
                 }
@@ -75,6 +76,7 @@
                 canvas.height = videoElement.videoHeight;
 
                 videoElement.addEventListener('play', () => {
+                    console.log('Video is playing');
                     function drawFrame() {
                         if (!videoElement.paused && !videoElement.ended) {
                             context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
@@ -86,7 +88,9 @@
 
                     videoElement.addEventListener('timeupdate', () => {
                         const currentTime = videoElement.currentTime;
+                        console.log('Current video time:', currentTime);
                         if (kickTimes.some(time => Math.abs(time - currentTime) < 0.1)) {
+                            console.log('Kick detected at:', currentTime);
                             shakeVideo();
                         }
                     });
@@ -95,10 +99,10 @@
         }
 
         function shakeVideo() {
-            const shakeIntensity = 5;
+            const shakeIntensity = 10; // Increased intensity for visibility
             const shakeDuration = 100; // in milliseconds
-            const originalX = canvas.width / 2;
-            const originalY = canvas.height / 2;
+            const originalX = 0;
+            const originalY = 0;
 
             const startTime = Date.now();
             function shake() {
@@ -106,7 +110,7 @@
                 if (elapsedTime < shakeDuration) {
                     const offsetX = (Math.random() - 0.5) * shakeIntensity;
                     const offsetY = (Math.random() - 0.5) * shakeIntensity;
-                    context.setTransform(1, 0, 0, 1, originalX + offsetX, originalY + offsetY);
+                    context.setTransform(1, 0, 0, 1, offsetX, offsetY);
                     requestAnimationFrame(shake);
                 } else {
                     context.setTransform(1, 0, 0, 1, originalX, originalY);
