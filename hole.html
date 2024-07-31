@@ -45,6 +45,7 @@
         }
 
         .black-hole-container {
+            display: none; /* Initially hidden */
             position: relative;
             width: 400px;
             height: 400px;
@@ -120,8 +121,38 @@
             color: white;
             font-size: 16px;
             opacity: 1;
-            animation: warp 5s forwards;
+            animation: spinWarp 5s forwards;
             z-index: 10; /* Ensures the message stays on top */
+        }
+
+        @keyframes spinWarp {
+            0% {
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.5) rotate(180deg);
+                opacity: 0.7;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(0.1) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .distortion {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 600px;
+            height: 600px;
+            margin-top: -300px;
+            margin-left: -300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 10%, rgba(0, 0, 0, 0) 70%);
+            animation: spin 5s linear infinite;
+            opacity: 0.3;
+            filter: blur(15px);
         }
     </style>
 </head>
@@ -135,15 +166,29 @@
         <div class="black-hole"></div>
         <div class="accretion-disk"></div>
         <div class="light-beams"></div>
+        <div class="distortion"></div>
     </div>
 
     <script>
         function sendMessage() {
             const userInput = document.getElementById('userInput').value;
             if (userInput) {
+                // Hide the input container
+                document.querySelector('.input-container').style.display = 'none';
+
+                // Show the black hole container
+                document.querySelector('.black-hole-container').style.display = 'block';
+
+                // Create and animate the message
                 const message = document.createElement('div');
                 message.className = 'message';
                 message.innerText = userInput;
+
+                // Set a random starting position
+                const startX = Math.random() * window.innerWidth;
+                const startY = Math.random() * window.innerHeight;
+                message.style.left = `${startX}px`;
+                message.style.top = `${startY}px`;
 
                 document.body.appendChild(message);
 
