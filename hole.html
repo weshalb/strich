@@ -111,8 +111,6 @@
 
         .message {
             position: absolute;
-            top: 50%;
-            left: 50%;
             transform: translate(-50%, -50%);
             padding: 10px;
             border: 1px solid #ff6600;
@@ -127,11 +125,11 @@
 
         @keyframes spinWarp {
             0% {
-                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+                transform: translate(0, 0) scale(1) rotate(0deg);
                 opacity: 1;
             }
             50% {
-                transform: translate(-50%, -50%) scale(1.5) rotate(180deg);
+                transform: translate(200px, 200px) scale(1.5) rotate(180deg);
                 opacity: 0.7;
             }
             100% {
@@ -191,6 +189,16 @@
                 message.style.top = `${startY}px`;
 
                 document.body.appendChild(message);
+
+                // Animate the message towards the black hole center
+                message.animate([
+                    { transform: `translate(${startX - window.innerWidth / 2}px, ${startY - window.innerHeight / 2}px) scale(1) rotate(0deg)`, opacity: 1 },
+                    { transform: `translate(0, 0) scale(0.1) rotate(360deg)`, opacity: 0 }
+                ], {
+                    duration: 5000,
+                    easing: 'ease-in-out',
+                    fill: 'forwards'
+                });
 
                 setTimeout(() => {
                     message.remove();
