@@ -8,17 +8,55 @@
         body {
             margin: 0;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             background: radial-gradient(circle, #000000, #020202, #040404, #080808, #0c0c0c);
             overflow: hidden;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 300px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #ff6600;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .black-hole-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
         }
 
         .black-hole {
-            position: relative;
+            position: absolute;
+            top: 50%;
+            left: 50%;
             width: 200px;
             height: 200px;
+            margin-top: -100px;
+            margin-left: -100px;
             border-radius: 50%;
             background: radial-gradient(circle, #000000 40%, rgba(0,0,0,0) 60%);
             box-shadow: 0 0 50px 30px rgba(0, 0, 0, 0.9);
@@ -39,15 +77,79 @@
             opacity: 0.8;
         }
 
+        .light-beams {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 800px;
+            height: 800px;
+            margin-top: -400px;
+            margin-left: -400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 10%, rgba(0, 0, 0, 0) 70%);
+            animation: spin 7s linear infinite;
+            opacity: 0.6;
+        }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        @keyframes warp {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-200px) scale(0.1);
+                opacity: 0;
+            }
+        }
+
+        .message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 10px;
+            border: 1px solid #ff6600;
+            border-radius: 5px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            font-size: 16px;
+            opacity: 1;
+            animation: warp 5s forwards;
+        }
     </style>
 </head>
 <body>
-    <div class="black-hole">
-        <div class="accretion-disk"></div>
+    <div class="input-container">
+        <h2>What is on your mind?</h2>
+        <input type="text" id="userInput" placeholder="Type your worries here...">
+        <button onclick="sendMessage()">SEND</button>
     </div>
+    <div class="black-hole-container">
+        <div class="black-hole"></div>
+        <div class="accretion-disk"></div>
+        <div class="light-beams"></div>
+    </div>
+
+    <script>
+        function sendMessage() {
+            const userInput = document.getElementById('userInput').value;
+            if (userInput) {
+                const message = document.createElement('div');
+                message.className = 'message';
+                message.innerText = userInput;
+
+                document.body.appendChild(message);
+
+                setTimeout(() => {
+                    message.remove();
+                }, 5000);
+            }
+        }
+    </script>
 </body>
 </html>
