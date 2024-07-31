@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Kick Detection with Waveform</title>
+    <style>
+        #canvas {
+            display: block;
+            margin: 20px auto;
+            border: 1px solid black;
+        }
+        #waveform {
+            display: block;
+            margin: 20px auto;
+            border: 1px solid black;
+        }
+        #videoFile {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <input type="file" id="audioFile" accept="audio/*">
+    <audio id="audio" controls style="display: none;"></audio>
+    <canvas id="waveform" width="800" height="100"></canvas>
+
+    <script>
+        const audioFileInput = document.getElementById('audioFile');
+        const audioElement = document.getElementById('audio');
+        const waveformCanvas = document.getElementById('waveform');
+        const waveformContext = waveformCanvas.getContext('2d');
+
+        audioFileInput.addEventListener('change', handleAudioFile);
+        waveformCanvas.addEventListener('click', handleWaveformClick);
+
+        let audioContext;
+        let audioBuffer;
+        let kickTimes = [];
+        let animationFrameId;
+
+        async function handleAudioFile(event) {
+            const file = event.target.files[0];
+            if (file) {
+                console.log('Loading audio file...');
+                const arrayBuffer = await file.arrayBuffer();
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                audioElement.src = URL.createObjectURL(file);
+                detectKicks(audioBuffer);
+            }
+        }
+
+        function detectKicks(buffer) {
+            const offlineContext = new OfflineAudioContext(1, buffer.length, buffer.sampleRate);
+            const source = offlineContext.createBufferSource();
+            source.buffer = buffer;
+
+            const filter = offlineContext.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.value = 150; // Kick drum frequency range
+
+            source.connect(filter);
+            filter.connect(offlineContext.destination);
+            source.start(0);
+
+            offlineContext.startRendering().then((renderedBuffer) => {
+                const data = renderedBuffer.getChannelData(0);
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i] > 0.9) { // Higher threshold for detecting a kick
+                        kickTimes.push(i / offlineContext.sampleRate);
+                    }
+                }
+                console.log('Kick times detected:', kickTimes);
+                drawWaveform(buffer, kickTimes);
+            });
+        }
+
+        function drawWaveform(buffer, kicks) {
+            const data = buffer.getChannelData(0);
+            const step = Math.ceil(data.length / waveformCanvas.width);
+            const amp = waveformCanvas.height / 2;
+
+            waveformContext.fillStyle = 'black';
+            waveformContext.clearRect(0, 0, waveformCanvas.width, waveformCanvas.height);
+
+            for (let i = 0; i < waveformCanvas.width; i++) {
+                let min = 1.0;
+                let max = -1.0;
+                for (let j = 0; j < step; j++) {
+                    const datum = data[(i * step) + j]; 
+                    if (datum < min) min = datum;
+                    if (datum > max) max = datum;
+                }
+                waveformContext.fillRect(i, (1 + min) * amp, 1, Math.max(1, (max - min) * amp));
+            }
+
+            // Draw kick markers
+            waveformContext.fillStyle = 'red';
+            kicks.forEach(kickTime => {
+                const x = (kickTime / buffer.duration) * waveformCanvas.width;
+                waveformContext.fillRect(x, 0, 2, waveformCanvas.height);
+            });
+        }
+
+        function handleWaveformClick(event) {
+            if (!audioBuffer) return;
+
+            const rect = waveformCanvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const seekTime = (x / waveformCanvas.width) * audioBuffer.duration;
+            audioElement.currentTime = seekTime;
+            audioElement.play();
+            updateWaveformPosition();
+        }
+
+        function updateWaveformPosition() {
+            if (!audioElement.paused && !audioElement.ended) {
+                const currentTime = audioElement.currentTime;
+                const x = (currentTime / audioBuffer.duration) * waveformCanvas.width;
+
+                drawWaveform(audioBuffer, kickTimes);
+
+                // Draw current playback position
+                waveformContext.fillStyle = 'blue';
+                waveformContext.fillRect(x, 0, 2, waveformCanvas.height);
+
+                requestAnimationFrame(updateWaveformPosition);
+            }
+        }
+    </script>
+</body>
+</html>
