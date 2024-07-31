@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Schwarzes Loch Animation</title>
     <style>
         body {
@@ -23,7 +23,7 @@
             flex-direction: column;
             align-items: center;
             margin-bottom: 20px;
-            z-index: 10; /* Ensures the input stays on top */
+            z-index: 10;
         }
 
         input[type="text"] {
@@ -45,7 +45,7 @@
         }
 
         .black-hole-container {
-            display: none; /* Initially hidden */
+            display: none;
             position: relative;
             width: 400px;
             height: 400px;
@@ -98,17 +98,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        @keyframes warp {
-            0% {
-                transform: translateY(0);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-200px) scale(0.1);
-                opacity: 0;
-            }
-        }
-
         .message {
             position: absolute;
             transform: translate(-50%, -50%);
@@ -119,17 +108,17 @@
             color: white;
             font-size: 16px;
             opacity: 1;
-            animation: spinWarp 5s forwards;
-            z-index: 10; /* Ensures the message stays on top */
+            animation: moveToCenter 5s forwards;
+            z-index: 10;
         }
 
-        @keyframes spinWarp {
+        @keyframes moveToCenter {
             0% {
-                transform: translate(0, 0) scale(1) rotate(0deg);
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
                 opacity: 1;
             }
             50% {
-                transform: translate(200px, 200px) scale(1.5) rotate(180deg);
+                transform: translate(calc(var(--start-x) - 50%), calc(var(--start-y) - 50%)) scale(1.5) rotate(180deg);
                 opacity: 0.7;
             }
             100% {
@@ -185,6 +174,8 @@
                 // Set a random starting position
                 const startX = Math.random() * window.innerWidth;
                 const startY = Math.random() * window.innerHeight;
+                message.style.setProperty('--start-x', `${startX}px`);
+                message.style.setProperty('--start-y', `${startY}px`);
                 message.style.left = `${startX}px`;
                 message.style.top = `${startY}px`;
 
