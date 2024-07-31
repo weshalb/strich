@@ -34,6 +34,7 @@
         async function handleAudioFile(event) {
             const file = event.target.files[0];
             if (file) {
+                console.log('Loading audio file...');
                 const arrayBuffer = await file.arrayBuffer();
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
@@ -61,6 +62,7 @@
                         kickTimes.push(i / offlineContext.sampleRate);
                     }
                 }
+                console.log('Kick times detected:', kickTimes);
             });
         }
 
