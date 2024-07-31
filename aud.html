@@ -35,6 +35,14 @@
             Show Playback Mark
         </label>
         <label>
+            <input type="checkbox" id="showKickMarks" checked>
+            Show Kick Marks
+        </label>
+        <label>
+            <input type="checkbox" id="showSnareMarks" checked>
+            Show Snare Marks
+        </label>
+        <label>
             Kick Threshold: 
             <input type="range" id="kickThreshold" min="0" max="1" step="0.01" value="0.9">
         </label>
@@ -48,6 +56,8 @@
         const waveformCanvas = document.getElementById('waveform');
         const waveformContext = waveformCanvas.getContext('2d');
         const showPlaybackMarkCheckbox = document.getElementById('showPlaybackMark');
+        const showKickMarksCheckbox = document.getElementById('showKickMarks');
+        const showSnareMarksCheckbox = document.getElementById('showSnareMarks');
         const kickThresholdInput = document.getElementById('kickThreshold');
 
         audioFileInput.addEventListener('change', handleAudioFile);
@@ -91,26 +101,25 @@
             source.start(0);
 
             offlineContext.startRendering().then((renderedBuffer) => {
-                const data = renderedBuffer.getChannelData(0);
-                for (let i = 0; i < data.length; i++) {
-                    if (data[i] > parseFloat(kickThresholdInput.value)) { // Kick detection
+                const lowData = renderedBuffer.getChannelData(0);
+                const highData = renderedBuffer.getChannelData(0);
+
+                for (let i = 0; i < lowData.length; i++) {
+                    if (lowData[i] > parseFloat(kickThresholdInput.value)) { // Kick detection
                         kickTimes.push(i / offlineContext.sampleRate);
                     }
                 }
-                detectSnares(renderedBuffer);
-            });
-        }
 
-        function detectSnares(buffer) {
-            const data = buffer.getChannelData(0);
-            for (let i = 0; i < data.length; i++) {
-                if (data[i] > 0.5) { // Snare detection threshold
-                    snareTimes.push(i / audioContext.sampleRate);
+                for (let i = 0; i < highData.length; i++) {
+                    if (highData[i] > 0.5) { // Snare detection threshold
+                        snareTimes.push(i / offlineContext.sampleRate);
+                    }
                 }
-            }
-            console.log('Kick times detected:', kickTimes);
-            console.log('Snare times detected:', snareTimes);
-            drawWaveform(audioBuffer, kickTimes, snareTimes);
+
+                console.log('Kick times detected:', kickTimes);
+                console.log('Snare times detected:', snareTimes);
+                drawWaveform(audioBuffer, kickTimes, snareTimes);
+            });
         }
 
         function drawWaveform(buffer, kicks, snares) {
@@ -132,19 +141,23 @@
                 waveformContext.fillRect(i, (1 + min) * amp, 1, Math.max(1, (max - min) * amp));
             }
 
-            // Draw kick markers
-            waveformContext.fillStyle = 'red';
-            kicks.forEach(kickTime => {
-                const x = (kickTime / buffer.duration) * waveformCanvas.width;
-                waveformContext.fillRect(x, 0, 2, waveformCanvas.height);
-            });
+            if (showKickMarksCheckbox.checked) {
+                // Draw kick markers
+                waveformContext.fillStyle = 'red';
+                kicks.forEach(kickTime => {
+                    const x = (kickTime / buffer.duration) * waveformCanvas.width;
+                    waveformContext.fillRect(x, 0, 2, waveformCanvas.height);
+                });
+            }
 
-            // Draw snare markers
-            waveformContext.fillStyle = 'green';
-            snares.forEach(snareTime => {
-                const x = (snareTime / buffer.duration) * waveformCanvas.width;
-                waveformContext.fillRect(x, 0, 2, waveformCanvas.height);
-            });
+            if (showSnareMarksCheckbox.checked) {
+                // Draw snare markers
+                waveformContext.fillStyle = 'green';
+                snares.forEach(snareTime => {
+                    const x = (snareTime / buffer.duration) * waveformCanvas.width;
+                    waveformContext.fillRect(x, 0, 2, waveformCanvas.height);
+                });
+            }
         }
 
         function handleWaveformClick(event) {
