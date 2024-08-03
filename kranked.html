@@ -24,21 +24,6 @@
             border: 1px solid #f5a623;
             max-width: 100%;
         }
-        #loading {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: #f5a623;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2em;
-            z-index: 1000;
-        }
     </style>
 </head>
 <body>
@@ -62,7 +47,6 @@
             <input type="range" id="kickThreshold" min="0" max="1" step="0.01" value="0.9">
         </label>
     </div>
-    <div id="loading">Loading...</div>
     <audio id="audio" controls style="display: none;"></audio>
     <video id="video" controls style="display: none;"></video>
     <canvas id="waveform" width="800" height="100"></canvas>
@@ -78,7 +62,6 @@
         const showKickMarksCheckbox = document.getElementById('showKickMarks');
         const showSnareMarksCheckbox = document.getElementById('showSnareMarks');
         const kickThresholdInput = document.getElementById('kickThreshold');
-        const loadingScreen = document.getElementById('loading');
 
         let audioContext;
         let audioBuffer;
@@ -99,7 +82,9 @@
                 audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
                 audioElement.src = URL.createObjectURL(file);
                 detectKicksAndSnares(audioBuffer);
-                checkProcessing();
+                if (videoFileInput.files.length > 0) {
+                    startProcessing();
+                }
             }
         }
 
@@ -109,23 +94,15 @@
                 console.log('Loading video file...');
                 videoElement.src = URL.createObjectURL(file);
                 videoElement.muted = true; // Mute the original video sound
-                checkProcessing();
-            }
-        }
-
-        function checkProcessing() {
-            if (audioFileInput.files.length > 0 && videoFileInput.files.length > 0) {
-                startProcessing();
+                if (audioFileInput.files.length > 0) {
+                    startProcessing();
+                }
             }
         }
 
         function startProcessing() {
-            loadingScreen.style.display = 'flex';
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-                videoElement.style.display = 'block';
-                drawWaveform(audioBuffer, kickTimes, snareTimes);
-            }, 2000); // Simulate processing time
+            videoElement.style.display = 'block';
+            drawWaveform(audioBuffer, kickTimes, snareTimes);
         }
 
         function detectKicksAndSnares(buffer) {
