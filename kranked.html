@@ -118,27 +118,34 @@
             highPassFilter.type = 'highpass';
             highPassFilter.frequency.value = 2000; // Snare drum frequency range
 
+            const bandPassFilter = offlineContext.createBiquadFilter();
+            bandPassFilter.type = 'bandpass';
+            bandPassFilter.frequency.value = 1000; // Band-pass filter for snare
+
             source.connect(lowPassFilter);
-            source.connect(highPassFilter);
+            source.connect(bandPassFilter);
             lowPassFilter.connect(offlineContext.destination);
-            highPassFilter.connect(offlineContext.destination);
+            bandPassFilter.connect(offlineContext.destination);
             source.start(0);
 
             offlineContext.startRendering().then((renderedBuffer) => {
                 const lowData = renderedBuffer.getChannelData(0);
-                const highData = renderedBuffer.getChannelData(0);
+                const bandData = renderedBuffer.getChannelData(0);
 
                 kickTimes = [];
                 snareTimes = [];
 
+                const kickThreshold = parseFloat(kickThresholdInput.value);
+                const snareThreshold = 0.7; // Adjusted threshold for snare detection
+
                 for (let i = 0; i < lowData.length; i++) {
-                    if (lowData[i] > parseFloat(kickThresholdInput.value)) { // Kick detection
+                    if (lowData[i] > kickThreshold) { // Kick detection
                         kickTimes.push(i / offlineContext.sampleRate);
                     }
                 }
 
-                for (let i = 0; i < highData.length; i++) {
-                    if (highData[i] > 0.7) { // Snare detection threshold
+                for (let i = 0; i < bandData.length; i++) {
+                    if (bandData[i] > snareThreshold && bandData[i] > lowData[i]) { // Snare detection
                         snareTimes.push(i / offlineContext.sampleRate);
                     }
                 }
@@ -226,13 +233,41 @@
                     }, 100);
                 }
                 if (snareTimes.some(time => Math.abs(time - currentTime) < 0.1)) {
-                    videoElement.style.transform = 'translate(-5px, 0)';
+                    videoElement.style.transform = 'translate(0, 5px)';
                     setTimeout(() => {
                         videoElement.style.transform = '';
                     }, 100);
                 }
             });
         }
+
+        kickThresholdInput.addEventListener('input', () => {
+            if (audioBuffer) {
+                detectKicksAndSnares(audioBuffer);
+                drawWaveform(audioBuffer, kickTimes, snareTimes);
+            }
+        });
+
+        function applyShakeEffect(kickTimes, snareTimes) {
+            videoElement.addEventListener('timeupdate', () => {
+                const currentTime = videoElement.currentTime;
+                if (kickTimes.some(time => Math.abs(time - currentTime) < 0.1)) {
+                    videoElement.style.transform = 'translate(5px, 0)';
+                    setTimeout(() => {
+                        videoElement.style.transform = '';
+                    }, 100);
+                }
+                if (snareTimes.some(time => Math.abs(time - currentTime) < 0.1)) {
+                    videoElement.style.transform = 'translate(0, 5px)';
+                    setTimeout(() => {
+                        videoElement.style.transform = '';
+                    }, 100);
+                }
+            });
+        }
+
+        applyShakeEffect(kickTimes, snareTimes);
+
     </script>
 </body>
 </html>
