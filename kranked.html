@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Kick and Snare Detection with Waveform</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #canvas {
+            display: block;
+            margin: 20px auto;
+            border: 1px solid #ff5722;
+        }
+        #waveform {
+            display: block;
+            margin: 20px auto;
+            border: 1px solid #ff5722;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .controls label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .controls input[type="checkbox"] {
+            accent-color: #ff5722;
+        }
+        .controls input[type="range"] {
+            width: 100px;
+        }
+        .controls input[type="file"] {
+            display: none;
+        }
+        .custom-file-upload {
+            background-color: #ff5722;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .loading-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            color: #ff5722;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+        }
+        video {
+            display: block;
+            margin: 20px auto;
+            width: 80%;
+            border: 1px solid #ff5722;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <label class="custom-file-upload">
+            <input type="file" id="audioFile" accept="audio/*">
+            Choose Audio
+        </label>
+        <label class="custom-file-upload">
+            <input type="file" id="videoFile" accept="video/*">
+            Choose Video
+        </label>
+        <label>
+            <input type="checkbox" id="showPlaybackMark" checked>
+            Show Playback Mark
+        </label>
+        <label>
+            <input type="checkbox" id="showKickMarks" checked>
+            Show Kick Marks
+        </label>
+        <label>
+            <input type="checkbox" id="showSnareMarks" checked>
+            Show Snare Marks
+        </label>
+        <label>
+            Kick Threshold: 
+            <input type="range" id="kickThreshold" min="0" max="1" step="0.01" value="0.9">
+        </label>
+    </div>
+    <audio id="audio" controls style="display: none;"></audio>
+    <video id="video" controls></video>
+    <canvas id="waveform" width="800" height="100"></canvas>
+    <div class="loading-screen" id="loadingScreen">Loading...</div>
+
+    <script>
+        const audioFileInput = document.getElementById('audioFile');
+        const videoFileInput = document.getElementById('videoFile');
+        const audioElement = document.getElementById('audio');
+        const videoElement = document.getElementById('video');
+        const waveformCanvas = document.getElementById('waveform');
+        const waveformContext = waveformCanvas.getContext('2d');
+        const loadingScreen = document.getElementById('loadingScreen');
+        const showPlaybackMarkCheckbox = document.getElementById('showPlaybackMark');
+        const showKickMarksCheckbox = document.getElementById('showKickMarks');
+        const showSnareMarksCheckbox = document.getElementById('showSnareMarks');
+        const kickThresholdInput = document.getElementById('kickThreshold');
+
+        audioFileInput.addEventListener('change', handleAudioFile);
+        videoFileInput.addEventListener('change', handleVideoFile);
+        waveformCanvas.addEventListener('click', handleWaveformClick);
+
+        let audioContext;
+        let audioBuffer;
+        let kickTimes = [];
+        let snareTimes = [];
+        let animationFrameId;
+
+        async function handleAudioFile(event) {
+            const file = event.target.files[0];
+            if (file) {
+                console.log('Loading audio file...');
+                const arrayBuffer = await file.arrayBuffer();
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                audioElement.src = URL.createObjectURL(file);
+                detectKicksAndSnares(audioBuffer);
+            }
+        }
+
+        async function handleVideoFile(event) {
+            const file = event.target.files[0];
+            if (file) {
+                videoElement.src = URL.createObjectURL(file);
+                videoElement.style.display = 'block';
+                loadingScreen.style.display = 'flex';
+                await detectKicksAndSnares(audioBuffer);
+                loadingScreen.style.display = 'none';
+            }
+        }
+
+        function detectKicksAndSnares(buffer) {
+            return new Promise((resolve) => {
+                const offlineContext = new OfflineAudioContext(1, buffer.length, buffer.sampleRate);
+                const source = offlineContext.createBufferSource();
+                source.buffer = buffer;
+
+                const lowPassFilter = offlineContext.createBiquadFilter();
+                lowPassFilter.type = 'lowpass';
+                lowPassFilter.frequency.value = 150; // Kick drum frequency range
+
+                const highPassFilter = offlineContext.createBiquadFilter();
+                highPassFilter.type = 'highpass';
+                highPassFilter.frequency.value = 1500; // Snare drum frequency range
+
+                source.connect(lowPassFilter);
+                source.connect(highPassFilter);
+                lowPassFilter.connect(offlineContext.destination);
+                highPassFilter.connect(offlineContext.destination);
+                source.start(0);
+
+                offlineContext.startRendering().then((renderedBuffer) => {
+                    const lowData = renderedBuffer.getChannelData(0);
+                    const highData = renderedBuffer.getChannelData(0);
+
+                    for (let i = 0; i < lowData.length; i++) {
+                        if (lowData[i] > parseFloat(kickThresholdInput.value)) { // Kick detection
+                            kickTimes.push(i / offlineContext.sampleRate);
+                        }
+                    }
+
+                    for (let i = 0; i < highData.length; i++) {
+                        if (highData[i] > 0.5) { // Snare detection threshold
+                            snareTimes.push(i / offlineContext.sampleRate);
+                        }
+                    }
+
+                    console.log('Kick times detected:', kickTimes);
+                    console.log('Snare times detected:', snareTimes);
+                    drawWaveform(audioBuffer, kickTimes, snareTimes);
+                    resolve();
+                });
+            });
+        }
+
+        function drawWaveform(buffer, kicks, snares) {
+            const data = buffer.getChannelData(0);
+            const step = Math.ceil(data.length / waveformCanvas.width);
+            const amp = waveformCanvas.height / 2;
+
+            waveformContext.fillStyle = 'black';
+            waveformContext.clearRect(0, 0, waveformCanvas.width, waveformCanvas.height);
+
+            for (let i = 0; i < waveformCanvas.width; i++) {
+                let min = 1.0;
+                let max = -1.0;
+                for (let j = 0; j < step; j++) {
+                    const datum = data[(i * step) + j]; 
+                    if (datum < min) min = datum;
+                    if (datum > max) max = datum;
+                }
+                waveformContext.fillRect(i, (1 + min) * amp, 1, Math.max(1, (max - min) * amp));
+            }
+
+            if (showKickMarksCheckbox.checked) {
+                // Draw kick markers
+                waveformContext.fillStyle = 'red';
+                kicks.forEach(kickTime => {
+                    const x = (kickTime / buffer.duration) * waveformCanvas.width;
+                    waveformContext.fillRect(x, 0, 2, waveformCanvas.height);
+                });
+            }
+
+            if (showSnareMarksCheckbox.checked) {
+                // Draw snare markers
+                waveformContext.fillStyle = 'yellow';
+                snares.forEach(snareTime => {
+                    const x = (snareTime / buffer.duration) * waveformCanvas.width;
+                    waveformContext.fillRect(x, 0, 2, waveformCanvas.height);
+                });
+            }
+        }
+
+        function handleWaveformClick(event) {
+            if (!audioBuffer) return;
+
+            const rect = waveformCanvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const seekTime = (x / waveformCanvas.width) * audioBuffer.duration;
+            audioElement.currentTime = seekTime;
+            audioElement.play();
+            updateWaveformPosition();
+        }
+
+        function updateWaveformPosition() {
+            if (!audioElement.paused && !audioElement.ended) {
+                const currentTime = audioElement.currentTime;
+                const x = (currentTime / audioBuffer.duration) * waveformCanvas.width;
+
+                drawWaveform(audioBuffer, kickTimes, snareTimes);
+
+                if (showPlaybackMarkCheckbox.checked) {
+                    // Draw current playback position
+                    waveformContext.fillStyle = 'blue';
+                    waveformContext.fillRect(x, 0, 2, waveformCanvas.height);
+                }
+
+                requestAnimationFrame(updateWaveformPosition);
+            }
+        }
+    </script>
+</body>
+</html>
