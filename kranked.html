@@ -99,9 +99,7 @@
                 audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
                 audioElement.src = URL.createObjectURL(file);
                 detectKicksAndSnares(audioBuffer);
-                if (videoFileInput.files.length > 0) {
-                    startProcessing();
-                }
+                checkProcessing();
             }
         }
 
@@ -111,9 +109,13 @@
                 console.log('Loading video file...');
                 videoElement.src = URL.createObjectURL(file);
                 videoElement.muted = true; // Mute the original video sound
-                if (audioFileInput.files.length > 0) {
-                    startProcessing();
-                }
+                checkProcessing();
+            }
+        }
+
+        function checkProcessing() {
+            if (audioFileInput.files.length > 0 && videoFileInput.files.length > 0) {
+                startProcessing();
             }
         }
 
