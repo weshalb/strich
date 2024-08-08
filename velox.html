@@ -64,8 +64,26 @@
         .discord-button:hover {
             background-color: #5b6eae;
         }
+        .outline-button {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #ff5722; /* Orange color */
+            background-color: transparent;
+            border: 2px solid #ff5722; /* Orange border */
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .outline-button:hover {
+            background-color: #ff5722; /* Orange background */
+            color: #fff;
+        }
         @media (max-width: 600px) {
-            .button {
+            .button, .outline-button {
                 padding: 12px 24px;
                 font-size: 14px;
             }
@@ -85,6 +103,7 @@
         </div>
         <a href="Velox [PRE-ALPHA].exe" download class="button">Download Latest Version</a>
         <a href="https://discord.gg/ecKks2bN8r" target="_blank" class="button discord-button">Join Our Discord</a>
+        <a href="Velox [PRE-ALPHA].zip" download class="outline-button">Download Zip</a>
     </div>
 </body>
 </html>
