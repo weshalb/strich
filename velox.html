@@ -7,91 +7,104 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
     <style>
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Roboto', sans-serif;
-            background-color: #000;
-            color: #fff;
-            text-align: center;
-        }
-        .topbar {
-            background-color: #333;
-            padding: 15px 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            left: 0;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        .topbar h1 {
-            margin: 0;
-            color: #fff;
-            font-size: 24px;
-            font-weight: normal;
-        }
-        .container {
-            margin-top: 80px;
-            padding: 20px;
-        }
-        .description {
-            max-width: 800px;
-            margin: 0 auto 30px;
-            font-size: 18px;
-            line-height: 1.6;
-            color: #ccc;
-        }
-        .button {
-            display: inline-block;
-            padding: 12px 24px;
-            margin: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            color: #fff;
-            background-color: #ff5722; /* Orange color */
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
-        }
-        .button:hover {
-            background-color: #e64a19;
-            transform: scale(1.05);
-        }
-        .discord-button {
-            background-color: #7289da; /* Discord blue */
-        }
-        .discord-button:hover {
-            background-color: #5b6eae;
-        }
-        .outline-button {
-            display: inline-block;
-            padding: 12px 24px;
-            margin: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            color: #ff5722; /* Orange color */
-            background-color: transparent;
-            border: 2px solid #ff5722; /* Orange border */
-            border-radius: 5px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s, transform 0.3s;
-        }
-        .outline-button:hover {
-            background-color: #ff5722; /* Orange background */
-            color: #fff;
-            transform: scale(1.05);
-        }
-        @media (max-width: 600px) {
-            .button, .outline-button {
-                padding: 12px 24px;
-                font-size: 14px;
-            }
-            .description {
-                font-size: 16px;
-            }
-        }
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+}
+
+.topbar {
+    background-color: #333;
+    padding: 15px 0;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.topbar h1 {
+    margin: 0;
+    color: #fff;
+    font-size: 24px;
+    font-weight: normal;
+}
+
+.container {
+    margin-top: 80px;
+    padding: 20px;
+}
+
+.description {
+    max-width: 800px;
+    margin: 0 auto 30px;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #ccc;
+}
+
+.button {
+    display: inline-block;
+    padding: 12px 22px; /* Adjusted padding */
+    margin: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #ff5722; /* Orange color */
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    box-sizing: border-box; /* Ensures padding and border are included in size */
+}
+
+.button:hover {
+    background-color: #e64a19;
+    transform: scale(1.05);
+}
+
+.discord-button {
+    background-color: #7289da; /* Discord blue */
+}
+
+.discord-button:hover {
+    background-color: #5b6eae;
+}
+
+.outline-button {
+    display: inline-block;
+    padding: 10px 20px; /* Adjusted padding to match overall height */
+    margin: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ff5722; /* Orange color */
+    background-color: transparent;
+    border: 2px solid #ff5722; /* Orange border */
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, transform 0.3s;
+    box-sizing: border-box; /* Ensures padding and border are included in size */
+}
+
+.outline-button:hover {
+    background-color: #ff5722; /* Orange background */
+    color: #fff;
+    transform: scale(1.05);
+}
+
+@media (max-width: 600px) {
+    .button, .outline-button {
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+    .description {
+        font-size: 16px;
+    }
+}
     </style>
 </head>
 <body>
