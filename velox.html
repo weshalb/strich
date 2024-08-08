@@ -82,6 +82,19 @@
             background-color: #ff5722; /* Orange background */
             color: #fff;
         }
+        .inline-link {
+            display: block;
+            margin: 20px 0;
+            font-size: 16px;
+            font-weight: bold;
+            color: #ff5722; /* Orange color */
+            text-decoration: underline;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .inline-link:hover {
+            color: #e64a19;
+        }
         @media (max-width: 600px) {
             .button, .outline-button {
                 padding: 12px 24px;
@@ -103,7 +116,7 @@
         </div>
         <a href="Velox [PRE-ALPHA].exe" download class="button">Download Latest Version</a>
         <a href="https://discord.gg/ecKks2bN8r" target="_blank" class="button discord-button">Join Our Discord</a>
-        <a href="Velox [PRE-ALPHA].zip" download class="outline-button">Download Zip</a>
+        <a href="Velox [PRE-ALPHA].zip" download class="inline-link">Download Zip</a>
     </div>
 </body>
 </html>
