@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Art Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+        }
+        input[type="file"] {
+            margin: 20px 0;
+        }
+        canvas {
+            display: none;
+            border: 1px solid #333;
+        }
+        #downloadBtn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #downloadBtn:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pixel Art Converter</h1>
+    <input type="file" id="imageUpload" accept="image/*">
+    <canvas id="canvas" width="32" height="32"></canvas>
+    <a id="downloadLink" download="pixel-art.png">
+        <button id="downloadBtn" style="display:none;">Download Pixel Art</button>
+    </a>
+
+    <script>
+        document.getElementById('imageUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const img = new Image();
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+
+            img.onload = function() {
+                // Resize the image to 32x32 pixels
+                canvas.width = 32;
+                canvas.height = 32;
+                ctx.drawImage(img, 0, 0, 32, 32);
+
+                // Scale up the canvas to make the pixel art more visible
+                const scaledCanvas = document.createElement('canvas');
+                const scaledCtx = scaledCanvas.getContext('2d');
+                const scale = 10; // Scale factor
+
+                scaledCanvas.width = canvas.width * scale;
+                scaledCanvas.height = canvas.height * scale;
+                scaledCtx.imageSmoothingEnabled = false; // Disable smoothing for sharp pixel art
+                scaledCtx.drawImage(canvas, 0, 0, scaledCanvas.width, scaledCanvas.height);
+
+                // Replace the original canvas with the scaled one
+                document.body.appendChild(scaledCanvas);
+                document.body.removeChild(canvas);
+
+                // Enable download button
+                const downloadLink = document.getElementById('downloadLink');
+                const downloadBtn = document.getElementById('downloadBtn');
+                scaledCanvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    downloadLink.href = url;
+                    downloadBtn.style.display = 'block';
+                });
+            };
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    </script>
+</body>
+</html>
