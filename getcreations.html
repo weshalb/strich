@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PNG File List</title>
+    <title>File List</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,30 +12,40 @@
         #output {
             margin-top: 20px;
         }
+        pre {
+            background: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
     </style>
 </head>
 <body>
-    <h1>PNG Files in the Folder</h1>
+    <h1>Files in the Folder</h1>
     <div id="output"></div>
 
     <script>
-        // Function to fetch the list of PNG files
-        async function fetchPngFiles() {
-            const folderUrl = 'https://strich.org/community-creations/'; // URL of the folder where PNG files are hosted
+        // Function to fetch the list of files
+        async function fetchFiles() {
+            const folderUrl = 'https://strich.org/community-creations/'; // URL of the folder
             const response = await fetch(folderUrl);
             const text = await response.text();
             const parser = new DOMParser();
             const doc = parser.parseFromString(text, 'text/html');
 
-            // Find all image elements and extract their file names
-            const pngFiles = Array.from(doc.querySelectorAll('a')).map(a => a.href).filter(href => href.endsWith('.png')).map(href => href.split('/').pop());
+            // Find all links and extract their file names
+            const fileLinks = Array.from(doc.querySelectorAll('a'))
+                .map(a => a.href)
+                .map(href => href.split('/').pop())
+                .filter(name => name); // Filter out empty strings
 
-            return pngFiles;
+            return fileLinks;
         }
 
         // Function to handle the request
         async function handleRequest() {
-            const fileNames = await fetchPngFiles();
+            const fileNames = await fetchFiles();
             
             // Check for the 'json' query parameter
             const params = new URLSearchParams(window.location.search);
