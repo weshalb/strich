@@ -3,40 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File List</title>
+    <title>PNG File List</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
         }
+        #output {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
-    <h1>Files in lobe Directory</h1>
+    <h1>PNG Files in the Folder</h1>
     <div id="output"></div>
 
     <script>
-        async function fetchFileNames() {
-            try {
-                const response = await fetch('https://api.github.com/repos/weshalb/strich/git/trees/main?recursive=1');
-                const data = await response.json();
+        // Function to fetch the list of PNG files
+        async function fetchPngFiles() {
+            const folderUrl = 'https://strich.org/community-creations/'; // URL of the folder where PNG files are hosted
+            const response = await fetch(folderUrl);
+            const text = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(text, 'text/html');
 
-                // Filter for files in the 'lobe/' directory
-                const lobeFiles = data.tree.filter(item => item.path.startsWith('getcreations/'));
+            // Find all image elements and extract their file names
+            const pngFiles = Array.from(doc.querySelectorAll('a')).map(a => a.href).filter(href => href.endsWith('.png')).map(href => href.split('/').pop());
 
-                // Map the filtered items to get just the filenames
-                const fileNames = lobeFiles.map(item => item.path);
-
-                return fileNames;
-            } catch (error) {
-                console.error('Error fetching file names:', error);
-                return []; // Return an empty array in case of an error
-            }
+            return pngFiles;
         }
 
+        // Function to handle the request
         async function handleRequest() {
-            const fileNames = await fetchFileNames();
-
+            const fileNames = await fetchPngFiles();
+            
             // Check for the 'json' query parameter
             const params = new URLSearchParams(window.location.search);
             if (params.has('json')) {
