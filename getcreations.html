@@ -24,7 +24,7 @@
                 const data = await response.json();
 
                 // Filter for files in the 'lobe/' directory
-                const lobeFiles = data.tree.filter(item => item.path.startsWith('lobe/'));
+                const lobeFiles = data.tree.filter(item => item.path.startsWith('community-creations/'));
 
                 // Map the filtered items to get just the filenames
                 const fileNames = lobeFiles.map(item => item.path);
