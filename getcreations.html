@@ -27,7 +27,7 @@
 
     <script>
         async function fetchFiles() {
-            const apiUrl = 'https://api.github.com/repos/weshalb/strich/git/trees/main?recursive=1';
+            const apiUrl = 'https://api.github.com/repos/weshalb/strich/git/trees/main/community-creations/?recursive=1';
             try {
                 const response = await fetch(apiUrl);
                 if (!response.ok) throw new Error('Network response was not ok');
