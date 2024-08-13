@@ -13,9 +13,7 @@
 </head>
 <body>
     <h1>Files in lobe Directory</h1>
-    <div id="output">
-        <ul id="file-list"></ul>
-    </div>
+    <div id="output"></div>
 
     <script>
         async function fetchFileNames() {
@@ -24,7 +22,7 @@
                 const data = await response.json();
 
                 // Filter for files in the 'lobe/' directory
-                const lobeFiles = data.tree.filter(item => item.path.startsWith('community-creations/'));
+                const lobeFiles = data.tree.filter(item => item.path.startsWith('getcreations/'));
 
                 // Map the filtered items to get just the filenames
                 const fileNames = lobeFiles.map(item => item.path);
@@ -39,20 +37,21 @@
         async function handleRequest() {
             const fileNames = await fetchFileNames();
 
-            // Check if the request is from a browser or a Python script
+            // Check for the 'json' query parameter
             const params = new URLSearchParams(window.location.search);
             if (params.has('json')) {
-                // Respond with JSON if the 'json' query parameter is present
+                // Respond with JSON if 'json' query parameter is present
                 const outputDiv = document.getElementById('output');
                 outputDiv.innerHTML = `<pre>${JSON.stringify(fileNames, null, 2)}</pre>`;
             } else {
                 // Otherwise, display the list in the HTML page
-                const fileList = document.getElementById('file-list');
+                const fileList = document.createElement('ul');
                 fileNames.forEach(fileName => {
                     const li = document.createElement('li');
                     li.textContent = fileName;
                     fileList.appendChild(li);
                 });
+                document.getElementById('output').appendChild(fileList);
             }
         }
 
