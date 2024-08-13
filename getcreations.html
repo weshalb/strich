@@ -27,14 +27,17 @@
 
     <script>
         async function fetchFiles() {
-            const apiUrl = 'https://api.github.com/repos/weshalb/strich/git/trees/main/community-creations/?recursive=1';
+            const apiUrl = 'https://api.github.com/repos/weshalb/strich/git/trees/main?recursive=1';
+            const folderPath = 'community-creations/'; // Specific folder path
+
             try {
                 const response = await fetch(apiUrl);
                 if (!response.ok) throw new Error('Network response was not ok');
 
                 const data = await response.json();
+                // Filter files from the specific folder
                 const files = data.tree
-                    .filter(item => item.path.endsWith('.png'))
+                    .filter(item => item.path.startsWith(folderPath) && item.path.endsWith('.png'))
                     .map(item => item.path.split('/').pop());
 
                 return files;
