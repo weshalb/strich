@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 5px 0;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Files in lobe Directory</h1>
+    <ul id="file-list"></ul>
+
+    <script>
+        async function fetchFileNames() {
+            try {
+                const response = await fetch('https://api.github.com/repos/weshalb/strich/git/trees/main?recursive=1');
+                const data = await response.json();
+
+                // Filter for files in the 'lobe/' directory
+                const lobeFiles = data.tree.filter(item => item.path.startsWith('lobe/'));
+
+                // Map the filtered items to get just the filenames
+                const fileNames = lobeFiles.map(item => item.path);
+
+                return fileNames;
+            } catch (error) {
+                console.error('Error fetching file names:', error);
+                return []; // Return an empty array in case of an error
+            }
+        }
+
+        async function displayFileNames() {
+            const fileNames = await fetchFileNames();
+            const fileList = document.getElementById('file-list');
+
+            // Create a list item for each file name and append to the list
+            fileNames.forEach(fileName => {
+                const li = document.createElement('li');
+                li.textContent = fileName;
+                fileList.appendChild(li);
+            });
+        }
+
+        // Call the function to display the file names when the page loads
+        displayFileNames();
+    </script>
+</body>
+</html>
