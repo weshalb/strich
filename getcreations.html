@@ -23,24 +23,32 @@
 </head>
 <body>
     <h1>Files in the Folder</h1>
-    <div id="output"></div>
+    <div id="output">Loading...</div>
 
     <script>
         // Function to fetch the list of files
         async function fetchFiles() {
             const folderUrl = 'https://strich.org/community-creations/'; // URL of the folder
-            const response = await fetch(folderUrl);
-            const text = await response.text();
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(text, 'text/html');
 
-            // Find all links and extract their file names
-            const fileLinks = Array.from(doc.querySelectorAll('a'))
-                .map(a => a.href)
-                .map(href => href.split('/').pop())
-                .filter(name => name); // Filter out empty strings
+            try {
+                const response = await fetch(folderUrl);
+                if (!response.ok) throw new Error('Network response was not ok');
 
-            return fileLinks;
+                const text = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+
+                // Find all links and extract their file names
+                const fileLinks = Array.from(doc.querySelectorAll('a'))
+                    .map(a => a.href)
+                    .map(href => href.split('/').pop())
+                    .filter(name => name.endsWith('.png')); // Adjust filter if needed
+
+                return fileLinks;
+            } catch (error) {
+                console.error('Error fetching files:', error);
+                return [];
+            }
         }
 
         // Function to handle the request
@@ -55,13 +63,19 @@
                 outputDiv.innerHTML = `<pre>${JSON.stringify(fileNames, null, 2)}</pre>`;
             } else {
                 // Otherwise, display the list in the HTML page
-                const fileList = document.createElement('ul');
-                fileNames.forEach(fileName => {
-                    const li = document.createElement('li');
-                    li.textContent = fileName;
-                    fileList.appendChild(li);
-                });
-                document.getElementById('output').appendChild(fileList);
+                const outputDiv = document.getElementById('output');
+                if (fileNames.length > 0) {
+                    const fileList = document.createElement('ul');
+                    fileNames.forEach(fileName => {
+                        const li = document.createElement('li');
+                        li.textContent = fileName;
+                        fileList.appendChild(li);
+                    });
+                    outputDiv.innerHTML = ''; // Clear loading message
+                    outputDiv.appendChild(fileList);
+                } else {
+                    outputDiv.innerHTML = 'No files found or there was an error fetching the files.';
+                }
             }
         }
 
