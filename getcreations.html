@@ -9,21 +9,13 @@
             font-family: Arial, sans-serif;
             margin: 20px;
         }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            margin: 5px 0;
-            padding: 10px;
-            background-color: #f0f0f0;
-            border-radius: 5px;
-        }
     </style>
 </head>
 <body>
     <h1>Files in lobe Directory</h1>
-    <ul id="file-list"></ul>
+    <div id="output">
+        <ul id="file-list"></ul>
+    </div>
 
     <script>
         async function fetchFileNames() {
@@ -44,20 +36,28 @@
             }
         }
 
-        async function displayFileNames() {
+        async function handleRequest() {
             const fileNames = await fetchFileNames();
-            const fileList = document.getElementById('file-list');
 
-            // Create a list item for each file name and append to the list
-            fileNames.forEach(fileName => {
-                const li = document.createElement('li');
-                li.textContent = fileName;
-                fileList.appendChild(li);
-            });
+            // Check if the request is from a browser or a Python script
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('json')) {
+                // Respond with JSON if the 'json' query parameter is present
+                const outputDiv = document.getElementById('output');
+                outputDiv.innerHTML = `<pre>${JSON.stringify(fileNames, null, 2)}</pre>`;
+            } else {
+                // Otherwise, display the list in the HTML page
+                const fileList = document.getElementById('file-list');
+                fileNames.forEach(fileName => {
+                    const li = document.createElement('li');
+                    li.textContent = fileName;
+                    fileList.appendChild(li);
+                });
+            }
         }
 
-        // Call the function to display the file names when the page loads
-        displayFileNames();
+        // Call the function to handle the request when the page loads
+        handleRequest();
     </script>
 </body>
 </html>
