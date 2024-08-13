@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PNG File List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #output {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>PNG Files in the Folder</h1>
+    <div id="output"></div>
+
+    <script>
+        // Function to fetch the list of PNG files
+        async function fetchPngFiles() {
+            const folderUrl = 'https://strich.org/community-creations/'; // URL of the folder where PNG files are hosted
+            const response = await fetch(folderUrl);
+            const text = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(text, 'text/html');
+
+            // Find all image elements and extract their file names
+            const pngFiles = Array.from(doc.querySelectorAll('a')).map(a => a.href).filter(href => href.endsWith('.png')).map(href => href.split('/').pop());
+
+            return pngFiles;
+        }
+
+        // Function to handle the request
+        async function handleRequest() {
+            const fileNames = await fetchPngFiles();
+            
+            // Check for the 'json' query parameter
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('json')) {
+                // Respond with JSON if 'json' query parameter is present
+                const outputDiv = document.getElementById('output');
+                outputDiv.innerHTML = `<pre>${JSON.stringify(fileNames, null, 2)}</pre>`;
+            } else {
+                // Otherwise, display the list in the HTML page
+                const fileList = document.createElement('ul');
+                fileNames.forEach(fileName => {
+                    const li = document.createElement('li');
+                    li.textContent = fileName;
+                    fileList.appendChild(li);
+                });
+                document.getElementById('output').appendChild(fileList);
+            }
+        }
+
+        // Call the function to handle the request when the page loads
+        handleRequest();
+    </script>
+</body>
+</html>
