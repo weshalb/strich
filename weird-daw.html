@@ -15,6 +15,7 @@
             display: flex;
             height: 100vh;
             padding: 20px;
+            box-sizing: border-box;
         }
         .sound-board {
             background-color: #333;
@@ -36,12 +37,13 @@
             position: relative;
         }
         .sound-item {
-            background-color: #888;
+            background-color: #aaa;
             position: absolute;
             height: 100%;
             width: 100%;
             cursor: pointer;
             box-sizing: border-box;
+            z-index: 1;
         }
         .sound-library {
             width: 200px;
@@ -53,6 +55,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            z-index: 2;
         }
         .controls {
             margin-top: 20px;
@@ -66,9 +69,11 @@
             color: white;
             cursor: pointer;
             font-size: 16px;
+            z-index: 3;
         }
         input[type="file"] {
             margin-bottom: 20px;
+            z-index: 3;
         }
         .playhead {
             position: absolute;
@@ -94,7 +99,6 @@
     </div>
     <div class="sound-board" id="soundBoard">
         <div class="playhead" id="playhead"></div>
-        <!-- The grid slots will be generated dynamically -->
     </div>
 </div>
 
@@ -110,6 +114,7 @@
     let bpm = 120;
     let interval = null;
     let playheadPosition = 0;
+    let draggedItem = null;
 
     // Generate grid
     for (let i = 0; i < 128; i++) { // 16 columns x 8 rows
@@ -130,8 +135,8 @@
             item.className = 'sound-item';
             item.draggable = true;
 
-            // Drag and drop logic
             item.addEventListener('dragstart', e => {
+                draggedItem = item;
                 e.dataTransfer.setData('audio', audio.src);
                 e.dataTransfer.setData('audioPitch', audio.dataset.pitch);
                 e.dataTransfer.setData('audioVolume', audio.dataset.volume);
@@ -154,6 +159,11 @@
             const audioPitch = parseFloat(e.dataTransfer.getData('audioPitch'));
             const audioVolume = parseFloat(e.dataTransfer.getData('audioVolume'));
 
+            if (draggedItem) {
+                draggedItem.parentNode.removeChild(draggedItem); // Remove item from its original place
+                draggedItem = null;
+            }
+
             if (audioSrc) {
                 const audio = new Audio(audioSrc);
                 audio.dataset.pitch = audioPitch;
@@ -163,14 +173,12 @@
 
                 const soundItem = document.createElement('div');
                 soundItem.className = 'sound-item';
-                soundItem.style.backgroundColor = '#aaa';
-                soundItem.draggable = false;
+                soundItem.draggable = true;
                 soundItem.dataset.audioSrc = audioSrc;
                 soundItem.dataset.audioPitch = audioPitch;
                 soundItem.dataset.audioVolume = audioVolume;
                 slot.appendChild(soundItem);
 
-                // Handle scrolling over the note
                 soundItem.addEventListener('wheel', event => {
                     if (event.altKey) {
                         // Adjust volume
@@ -185,16 +193,25 @@
                     }
                 });
 
-                soundItem.addEventListener('mousedown', () => {
+                soundItem.addEventListener('mousedown', event => {
+                    if (event.button === 0) { // Left click to delete
+                        slot.removeChild(soundItem);
+                        audio.pause();
+                    }
+                });
+
+                soundItem.addEventListener('dragstart', e => {
+                    draggedItem = soundItem;
+                    e.dataTransfer.setData('audio', audioSrc);
+                    e.dataTransfer.setData('audioPitch', audioPitch);
+                    e.dataTransfer.setData('audioVolume', audioVolume);
+                });
+
+                soundItem.addEventListener('dblclick', () => {
                     audio.play();
                 });
 
                 soundItem.addEventListener('mouseup', () => {
-                    audio.pause();
-                });
-
-                soundItem.addEventListener('dblclick', () => {
-                    slot.removeChild(soundItem);
                     audio.pause();
                 });
             }
