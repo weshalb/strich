@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini DAW</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            height: 100vh;
+            padding: 20px;
+        }
+        .sound-board {
+            background-color: #333;
+            flex: 1;
+            border: 2px solid #555;
+            display: grid;
+            grid-template-columns: repeat(16, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            gap: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+        .sound-slot {
+            background-color: #444;
+            border: 1px solid #555;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .sound-item {
+            background-color: #888;
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+        .sound-library {
+            width: 200px;
+            border: 2px solid #555;
+            margin-right: 20px;
+            background-color: #222;
+            padding: 10px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            padding: 10px;
+            background-color: #555;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="file"] {
+            margin-bottom: 20px;
+        }
+        .playhead {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2px;
+            height: 100%;
+            background-color: red;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="sound-library">
+        <input type="file" id="fileInput" accept="audio/*" multiple>
+        <div class="controls">
+            <button id="playPauseButton">Play</button>
+            <button id="resetButton">Reset</button>
+            <input type="number" id="bpmInput" value="120" min="30" max="300"> BPM
+        </div>
+    </div>
+    <div class="sound-board" id="soundBoard">
+        <div class="playhead" id="playhead"></div>
+        <!-- The grid slots will be generated dynamically -->
+    </div>
+</div>
+
+<script>
+    const soundBoard = document.getElementById('soundBoard');
+    const fileInput = document.getElementById('fileInput');
+    const playPauseButton = document.getElementById('playPauseButton');
+    const resetButton = document.getElementById('resetButton');
+    const bpmInput = document.getElementById('bpmInput');
+    const playhead = document.getElementById('playhead');
+
+    let isPlaying = false;
+    let bpm = 120;
+    let interval = null;
+    let playheadPosition = 0;
+
+    // Generate grid
+    for (let i = 0; i < 128; i++) { // 16 columns x 8 rows
+        const slot = document.createElement('div');
+        slot.className = 'sound-slot';
+        soundBoard.appendChild(slot);
+    }
+
+    // Handle file uploads
+    fileInput.addEventListener('change', event => {
+        const files = event.target.files;
+        for (const file of files) {
+            const audio = new Audio(URL.createObjectURL(file));
+            audio.dataset.pitch = 1;  // Default pitch multiplier
+            audio.dataset.volume = 1; // Default volume level
+
+            const item = document.createElement('div');
+            item.className = 'sound-item';
+            item.draggable = true;
+
+            // Drag and drop logic
+            item.addEventListener('dragstart', e => {
+                e.dataTransfer.setData('audio', audio.src);
+                e.dataTransfer.setData('audioPitch', audio.dataset.pitch);
+                e.dataTransfer.setData('audioVolume', audio.dataset.volume);
+            });
+
+            item.innerHTML = file.name;
+            document.querySelector('.sound-library').appendChild(item);
+        }
+    });
+
+    // Allow dropping sounds onto the grid
+    document.querySelectorAll('.sound-slot').forEach(slot => {
+        slot.addEventListener('dragover', e => {
+            e.preventDefault();
+        });
+
+        slot.addEventListener('drop', e => {
+            e.preventDefault();
+            const audioSrc = e.dataTransfer.getData('audio');
+            const audioPitch = parseFloat(e.dataTransfer.getData('audioPitch'));
+            const audioVolume = parseFloat(e.dataTransfer.getData('audioVolume'));
+
+            if (audioSrc) {
+                const audio = new Audio(audioSrc);
+                audio.dataset.pitch = audioPitch;
+                audio.dataset.volume = audioVolume;
+                audio.playbackRate = audioPitch;
+                audio.volume = audioVolume;
+
+                const soundItem = document.createElement('div');
+                soundItem.className = 'sound-item';
+                soundItem.style.backgroundColor = '#aaa';
+                soundItem.draggable = false;
+                soundItem.dataset.audioSrc = audioSrc;
+                soundItem.dataset.audioPitch = audioPitch;
+                soundItem.dataset.audioVolume = audioVolume;
+                slot.appendChild(soundItem);
+
+                // Handle scrolling over the note
+                soundItem.addEventListener('wheel', event => {
+                    if (event.altKey) {
+                        // Adjust volume
+                        const newVolume = Math.max(0, Math.min(1, parseFloat(soundItem.dataset.audioVolume) + (event.deltaY < 0 ? 0.1 : -0.1)));
+                        soundItem.dataset.audioVolume = newVolume;
+                        audio.volume = newVolume;
+                    } else {
+                        // Adjust pitch
+                        const newPitch = Math.max(0.5, Math.min(2, parseFloat(soundItem.dataset.audioPitch) + (event.deltaY < 0 ? 0.1 : -0.1)));
+                        soundItem.dataset.audioPitch = newPitch;
+                        audio.playbackRate = newPitch;
+                    }
+                });
+
+                soundItem.addEventListener('mousedown', () => {
+                    audio.play();
+                });
+
+                soundItem.addEventListener('mouseup', () => {
+                    audio.pause();
+                });
+
+                soundItem.addEventListener('dblclick', () => {
+                    slot.removeChild(soundItem);
+                    audio.pause();
+                });
+            }
+        });
+    });
+
+    // Play/pause functionality
+    playPauseButton.addEventListener('click', () => {
+        isPlaying = !isPlaying;
+        playPauseButton.textContent = isPlaying ? 'Pause' : 'Play';
+
+        if (isPlaying) {
+            const intervalDuration = (60000 / bpm) / 4; // BPM to milliseconds for each step
+            interval = setInterval(() => {
+                movePlayhead();
+            }, intervalDuration);
+        } else {
+            clearInterval(interval);
+        }
+    });
+
+    // Reset functionality
+    resetButton.addEventListener('click', () => {
+        clearInterval(interval);
+        isPlaying = false;
+        playPauseButton.textContent = 'Play';
+        playheadPosition = 0;
+        playhead.style.left = '0px';
+        soundBoard.querySelectorAll('.sound-item').forEach(item => {
+            item.parentNode.removeChild(item);
+        });
+    });
+
+    // Update BPM
+    bpmInput.addEventListener('change', event => {
+        bpm = event.target.value;
+        if (isPlaying) {
+            clearInterval(interval);
+            const intervalDuration = (60000 / bpm) / 4;
+            interval = setInterval(() => {
+                movePlayhead();
+            }, intervalDuration);
+        }
+    });
+
+    // Function to move the playhead
+    function movePlayhead() {
+        playheadPosition += soundBoard.clientWidth / 16;
+        if (playheadPosition >= soundBoard.clientWidth) {
+            playheadPosition = 0;
+        }
+        playhead.style.left = `${playheadPosition}px`;
+
+        const column = Math.floor(playheadPosition / (soundBoard.clientWidth / 16));
+        playColumnSounds(column);
+    }
+
+    // Function to play sounds in the current column
+    function playColumnSounds(column) {
+        const columnSlots = Array.from(soundBoard.children).slice(column * 8, (column + 1) * 8);
+        columnSlots.forEach(slot => {
+            if (slot.children.length > 0) {
+                const soundItem = slot.children[0];
+                const audio = new Audio(soundItem.dataset.audioSrc);
+                audio.playbackRate = parseFloat(soundItem.dataset.audioPitch);
+                audio.volume = parseFloat(soundItem.dataset.audioVolume);
+                audio.play();
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
