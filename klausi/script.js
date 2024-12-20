@@ -1,4 +1,4 @@
-import { PDFDocument } from "https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js";
+import { PDFDocument } from "https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js";
 import * as mammoth from "https://cdn.jsdelivr.net/npm/mammoth/mammoth.browser.min.js";
 
 const fileInput = document.getElementById("fileInput");
