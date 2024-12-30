@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>3D Model Video Renderer</title>
   <!-- Load Three.js first -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r148/three.min.js"></script>
-  <!-- Load the matching GLTFLoader -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r148/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.148.0/build/three.min.js"></script>
+  <!-- Load GLTFLoader after Three.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.148.0/examples/js/loaders/GLTFLoader.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/ccapture.js"></script>
   <style>
     body {
@@ -60,6 +60,11 @@
     let capturer;
 
     function init() {
+      if (typeof THREE === 'undefined') {
+        alert('Three.js is not loaded properly. Please check your internet connection or CDN links.');
+        return;
+      }
+
       scene = new THREE.Scene();
       camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
       renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -76,6 +81,11 @@
       const file = event.target.files[0];
       if (!file) return;
       const url = URL.createObjectURL(file);
+
+      if (typeof THREE.GLTFLoader === 'undefined') {
+        alert('GLTFLoader is not loaded properly. Please check your CDN links.');
+        return;
+      }
 
       const loader = new THREE.GLTFLoader();
       loader.load(url, (gltf) => {
