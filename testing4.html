@@ -3,45 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Model Video Renderer</title>
-  <!-- Load Three.js first -->
+  <title>3D Model Viewer</title>
+  <!-- Load Three.js -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.148.0/build/three.min.js"></script>
-  <!-- Load GLTFLoader after Three.js -->
+  <!-- Load GLTFLoader -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.148.0/examples/js/loaders/GLTFLoader.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/ccapture.js"></script>
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #1e1e2f, #2a2a4e);
+      background-color: #222;
       color: #fff;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
     canvas {
+      display: block;
       width: 100%;
       height: 60vh;
-      display: block;
-      background: #000;
+      background-color: black;
     }
     #controls {
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      margin-top: 20px;
     }
-    input, select, button {
-      margin: 10px;
+    input, button {
+      margin: 5px;
       padding: 10px;
-      border-radius: 5px;
-      border: none;
-      background: #ff7b54;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #ff5630;
+      font-size: 16px;
     }
   </style>
 </head>
@@ -51,24 +40,23 @@
     <input type="file" id="upload" accept=".glb" />
     <button id="start">Render Video</button>
   </div>
-  <video id="output-video" controls></video>
 
   <script>
+    if (typeof THREE === 'undefined') {
+      alert('Three.js is not loaded. Please check your CDN link.');
+    }
+    if (typeof THREE.GLTFLoader === 'undefined') {
+      alert('GLTFLoader is not loaded. Please check your CDN link.');
+    }
+
     let scene, camera, renderer, model;
-    const canvas = document.getElementById('three-canvas');
-    const videoElement = document.getElementById('output-video');
-    let capturer;
 
     function init() {
-      if (typeof THREE === 'undefined') {
-        alert('Three.js is not loaded properly. Please check your internet connection or CDN links.');
-        return;
-      }
-
       scene = new THREE.Scene();
       camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-      renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+      renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('three-canvas'), antialias: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
 
       const light = new THREE.DirectionalLight(0xffffff, 1);
       light.position.set(5, 10, 5);
@@ -79,68 +67,34 @@
 
     document.getElementById('upload').addEventListener('change', (event) => {
       const file = event.target.files[0];
-      if (!file) return;
+      if (!file) {
+        alert('Please select a .glb file.');
+        return;
+      }
+
       const url = URL.createObjectURL(file);
-
-      if (typeof THREE.GLTFLoader === 'undefined') {
-        alert('GLTFLoader is not loaded properly. Please check your CDN links.');
-        return;
-      }
-
       const loader = new THREE.GLTFLoader();
-      loader.load(url, (gltf) => {
-        if (model) scene.remove(model);
-        model = gltf.scene;
-        model.traverse((node) => {
-          if (node.isMesh) node.castShadow = true;
-        });
-        scene.add(model);
-      });
-    });
-
-    document.getElementById('start').addEventListener('click', () => {
-      if (!model) {
-        alert("Please upload a model before rendering.");
-        return;
-      }
-
-      capturer = new CCapture({ format: 'webm', framerate: 30 });
-      capturer.start();
-
-      const frames = 300;
-      let frame = 0;
-
-      function renderFrame() {
-        if (frame >= frames) {
-          capturer.stop();
-          capturer.save((blob) => {
-            videoElement.src = URL.createObjectURL(blob);
-            videoElement.style.display = 'block';
-          });
-          return;
+      loader.load(
+        url,
+        (gltf) => {
+          if (model) scene.remove(model);
+          model = gltf.scene;
+          scene.add(model);
+        },
+        undefined,
+        (error) => {
+          console.error('An error occurred while loading the model:', error);
+          alert('Failed to load the model. Please make sure it is a valid .glb file.');
         }
-
-        const angle = (frame / frames) * 2 * Math.PI;
-        camera.position.x = Math.sin(angle) * 5;
-        camera.position.z = Math.cos(angle) * 5;
-        camera.lookAt(0, 0, 0);
-
-        renderer.render(scene, camera);
-        capturer.capture(renderer.domElement);
-
-        frame++;
-        requestAnimationFrame(renderFrame);
-      }
-
-      renderFrame();
+      );
     });
-
-    init();
 
     function animate() {
       requestAnimationFrame(animate);
       renderer.render(scene, camera);
     }
+
+    init();
     animate();
   </script>
 </body>
