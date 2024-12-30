@@ -13,85 +13,72 @@
       font-family: Arial, sans-serif;
       background: linear-gradient(135deg, #1e1e2f, #2a2a4e);
       color: #fff;
-      overflow: hidden;
-    }
-    #container {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 20px;
-    }
-    #upload-container, #video-container {
-      margin: 20px;
+      overflow: hidden;
     }
     canvas {
+      width: 100%;
+      height: 60vh;
       display: block;
+      background: #000;
     }
-    button {
+    #controls {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    input, select, button {
       margin: 10px;
-      padding: 10px 20px;
-      border: none;
+      padding: 10px;
       border-radius: 5px;
+      border: none;
       background: #ff7b54;
       color: white;
       cursor: pointer;
-      transition: background 0.3s;
     }
     button:hover {
       background: #ff5630;
     }
-    label {
-      margin: 10px;
-      display: block;
-    }
-    select, input[type="file"] {
-      margin: 10px 0;
-      padding: 5px;
-      border-radius: 5px;
-      border: none;
-    }
     video {
-      margin-top: 20px;
-      width: 80%;
-      border: 2px solid #ff7b54;
+      margin: 20px 0;
       border-radius: 10px;
+      width: 80%;
     }
   </style>
 </head>
 <body>
-  <div id="container">
-    <div id="upload-container">
-      <h1>3D Model Video Renderer</h1>
-      <label for="upload">Upload your 3D Model (.glb only):</label>
-      <input type="file" id="upload" accept=".glb" />
-      <button id="start">Render Video</button>
-      <label>
-        <input type="checkbox" id="ground"> Enable Ground
-      </label>
-      <label>
-        <input type="checkbox" id="shadows"> Enable Shadows + Sun
-      </label>
-      <label>
-        Background:
-        <select id="background">
-          <option value="dark">Dark</option>
-          <option value="light">Light</option>
-        </select>
-      </label>
-    </div>
-    <canvas id="three-canvas"></canvas>
-    <div id="video-container">
-      <h2>Rendered Video</h2>
-      <video id="output-video" controls></video>
-    </div>
+  <canvas id="three-canvas"></canvas>
+  <div id="controls">
+    <input type="file" id="upload" accept=".glb" />
+    <button id="start">Render Video</button>
+    <label>
+      <input type="checkbox" id="ground"> Enable Ground
+    </label>
+    <label>
+      <input type="checkbox" id="shadows"> Enable Shadows + Sun
+    </label>
+    <label>
+      Background:
+      <select id="background">
+        <option value="dark">Dark</option>
+        <option value="light">Light</option>
+      </select>
+    </label>
   </div>
+  <video id="output-video" controls></video>
 
   <script>
-    let scene, camera, renderer, model, controls, capturer;
+    let scene, camera, renderer, model;
     const canvas = document.getElementById('three-canvas');
-    const video = document.getElementById('output-video');
+    const videoElement = document.getElementById('output-video');
+    let capturer;
 
-    // Initialize Three.js
     function init() {
       scene = new THREE.Scene();
       camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -99,16 +86,16 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.shadowMap.enabled = true;
 
-      camera.position.z = 5;
-
-      // Add light
+      // Lights
       const light = new THREE.DirectionalLight(0xffffff, 1);
       light.position.set(5, 10, 5);
       light.castShadow = true;
       scene.add(light);
+
+      camera.position.z = 5;
     }
 
-    // Load 3D Model
+    // Handle file upload
     document.getElementById('upload').addEventListener('change', (event) => {
       const file = event.target.files[0];
       if (!file) return;
@@ -137,7 +124,8 @@
         if (frame >= frames) {
           capturer.stop();
           capturer.save((blob) => {
-            video.src = URL.createObjectURL(blob);
+            videoElement.src = URL.createObjectURL(blob);
+            videoElement.style.display = 'block';
           });
           return;
         }
@@ -158,7 +146,7 @@
       renderFrame();
     });
 
-    // Update options
+    // Update scene options
     document.getElementById('ground').addEventListener('change', (event) => {
       const groundEnabled = event.target.checked;
       if (groundEnabled) {
@@ -178,9 +166,9 @@
       scene.background = new THREE.Color(event.target.value === 'dark' ? 0x000000 : 0xffffff);
     });
 
+    // Initialize Three.js and start animation loop
     init();
 
-    // Animate the scene
     function animate() {
       requestAnimationFrame(animate);
       renderer.render(scene, camera);
