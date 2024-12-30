@@ -8,47 +8,104 @@
   <script src="https://cdn.jsdelivr.net/npm/three/examples/js/loaders/GLTFLoader.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/ccapture.js"></script>
   <style>
-    body { margin: 0; overflow: hidden; }
-    canvas { display: block; }
-    #controls { position: fixed; top: 10px; left: 10px; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #1e1e2f, #2a2a4e);
+      color: #fff;
+      overflow: hidden;
+    }
+    #container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    #upload-container, #video-container {
+      margin: 20px;
+    }
+    canvas {
+      display: block;
+    }
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background: #ff7b54;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #ff5630;
+    }
+    label {
+      margin: 10px;
+      display: block;
+    }
+    select, input[type="file"] {
+      margin: 10px 0;
+      padding: 5px;
+      border-radius: 5px;
+      border: none;
+    }
+    video {
+      margin-top: 20px;
+      width: 80%;
+      border: 2px solid #ff7b54;
+      border-radius: 10px;
+    }
   </style>
 </head>
 <body>
-  <div id="controls">
-    <input type="file" id="upload" accept=".glb" />
-    <button id="start">Render Video</button>
-    <label>
-      <input type="checkbox" id="ground"> Enable Ground
-    </label>
-    <label>
-      <input type="checkbox" id="shadows"> Enable Shadows + Sun
-    </label>
-    <label>
-      Background:
-      <select id="background">
-        <option value="dark">Dark</option>
-        <option value="light">Light</option>
-      </select>
-    </label>
+  <div id="container">
+    <div id="upload-container">
+      <h1>3D Model Video Renderer</h1>
+      <label for="upload">Upload your 3D Model (.glb only):</label>
+      <input type="file" id="upload" accept=".glb" />
+      <button id="start">Render Video</button>
+      <label>
+        <input type="checkbox" id="ground"> Enable Ground
+      </label>
+      <label>
+        <input type="checkbox" id="shadows"> Enable Shadows + Sun
+      </label>
+      <label>
+        Background:
+        <select id="background">
+          <option value="dark">Dark</option>
+          <option value="light">Light</option>
+        </select>
+      </label>
+    </div>
+    <canvas id="three-canvas"></canvas>
+    <div id="video-container">
+      <h2>Rendered Video</h2>
+      <video id="output-video" controls></video>
+    </div>
   </div>
-  <script>
-    let scene, camera, renderer, model, controls;
 
-    // Initialize Three.js Scene
+  <script>
+    let scene, camera, renderer, model, controls, capturer;
+    const canvas = document.getElementById('three-canvas');
+    const video = document.getElementById('output-video');
+
+    // Initialize Three.js
     function init() {
       scene = new THREE.Scene();
       camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
-      document.body.appendChild(renderer.domElement);
+      renderer.shadowMap.enabled = true;
 
-      // Lighting
+      camera.position.z = 5;
+
+      // Add light
       const light = new THREE.DirectionalLight(0xffffff, 1);
       light.position.set(5, 10, 5);
       light.castShadow = true;
       scene.add(light);
-
-      camera.position.z = 5;
     }
 
     // Load 3D Model
@@ -61,13 +118,16 @@
       loader.load(url, (gltf) => {
         if (model) scene.remove(model);
         model = gltf.scene;
+        model.traverse((node) => {
+          if (node.isMesh) node.castShadow = true;
+        });
         scene.add(model);
       });
     });
 
-    // Render Video
+    // Render video
     document.getElementById('start').addEventListener('click', () => {
-      const capturer = new CCapture({ format: 'webm', framerate: 30 });
+      capturer = new CCapture({ format: 'webm', framerate: 30 });
       capturer.start();
 
       const frames = 300; // 10 seconds at 30fps
@@ -76,11 +136,13 @@
       function renderFrame() {
         if (frame >= frames) {
           capturer.stop();
-          capturer.save();
+          capturer.save((blob) => {
+            video.src = URL.createObjectURL(blob);
+          });
           return;
         }
 
-        // Orbit camera
+        // Rotate the camera around the model
         const angle = (frame / frames) * 2 * Math.PI;
         camera.position.x = Math.sin(angle) * 5;
         camera.position.z = Math.cos(angle) * 5;
@@ -96,9 +158,10 @@
       renderFrame();
     });
 
-    // Options
+    // Update options
     document.getElementById('ground').addEventListener('change', (event) => {
-      if (event.target.checked) {
+      const groundEnabled = event.target.checked;
+      if (groundEnabled) {
         const ground = new THREE.Mesh(
           new THREE.PlaneGeometry(10, 10),
           new THREE.MeshStandardMaterial({ color: 0xaaaaaa })
@@ -116,6 +179,8 @@
     });
 
     init();
+
+    // Animate the scene
     function animate() {
       requestAnimationFrame(animate);
       renderer.render(scene, camera);
