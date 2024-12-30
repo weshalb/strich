@@ -16,7 +16,6 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      overflow: hidden;
     }
     canvas {
       width: 100%;
@@ -29,9 +28,6 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      background: rgba(0, 0, 0, 0.7);
-      border-radius: 10px;
-      margin-top: 20px;
     }
     input, select, button {
       margin: 10px;
@@ -45,11 +41,6 @@
     button:hover {
       background: #ff5630;
     }
-    video {
-      margin: 20px 0;
-      border-radius: 10px;
-      width: 80%;
-    }
   </style>
 </head>
 <body>
@@ -57,19 +48,6 @@
   <div id="controls">
     <input type="file" id="upload" accept=".glb" />
     <button id="start">Render Video</button>
-    <label>
-      <input type="checkbox" id="ground"> Enable Ground
-    </label>
-    <label>
-      <input type="checkbox" id="shadows"> Enable Shadows + Sun
-    </label>
-    <label>
-      Background:
-      <select id="background">
-        <option value="dark">Dark</option>
-        <option value="light">Light</option>
-      </select>
-    </label>
   </div>
   <video id="output-video" controls></video>
 
@@ -84,18 +62,14 @@
       camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
       renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.shadowMap.enabled = true;
 
-      // Lights
       const light = new THREE.DirectionalLight(0xffffff, 1);
       light.position.set(5, 10, 5);
-      light.castShadow = true;
       scene.add(light);
 
       camera.position.z = 5;
     }
 
-    // Handle file upload
     document.getElementById('upload').addEventListener('change', (event) => {
       const file = event.target.files[0];
       if (!file) return;
@@ -112,12 +86,16 @@
       });
     });
 
-    // Render video
     document.getElementById('start').addEventListener('click', () => {
+      if (!model) {
+        alert("Please upload a model before rendering.");
+        return;
+      }
+
       capturer = new CCapture({ format: 'webm', framerate: 30 });
       capturer.start();
 
-      const frames = 300; // 10 seconds at 30fps
+      const frames = 300;
       let frame = 0;
 
       function renderFrame() {
@@ -130,7 +108,6 @@
           return;
         }
 
-        // Rotate the camera around the model
         const angle = (frame / frames) * 2 * Math.PI;
         camera.position.x = Math.sin(angle) * 5;
         camera.position.z = Math.cos(angle) * 5;
@@ -146,27 +123,6 @@
       renderFrame();
     });
 
-    // Update scene options
-    document.getElementById('ground').addEventListener('change', (event) => {
-      const groundEnabled = event.target.checked;
-      if (groundEnabled) {
-        const ground = new THREE.Mesh(
-          new THREE.PlaneGeometry(10, 10),
-          new THREE.MeshStandardMaterial({ color: 0xaaaaaa })
-        );
-        ground.rotation.x = -Math.PI / 2;
-        ground.receiveShadow = true;
-        scene.add(ground);
-      } else {
-        scene.children = scene.children.filter((child) => !(child.geometry instanceof THREE.PlaneGeometry));
-      }
-    });
-
-    document.getElementById('background').addEventListener('change', (event) => {
-      scene.background = new THREE.Color(event.target.value === 'dark' ? 0x000000 : 0xffffff);
-    });
-
-    // Initialize Three.js and start animation loop
     init();
 
     function animate() {
