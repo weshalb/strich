@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Model Video Renderer</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r148/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ccapture.js"></script>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
+    #controls { position: fixed; top: 10px; left: 10px; }
+  </style>
+</head>
+<body>
+  <div id="controls">
+    <input type="file" id="upload" accept=".glb" />
+    <button id="start">Render Video</button>
+    <label>
+      <input type="checkbox" id="ground"> Enable Ground
+    </label>
+    <label>
+      <input type="checkbox" id="shadows"> Enable Shadows + Sun
+    </label>
+    <label>
+      Background:
+      <select id="background">
+        <option value="dark">Dark</option>
+        <option value="light">Light</option>
+      </select>
+    </label>
+  </div>
+  <script>
+    let scene, camera, renderer, model, controls;
+
+    // Initialize Three.js Scene
+    function init() {
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      // Lighting
+      const light = new THREE.DirectionalLight(0xffffff, 1);
+      light.position.set(5, 10, 5);
+      light.castShadow = true;
+      scene.add(light);
+
+      camera.position.z = 5;
+    }
+
+    // Load 3D Model
+    document.getElementById('upload').addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+
+      const loader = new THREE.GLTFLoader();
+      loader.load(url, (gltf) => {
+        if (model) scene.remove(model);
+        model = gltf.scene;
+        scene.add(model);
+      });
+    });
+
+    // Render Video
+    document.getElementById('start').addEventListener('click', () => {
+      const capturer = new CCapture({ format: 'webm', framerate: 30 });
+      capturer.start();
+
+      const frames = 300; // 10 seconds at 30fps
+      let frame = 0;
+
+      function renderFrame() {
+        if (frame >= frames) {
+          capturer.stop();
+          capturer.save();
+          return;
+        }
+
+        // Orbit camera
+        const angle = (frame / frames) * 2 * Math.PI;
+        camera.position.x = Math.sin(angle) * 5;
+        camera.position.z = Math.cos(angle) * 5;
+        camera.lookAt(0, 0, 0);
+
+        renderer.render(scene, camera);
+        capturer.capture(renderer.domElement);
+
+        frame++;
+        requestAnimationFrame(renderFrame);
+      }
+
+      renderFrame();
+    });
+
+    // Options
+    document.getElementById('ground').addEventListener('change', (event) => {
+      if (event.target.checked) {
+        const ground = new THREE.Mesh(
+          new THREE.PlaneGeometry(10, 10),
+          new THREE.MeshStandardMaterial({ color: 0xaaaaaa })
+        );
+        ground.rotation.x = -Math.PI / 2;
+        ground.receiveShadow = true;
+        scene.add(ground);
+      } else {
+        scene.children = scene.children.filter((child) => !(child.geometry instanceof THREE.PlaneGeometry));
+      }
+    });
+
+    document.getElementById('background').addEventListener('change', (event) => {
+      scene.background = new THREE.Color(event.target.value === 'dark' ? 0x000000 : 0xffffff);
+    });
+
+    init();
+    function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>
