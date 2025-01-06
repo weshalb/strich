@@ -1,0 +1,22 @@
+<html>
+<head>
+    <title>Sentiment Analysis</title>
+</head>
+<body>
+    <h1>Sentiment Analysis</h1>
+    <textarea id="inputText" placeholder="Type your text here..."></textarea>
+    <button onclick="analyzeSentiment()">Analyze Sentiment</button>
+    <p id="result"></p>
+
+    <script src="https://cdn.jsdelivr.net/npm/sentiment@5.0.0"></script>
+    <script>
+        function analyzeSentiment() {
+            const text = document.getElementById('inputText').value;
+            const sentiment = new Sentiment();
+            const result = sentiment.analyze(text);
+            const message = result.score > 0 ? 'Positive' : result.score < 0 ? 'Negative' : 'Neutral';
+            document.getElementById('result').innerText = `Sentiment: ${message}`;
+        }
+    </script>
+</body>
+</html>
