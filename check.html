@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>Sentiment Analysis</title>
@@ -8,12 +9,17 @@
     <button onclick="analyzeSentiment()">Analyze Sentiment</button>
     <p id="result"></p>
 
+    <!-- Include Sentiment.js -->
     <script src="https://cdn.jsdelivr.net/npm/sentiment@5.0.0"></script>
     <script>
         function analyzeSentiment() {
             const text = document.getElementById('inputText').value;
+
+            // Create Sentiment instance
             const sentiment = new Sentiment();
             const result = sentiment.analyze(text);
+
+            // Determine sentiment
             const message = result.score > 0 ? 'Positive' : result.score < 0 ? 'Negative' : 'Neutral';
             document.getElementById('result').innerText = `Sentiment: ${message}`;
         }
