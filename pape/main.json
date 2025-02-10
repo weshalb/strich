@@ -1,0 +1,12 @@
+[
+    {
+        "name": "Dark Theme",
+        "type": "static",
+        "url": "https://strich.org/pape/images/dark.png"
+    },
+    {
+        "name": "Animated Theme",
+        "type": "animated",
+        "url": "https://strich.org/pape/images/animated-theme.gif"
+    }
+]
