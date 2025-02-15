@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Für dich, mein Engel</title>
+    <style>
+        body {
+            background: linear-gradient(to bottom, #ff99cc, #ff3366);
+            color: white;
+            font-family: 'Atma', cursive;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            overflow: hidden;
+            transition: background 2s ease-in-out;
+            font-size: 2.5rem;
+            padding: 20px;
+        }
+        p {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+        }
+        .show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .heart {
+            position: absolute;
+            font-size: 80px;
+            animation: float 6s infinite ease-in-out;
+            color: rgba(255, 255, 255, 0.3);
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh); opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { transform: translateY(-10vh); opacity: 0; }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Stay+and+Shine&display=swap" rel="stylesheet">
+</head>
+<body onclick="nextText()">
+    <p id="text"></p>
+
+    <script>
+        const textArray = [
+            "Hey mein Schatz,",
+            "Sechs Monate. Ein halbes Jahr. Ich kann es kaum glauben, wie schnell die Zeit vergangen ist, aber gleichzeitig fühlt es sich so an, als wärst du schon immer ein Teil meines Lebens gewesen. Seitdem du da bist, hat sich so viel verändert irgendwie fühlt sich alles heller, wärmer und einfach richtiger an. Du bist nicht nur meine Freundin, du bist mein Zuhause, meine beste Freundin, mein Ruhepol und mein größtes Abenteuer zugleich.",
+            "Ich liebe es, wie wir zusammen lachen, wie du mich ansiehst, wenn ich mal wieder Blödsinn rede, oder wie du mich mit nur einem Satz komplett durchschauen kannst. Du kennst mich besser als jeder andere und trotzdem (oder gerade deshalb) entscheidest du dich jeden Tag wieder für mich. Das bedeutet mir mehr, als ich je in Worte fassen könnte.",
+            "Ich denke so oft darüber nach, was wir schon alles erlebt haben. Diese ganzen kleinen Momente, die für andere vielleicht unwichtig wären, aber für mich die schönsten Erinnerungen sind. Die Nächte, in denen wir stundenlang geredet haben, die Tage, an denen einfach nur deine Nähe gereicht hat, um mich glücklich zu machen. Jede Umarmung, jeder Kuss, jedes Lächeln all das ist mir so viel wert.",
+            "Du machst mich besser. Du gibst mir Halt, wenn ich ihn brauche, und forderst mich heraus, wenn ich feststecke. Und egal, was gerade ist mit dir fühlt sich alles machbar an. Du bist mein sicherer Hafen und gleichzeitig der schönste Sturm, den ich je erlebt habe.",
+            "Ich freue mich so sehr auf das, was noch vor uns liegt. Auf all die Erlebnisse, die wir noch teilen werden, auf die Tage, an denen wir gemeinsam lachen, und auf die Nächte, in denen wir einfach nebeneinander liegen und wissen, dass wir genau da sind, wo wir hingehören.",
+            "Danke, dass du mich so liebst, wie ich bin. Danke, dass du in meinem Leben bist. Danke für sechs unvergessliche Monate. Ich liebe dich, mehr als Worte es je sagen könnten.",
+            "Dein Yannik"
+        ];
+        
+        let index = 0;
+        const textElement = document.getElementById("text");
+        
+        function nextText() {
+            if (index < textArray.length) {
+                textElement.classList.remove("show");
+                setTimeout(() => {
+                    textElement.innerHTML = textArray[index];
+                    textElement.classList.add("show");
+                    index++;
+                }, 600);
+            }
+        }
+        
+        nextText();
+
+        function createHeart() {
+            const heart = document.createElement("div");
+            heart.classList.add("heart");
+            heart.innerHTML = "❤️";
+            document.body.appendChild(heart);
+            
+            heart.style.left = Math.random() * window.innerWidth + "px";
+            heart.style.animationDuration = Math.random() * 4 + 3 + "s";
+            
+            setTimeout(() => heart.remove(), 7000);
+        }
+        
+        setInterval(createHeart, 300);
+    </script>
+</body>
+</html>
