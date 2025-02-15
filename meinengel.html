@@ -5,24 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Für dich, mein Engel</title>
     <style>
-        body {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
             background: linear-gradient(to bottom, #ff99cc, #ff3366);
             color: white;
             font-family: 'Atma', cursive;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
             text-align: center;
             overflow: hidden;
             transition: background 2s ease-in-out;
-            font-size: 2.5rem;
+            font-size: 2rem;
             padding: 20px;
+            position: fixed;
         }
         p {
             opacity: 0;
             transform: translateY(20px);
             transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+            max-width: 90%;
+            word-wrap: break-word;
         }
         .show {
             opacity: 1;
@@ -30,7 +39,7 @@
         }
         .heart {
             position: absolute;
-            font-size: 80px;
+            font-size: 60px;
             animation: float 6s infinite ease-in-out;
             color: rgba(255, 255, 255, 0.3);
         }
