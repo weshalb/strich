@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Konstruktivismus Feedback</title>
+  <style>
+  * {
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      sans-serif;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #5ca7ff, #9cc9ff);
+  }
+
+  .card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 650px;
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    padding: 24px 24px 30px;
+  }
+
+  h1 {
+    margin: 0 0 4px;
+    text-align: center;
+    font-size: 1.6rem;
+    letter-spacing: 0.04em;
+  }
+
+  .subtitle {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 18px;
+  }
+
+  .progress {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 99px;
+    background: #d5e5ff;
+    transition: all 0.3s ease;
+  }
+
+  .dot.active {
+    width: 26px;
+    background: #357bff;
+  }
+
+  .viewport {
+    overflow: hidden;
+    border-radius: 14px;
+    border: 1px solid #e3ecff;
+    background: #f7f9ff;
+  }
+
+  .slider {
+    display: flex;
+    transform: translateX(0%);
+    transition: transform 0.45s ease;
+  }
+
+  .slide {
+    flex: 0 0 100%;             /* genau eine Slide pro Ansicht */
+    padding: 22px 22px 110px;   /* Platz für Buttons unten */
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 420px;
+    position: relative;
+  }
+
+  .window-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: #357bff;
+    font-weight: 600;
+  }
+
+  .window-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .window-hint {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.4;
+  }
+
+  textarea {
+    margin-top: 8px;
+    width: 100%;
+    min-height: 130px;
+    resize: vertical;
+    border-radius: 10px;
+    border: 1px solid #cfdcff;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border 0.2s ease, box-shadow 0.2s ease;
+    background: #ffffff;
+  }
+
+  textarea:focus {
+    border-color: #357bff;
+    box-shadow: 0 0 0 2px rgba(53, 123, 255, 0.15);
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+  }
+
+  button {
+    border: none;
+    border-radius: 999px;
+    padding: 9px 18px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: transform 0.1s ease, box-shadow 0.1s ease,
+      background 0.2s ease;
+  }
+
+  button.primary {
+    background: #357bff;
+    color: white;
+    box-shadow: 0 6px 12px rgba(53, 123, 255, 0.3);
+  }
+
+  button.primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 18px rgba(53, 123, 255, 0.35);
+  }
+
+  button.secondary {
+    background: #e4ecff;
+    color: #27457f;
+  }
+
+  button:disabled {
+    opacity: 0.6;
+    cursor: default;
+    box-shadow: none;
+    transform: none;
+  }
+
+  .status {
+    margin-top: 14px;
+    font-size: 0.9rem;
+    text-align: center;
+    color: #555;
+  }
+
+  .status.ok {
+    color: #1f8c4a;
+  }
+
+  .status.error {
+    color: #c93636;
+  }
+
+  .small-note {
+    margin-top: 14px;
+    font-size: 0.75rem;
+    color: #777;
+    text-align: center;
+  }
+</style>
+
+</head>
+<body>
+  <div class="card">
+    <h1>Konstruktivismus Feedback</h1>
+    <div class="subtitle">
+      Drei subjektive Fenster Methode
+    </div>
+
+    <div class="progress">
+      <div class="dot active" data-step="0"></div>
+      <div class="dot" data-step="1"></div>
+      <div class="dot" data-step="2"></div>
+    </div>
+
+    <div class="viewport">
+      <div class="slider" id="slider">
+        <!-- Fenster 1 -->
+        <section class="slide">
+          <div class="window-label">Fenster 1</div>
+          <div class="window-title">Was habe ich wahrgenommen?</div>
+          <div class="window-hint">
+            Hier beschreibst du nur Beobachtungen ohne Bewertung  
+            zum Beispiel  
+            ich habe wahrgenommen, dass viele Beispiele genutzt wurden.
+          </div>
+          <textarea
+            id="fenster1"
+            placeholder="Schreibe hier, was du gesehen und gehört hast ..."
+          ></textarea>
+          <div class="buttons">
+            <button class="primary" id="next1">
+              Weiter
+            </button>
+          </div>
+        </section>
+
+        <!-- Fenster 2 -->
+        <section class="slide">
+          <div class="window-label">Fenster 2</div>
+          <div class="window-title">Wie deute ich den Vortrag?</div>
+          <div class="window-hint">
+            Hier kommt deine persönliche Interpretation  
+            zum Beispiel  
+            für mich wirkte das sehr strukturiert oder  
+            ich habe daraus geschlossen, dass ihr sicher im Thema seid.
+          </div>
+          <textarea
+            id="fenster2"
+            placeholder="Wie deutest du das, was du wahrgenommen hast ..."
+          ></textarea>
+          <div class="buttons">
+            <button class="secondary" id="backTo1">
+              Zurück
+            </button>
+            <button class="primary" id="next2">
+              Weiter
+            </button>
+          </div>
+        </section>
+
+        <!-- Fenster 3 -->
+        <section class="slide">
+          <div class="window-label">Fenster 3</div>
+          <div class="window-title">Wie wirkte der Vortrag auf mich?</div>
+          <div class="window-hint">
+            Hier geht es um deine Gefühle und Wirkungen des Vortrags  
+            zum Beispiel  
+            das hat mich beruhigt,  
+            ich wurde neugierig,  
+            an einer Stelle war ich verwirrt.
+          </div>
+          <textarea
+            id="fenster3"
+            placeholder="Wie hat der Vortrag auf dich gewirkt ..."
+          ></textarea>
+          <div class="buttons">
+            <button class="secondary" id="backTo2">
+              Zurück
+            </button>
+            <button class="primary" id="submit">
+              Fenster schließen und Feedback senden
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div id="status" class="status"></div>
+    <div class="small-note">
+      Dein Feedback ist anonym und unterstützt uns dabei, den Vortrag weiterzuentwickeln.
+    </div>
+  </div>
+
+  <script>
+    // HIER DEINE DISCORD WEBHOOK URL EINTRAGEN
+    const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1445130951423430847/QtAGRy1MijtlYSSIeJVJ1ewbyHvqn2H3mTW8Ba9gZTCszoDNc58bUk_9V2o057lM86oU";
+
+    const slider = document.getElementById("slider");
+    const dots = document.querySelectorAll(".dot");
+    const statusEl = document.getElementById("status");
+    const next1 = document.getElementById("next1");
+    const next2 = document.getElementById("next2");
+    const backTo1 = document.getElementById("backTo1");
+    const backTo2 = document.getElementById("backTo2");
+    const submitBtn = document.getElementById("submit");
+
+    let currentStep = 0;
+
+    function goToStep(step) {
+      currentStep = step;
+      slider.style.transform = `translateX(-${step * 100}%)`;
+      dots.forEach((d) => d.classList.remove("active"));
+      const activeDot = document.querySelector(`.dot[data-step="${step}"]`);
+      if (activeDot) activeDot.classList.add("active");
+      statusEl.textContent = "";
+      statusEl.className = "status";
+    }
+
+    next1.addEventListener("click", () => goToStep(1));
+    next2.addEventListener("click", () => goToStep(2));
+    backTo1.addEventListener("click", () => goToStep(0));
+    backTo2.addEventListener("click", () => goToStep(1));
+
+    async function sendToDiscord() {
+      const f1 = document.getElementById("fenster1").value.trim();
+      const f2 = document.getElementById("fenster2").value.trim();
+      const f3 = document.getElementById("fenster3").value.trim();
+
+      if (!f1 && !f2 && !f3) {
+        statusEl.textContent =
+          "Bitte schreibe etwas in mindestens eines der Fenster.";
+        statusEl.className = "status error";
+        return;
+      }
+
+      if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL.includes("DEINE_WEBHOOK")) {
+        statusEl.textContent =
+          "Es ist noch keine Webhook URL eingetragen.";
+        statusEl.className = "status error";
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Senden ...";
+      statusEl.textContent = "";
+      statusEl.className = "status";
+
+      const content =
+        "**Neues Konstruktivismus Feedback**\n\n" +
+        "Fenster 1 Wahrgenommen:\n" +
+        (f1 || "kein Eintrag") +
+        "\n\nFenster 2 Deutung:\n" +
+        (f2 || "kein Eintrag") +
+        "\n\nFenster 3 Wirkung:\n" +
+        (f3 || "kein Eintrag");
+
+      try {
+        const res = await fetch(DISCORD_WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content }),
+        });
+
+        if (!res.ok) {
+          throw new Error("Fehler beim Senden");
+        }
+
+        statusEl.textContent = "Danke, dein Feedback wurde gesendet.";
+        statusEl.className = "status ok";
+        submitBtn.textContent = "Fenster geschlossen";
+        document.getElementById("fenster1").disabled = true;
+        document.getElementById("fenster2").disabled = true;
+        document.getElementById("fenster3").disabled = true;
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent =
+          "Es gab ein Problem beim Senden. Bitte später noch einmal versuchen.";
+        statusEl.className = "status error";
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Fenster schließen und Feedback senden";
+      }
+    }
+
+    submitBtn.addEventListener("click", sendToDiscord);
+  </script>
+</body>
+</html>
